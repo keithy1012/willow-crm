@@ -15,7 +15,7 @@ const UpcomingAppointmentCard: React.FC<UpcomingAppointmentProps> = ({
   onClick,
 }) => {
   return (
-    <div className="bg-background p-4 shadow-lg rounded-lg w-90">
+    <div className="bg-background p-4 shadow-sm rounded-lg w-full">
       <div className="flex flex-col space-y-3">
         <div className="flex items-center gap-2">
           <FirstAidIcon size={24} className="text-primary" />

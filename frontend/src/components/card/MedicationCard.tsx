@@ -13,7 +13,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className="bg-foreground p-4 border border-stroke shadow-md rounded-lg w-64">
+    <div className="bg-foreground p-4 border border-stroke shadow-sm rounded-lg w-full">
       <div className="flex flex-col space-y-3">
         <div className="flex items-center gap-2">
           <Pill size={24} className="text-primary" />
