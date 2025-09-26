@@ -9,8 +9,19 @@ import {
   Bug,
   Question,
 } from "@phosphor-icons/react";
+import UserProfileCard from "../card/UserProfileCard.tsx";
 
-const PatientSidebar: React.FC = () => {
+interface PatientSidebarProps {
+  userName?: string;
+  username?: string;
+  userInitials?: string;
+}
+
+const PatientSidebar: React.FC<PatientSidebarProps> = ({
+  userName = "Lok Ye Young",
+  username = "lokyeyoung",
+  userInitials,
+}) => {
   const [activeItem, setActiveItem] = useState("Messages");
 
   const menuItems = [
@@ -27,7 +38,7 @@ const PatientSidebar: React.FC = () => {
   ];
 
   return (
-    <div className="w-80 h-screen bg-background border-r border-stroke flex flex-col">
+    <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col">
       <div className="flex-1 p-4 space-y-3">
         {menuItems.map((item) => (
           <IconSidebar
@@ -50,6 +61,12 @@ const PatientSidebar: React.FC = () => {
             onClick={() => setActiveItem(item.text)}
           />
         ))}
+
+        <UserProfileCard
+          name={userName}
+          username={username}
+          initials={userInitials}
+        />
       </div>
     </div>
   );
