@@ -1,6 +1,6 @@
 // models/User.js
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,17 +17,5 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-// Create UserDisplay view
-userSchema.methods.toDisplay = function () {
-  return {
-    userID: this.userID,
-    firstName: this.firstName,
-    lastName: this.lastName,
-    username: this.username,
-    email: this.email,
-    profilePic: this.profilePic,
-  };
-};
 
 export default mongoose.model("User", userSchema);
