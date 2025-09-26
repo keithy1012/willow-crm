@@ -6,13 +6,21 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "concurrently": "^9.2.1"
-  }, 
   "scripts": {
-  "start": "node backend/server.js",
-  "server": "nodemon backend/server.js",
-  "client": "npm start --prefix frontend",
-  "dev": "concurrently \"npm run server\" \"npm run client\""
-}
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.5.6"
+  },
+  "dependencies": {
+    "phosphor-react": "^1.4.1",
+    "react-native": "^0.81.4"
+  }
 }
