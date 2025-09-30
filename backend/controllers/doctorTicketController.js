@@ -1,5 +1,6 @@
 // controllers/doctorTicketController.js
 import Doctorrequestticket from "../models/DoctorTicketRequest.js";
+import Doctor from "../models/Doctor.js";
 
 export const submitDoctorTicket = async (req, res) => {
   try {
@@ -26,11 +27,9 @@ export const getPendingTickets = async (req, res) => {
 };
 
 
-import Doctor from "../models/Doctor.js";
-
 export const approveTicket = async (req, res) => {
   try {
-    const ticket = await DoctorApprovalTicket.findById(req.params.ticketId);
+    const ticket = await Doctorrequestticket.findById(req.params.ticketId);
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
 
     // Create the doctor account
