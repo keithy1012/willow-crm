@@ -1,6 +1,7 @@
 // controllers/doctorTicketController.js
 import Doctorrequestticket from "../models/DoctorTicketRequest.js";
-import Doctor from "../models/Doctor.js";
+import { createDoctor } from "./doctorController.js";
+
 
 export const submitDoctorTicket = async (req, res) => {
   try {
@@ -16,7 +17,6 @@ export const submitDoctorTicket = async (req, res) => {
   }
 };
 
-
 export const getPendingTickets = async (req, res) => {
   try {
     const tickets = await Doctorrequestticket.find({ status: "Pending" }).populate("requestedBy", "firstName lastName email");
@@ -26,14 +26,13 @@ export const getPendingTickets = async (req, res) => {
   }
 };
 
-
 export const approveTicket = async (req, res) => {
   try {
     const ticket = await Doctorrequestticket.findById(req.params.ticketId);
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
 
-    // Create the doctor account
-    const doctor = new Doctor({
+    // Build the doctor payload for createDoctor
+    const doctorData = {
       user: ticket.user,
       firstName: ticket.firstName,
       lastName: ticket.lastName,
@@ -46,16 +45,31 @@ export const approveTicket = async (req, res) => {
       availability: ticket.availability,
       role: "Doctor",
       password: "temporaryPassword123",
+    };
 
-    });
+    // Call doctorController.createDoctor
+    const fakeReq = { body: doctorData };
+    let doctorResponse;
 
-    await doctor.save();
+    const fakeRes = {
+      status: (code) => ({
+        json: (data) => {
+          doctorResponse = { code, data };
+        },
+      }),
+    };
 
+    await createDoctor(fakeReq, fakeRes);
+
+    // Update the ticket status
     ticket.status = "Approved";
     ticket.reviewedBy = req.user._id;
     await ticket.save();
 
-    res.json({ message: "Doctor approved and account created", doctor });
+    res.json({
+      message: "Doctor approved and account created",
+      doctor: doctorResponse?.data,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

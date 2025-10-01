@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import patientRoutes from "./routes/patientRoutes.js"
 import doctorRoutes from "./routes/doctorRoutes.js"
 import doctorTicketRoutes from "./routes/doctorTicketRoutes.js"
+
 dotenv.config({ path: './backend/.env'});
 connectDB();
 
