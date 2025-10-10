@@ -1,6 +1,6 @@
 // controllers/doctorController.js
 import Doctor from "../models/Doctor.js";
-
+import User from "../models/User.js"
 
 // Create new doctor
 export const createDoctor = async (req, res) => {
