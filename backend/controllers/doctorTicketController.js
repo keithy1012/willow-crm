@@ -1,11 +1,11 @@
 // controllers/doctorTicketController.js
-import Doctorrequestticket from "../models/DoctorTicketRequest.js";
+import Doctoraccountcreationrequest from "../models/DoctorAccountCreationRequest.js";
 import { createDoctor } from "./doctorController.js";
 
 
 export const submitDoctorTicket = async (req, res) => {
   try {
-    const ticket = new Doctorrequestticket({
+    const ticket = new Doctoraccountcreationrequest({
       requestedBy: req.user._id,
       ...req.body,               
     });
@@ -19,7 +19,7 @@ export const submitDoctorTicket = async (req, res) => {
 
 export const getPendingTickets = async (req, res) => {
   try {
-    const tickets = await Doctorrequestticket.find({ status: "Pending" }).populate("requestedBy", "firstName lastName email");
+    const tickets = await Doctoraccountcreationrequest.find({ status: "Pending" }).populate("requestedBy", "firstName lastName email");
     res.json(tickets);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -28,7 +28,7 @@ export const getPendingTickets = async (req, res) => {
 
 export const approveTicket = async (req, res) => {
   try {
-    const ticket = await Doctorrequestticket.findById(req.params.ticketId);
+    const ticket = await Doctoraccountcreationrequest.findById(req.params.ticketId);
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
 
     // Build the doctor payload for createDoctor

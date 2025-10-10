@@ -1,4 +1,4 @@
-// models/DoctorApprovalTicket.js
+// models/DoctorAccountCreationRequest.js
 import mongoose from "mongoose";
 
 const doctorTicketSchema = new mongoose.Schema(
@@ -20,4 +20,4 @@ const doctorTicketSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Doctorrequestticket", doctorTicketSchema);
+export default mongoose.model("Doctoraccountcreationrequest", doctorTicketSchema);
