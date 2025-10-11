@@ -1,4 +1,4 @@
-// routes/patientRequestChangeTicketRoutes.js
+// routes/doctorRequestChangeTicketRoutes.js
 import express from "express";
 import {
     createChangeTicket, 
@@ -8,14 +8,13 @@ import {
     getAllTicketsByOpsId,
     startTicketProgress,
     completeTicket
-
-} from "../controllers/patientRequestChangeTicketController.js";
+} from "../controllers/doctorRequestChangeTicketController.js";
 import { requireRole } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Submit a patient request change ticket
-router.post("/", requireRole(["Patient"]), createChangeTicket);
+// Submit a doctor request change ticket
+router.post("/", requireRole(["Doctor"]), createChangeTicket);
 
 // Get all pending tickets (Ops team only)
 router.get("/pending", requireRole(["Ops"]), getPendingTickets);
