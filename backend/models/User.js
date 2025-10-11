@@ -29,8 +29,7 @@ userSchema.methods.toDisplay = function () {
     email: this.email,
     profilePic: this.profilePic,
   };
-
-  export default mongoose.model("User", userSchema);
+};
 
   // Hash pswrd before saving user
   userSchema.pre("save", async function (next) {
