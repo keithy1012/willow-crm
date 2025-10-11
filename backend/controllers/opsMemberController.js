@@ -18,7 +18,7 @@ export const createOpsMember = async (req, res) => {
     const savedUser = await user.save();
 
     const opsMemberData = {
-        user: savedUser._id, // link OpsMember → User
+        user: savedUser._id, // link Ops → User
     };
 
     const opsMember = new OpsMember(opsMemberData);
