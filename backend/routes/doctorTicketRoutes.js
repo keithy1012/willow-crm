@@ -4,7 +4,7 @@ import {
   submitDoctorTicket,
   getPendingTickets,
   approveTicket,
-} from "../controllers/doctorTicketController.js";
+} from "../controllers/doctorAccountCreationTicketController.js";
 import { requireRole } from "../middleware/authMiddleware.js";
 
 
