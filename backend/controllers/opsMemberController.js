@@ -12,7 +12,7 @@ export const createOpsMember = async (req, res) => {
         password: req.body.password, // Hash before saving in production
         phoneNumber: req.body.phoneNumber,
         profilePic: req.body.profilePic,
-        role: "OpsMember",
+        role: "Ops",
     };
     const user = new User(userData);
     const savedUser = await user.save();
