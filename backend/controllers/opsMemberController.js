@@ -1,4 +1,4 @@
-import OpsMember from "../models/OpsMember";
+import OpsMember from "../models/OpsMember.js";
 
 // Create new ops member
 export const createOpsMember = async (req, res) => {

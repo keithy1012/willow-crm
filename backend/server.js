@@ -7,7 +7,7 @@ import patientRoutes from "./routes/patientRoutes.js"
 import doctorRoutes from "./routes/doctorRoutes.js"
 import doctorTicketRoutes from "./routes/doctorTicketRoutes.js"
 import patientRequestChangeTicketRoutes from "./routes/patientRequestChangeTicketRoutes.js";
-import doctorRequestChangeTicketRoutes from "backend/routes/doctorRequestChangeTicketRoutes.js"
+import doctorRequestChangeTicketRoutes from "./routes/doctorRequestChangeTicketRoutes.js"
 import opsMemberRoutes from "./routes/opsMemberRoutes.js"
 
 dotenv.config({ path: './backend/.env'});

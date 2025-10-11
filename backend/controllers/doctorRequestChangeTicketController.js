@@ -1,5 +1,5 @@
 // controllers/doctorRequestChangeTicketController.js
-import DoctorRequestTicket from "../models/DoctorRequestTicket";
+import DoctorRequestTicket from "../models/DoctorRequestTicket.js";
 
 // Create new doctor request change ticket
 export const createChangeTicket = async (req, res) => {

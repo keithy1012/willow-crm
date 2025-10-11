@@ -1,12 +1,12 @@
 // controllers/patientRequestChangeTicketController.js
-import PatientRequestTicket from "../models/PatientRequestTicket";
+import PatientRequestTicket from "../models/PatientRequestTicket.js"
 
 // Create new patient request change ticket
 export const createChangeTicket = async (req, res) => {
   try {
     const ticket = new PatientRequestTicket({
       requestedBy: req.user._id,
-      ...req.body,               
+      ...req.body,
     });
 
     await ticket.save();
