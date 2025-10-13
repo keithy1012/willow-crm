@@ -9,6 +9,7 @@ import doctorTicketRoutes from "./routes/doctorTicketRoutes.js"
 import patientRequestChangeTicketRoutes from "./routes/patientRequestChangeTicketRoutes.js";
 import doctorRequestChangeTicketRoutes from "./routes/doctorRequestChangeTicketRoutes.js"
 import opsMemberRoutes from "./routes/opsMemberRoutes.js"
+import itMemberRoutes from "./routes/itRoutes.js"
 
 dotenv.config({ path: './backend/.env'});
 connectDB();
@@ -23,6 +24,7 @@ app.use("/api/patients", patientRoutes)
 app.use("/api/doctors", doctorRoutes)
 app.use("/api/doctortickets", doctorTicketRoutes) // used to create doctor entities
 app.use("/api/opsMembers", opsMemberRoutes)
+app.use("/api/itMembers", itMemberRoutes) // used to create it entities
 app.use("/api/patientrequestchangetickets", patientRequestChangeTicketRoutes) // for patients to request changes
 app.use("/api/doctorrequestchangetickets", doctorRequestChangeTicketRoutes) // for doctors to request changes
 
