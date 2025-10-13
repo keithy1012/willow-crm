@@ -7,6 +7,7 @@ import patientRoutes from "./routes/patientRoutes.js"
 import doctorRoutes from "./routes/doctorRoutes.js"
 import doctorTicketRoutes from "./routes/doctorTicketRoutes.js"
 import opsMemberRoutes from "./routes/opsMemberRoutes.js"
+import itMemberRoutes from "./routes/itRoutes.js"
 
 dotenv.config({ path: './backend/.env'});
 connectDB();
@@ -21,6 +22,7 @@ app.use("/api/patients", patientRoutes)
 app.use("/api/doctors", doctorRoutes)
 app.use("/api/doctortickets", doctorTicketRoutes) // used to create doctor entities
 app.use("/api/opsMembers", opsMemberRoutes)
+app.use("/api/itMembers", itMemberRoutes) // used to create it entities
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
