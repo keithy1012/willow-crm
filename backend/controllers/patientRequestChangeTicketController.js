@@ -8,7 +8,6 @@ export const createChangeTicket = async (req, res) => {
       requestedBy: req.user._id,
       ...req.body,
     });
-
     await ticket.save();
     res.status(201).json({ message: "Ticket submitted successfully", ticket });
   } catch (err) {
@@ -29,7 +28,7 @@ export const getPendingTickets = async (req, res) => {
 // Get a specific ticket by id
 export const getTicketByID = async (req, res) => {
   try {
-    const ticket = await PatientRequestTicket.findOne({ ticketId: req.params.ticketId });
+    const ticket = await PatientRequestTicket.findOne({ _id: req.params.ticketId });
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
     return res.json(ticket);
   } catch (err) {
@@ -40,7 +39,7 @@ export const getTicketByID = async (req, res) => {
 // Get all tickets in Progress by a Ops member by id
 export const getInProgressTicketsByOpsId = async (req, res) => {
   try {
-    const tickets = await PatientRequestTicket.find({ responsibleMember: req.params.OpsID, status:"In Progress" });
+    const tickets = await PatientRequestTicket.find({ responsibleMember: req.params.opsId, status:"In Progress" });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
@@ -51,7 +50,7 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
 // Get all tickets (disregard status) by a Ops member by id 
 export const getAllTicketsByOpsId = async (req, res) => {
   try {
-    const tickets = await PatientRequestTicket.find({ responsibleMember: req.params.OpsID });
+    const tickets = await PatientRequestTicket.find({ responsibleMember: req.params.opsId });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
