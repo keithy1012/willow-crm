@@ -13,11 +13,7 @@ const patientSchema = new mongoose.Schema(
     },
     allergies: [String],
     medicalHistory: [String],
-    emergencyContact: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
-      phoneNumber: { type: String, required: true },
-    },
+    emergencyContact: [{ type: mongoose.Schema.Types.ObjectId, ref: "Emergencycontact" }],
   },
   { timestamps: true }
 );

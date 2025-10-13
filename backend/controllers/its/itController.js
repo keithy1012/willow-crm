@@ -1,4 +1,4 @@
-import ITMember from "../models/ITMember";
+import ITMember from "../../models/its/ITMember.js";
 
 // Create new IT member
 export const createITMember = async (req, res) => {

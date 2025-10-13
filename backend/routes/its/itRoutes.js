@@ -7,7 +7,7 @@ import {
   getITMemberById,
   deleteITMember,
   updateITMember
-} from "../controllers/itController.js";
+} from "../../controllers/its/itController.js";
 
 const router = express.Router();
 

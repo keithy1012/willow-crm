@@ -7,7 +7,7 @@ import {
   getOpsMemberById,
   deleteOpsMember,
   updateOpsMember
-} from "../controllers/opsMemberController.js";
+} from "../../controllers/ops/opsMemberController.js";
 
 const router = express.Router();
 

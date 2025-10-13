@@ -4,19 +4,22 @@ import {
   submitDoctorTicket,
   getPendingTickets,
   approveTicket,
-} from "../controllers/doctorTicketController.js";
-import { requireRole } from "../middleware/authMiddleware.js";
+  getAllTicketsByID
+} from "../../controllers/tickets/doctorAccountCreationController.js"
+import { requireRole } from "../../middleware/authMiddleware.js";
 
 
 const router = express.Router();
 
 // Submit a new doctor request ticket (Doctor applicant)
-router.post("/", requireRole(["Doctor"]), submitDoctorTicket);
+router.post("/", submitDoctorTicket);
 
 // Get all pending tickets (Ops team only)
 router.get("/pending", requireRole(["Ops"]), getPendingTickets);
 
 // Approve a doctor ticket (Ops team only)
-router.post("/:ticketId/approve", requireRole(["Ops"]), approveTicket);
+router.put("/:ticketId/approve", requireRole(["Ops"]), approveTicket);
 
+// Get all tickets completed by an Ops team member
+router.get("/completed/:userID", requireRole(["Ops"]), getAllTicketsByID);
 export default router;
