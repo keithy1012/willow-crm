@@ -1,5 +1,5 @@
-import OpsMember from "../models/OpsMember.js";
-import User from "../models/User.js"
+import OpsMember from "../../models/ops/OpsMember.js";
+import User from "../../models/users/User.js";
 // Create new ops member
 export const createOpsMember = async (req, res) => {
   try {

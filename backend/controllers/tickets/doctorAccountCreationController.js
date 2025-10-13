@@ -1,6 +1,6 @@
 // controllers/doctorTicketController.js
-import Doctoraccountcreationrequest from "../models/DoctorAccountCreationRequest.js";
-import { createDoctorFromData } from "./doctorController.js";
+import Doctoraccountcreationrequest from "../../models/tickets/DoctorAccountCreationRequest.js";
+import { createDoctorFromData } from "../doctors/doctorController.js";
 
 export const submitDoctorTicket = async (req, res) => {
   try {
