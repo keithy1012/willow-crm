@@ -1,6 +1,7 @@
 // controllers/doctorController.js
 import Doctor from "../../models/doctors/Doctor.js";
 import User from "../../models/users/User.js";
+import Availability from "../../models/doctors/Availability.js";
 
 // Create new doctor
 export const createDoctor = async (req, res) => {
@@ -68,6 +69,52 @@ export const getDoctorsBySpeciality = async (req, res) => {
     return res.json(doctors);
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+};
+
+// Gets all doctors that are availible on a certain day
+export const getDoctorsByAvailability = async (req, res) => {
+  try {
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({ error: "Date query parameter is required (e.g., ?date=2025-10-11)" });
+    }
+
+    // Convert to weekday name (e.g., "Monday")
+    const dayOfWeek = new Date(date).toLocaleString("en-US", { weekday: "long" });
+
+    // Find all availability entries for that day
+    const availabilities = await Availability.find({ day: dayOfWeek })
+      .populate({
+        path: "doctor",
+        populate: {
+          path: "user",
+          select: "firstName lastName email phoneNumber profilePic role",
+        },
+      });
+
+    if (!availabilities.length) {
+      return res.status(404).json({ message: `No doctors available on ${dayOfWeek}` });
+    }
+
+    // Extract doctors (avoid duplicates if they have multiple time slots)
+    const uniqueDoctors = [
+      ...new Map(availabilities.map((a) => [a.doctor._id.toString(), a.doctor])).values(),
+    ];
+
+    // Return the doctors and their time slots
+    res.status(200).json({
+      day: dayOfWeek,
+      total: uniqueDoctors.length,
+      doctors: uniqueDoctors,
+      slots: availabilities.map((a) => ({
+        doctor: a.doctor._id,
+        startTime: a.startTime,
+        endTime: a.endTime,
+      })),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
