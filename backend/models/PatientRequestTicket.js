@@ -4,10 +4,10 @@ import mongoose from "mongoose";
 
 const patientRequestTicketSchema = new mongoose.Schema(
   {
-    ticketId: {
-      type: String,
-      required: true,
-      unique: true,
+    requestedBy: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User", 
+        required: true 
     },
     patientName: {
       type: String,
@@ -30,11 +30,10 @@ const patientRequestTicketSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      trim: true,
     },
     additionalNotes: {
       type: String,
-      trim: true,
+      default: "No additional details"
     },
     status: {
       type: String,

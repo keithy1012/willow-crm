@@ -4,10 +4,10 @@ import mongoose from "mongoose";
 
 const doctorRequestTicketSchema = new mongoose.Schema(
   {
-    ticketId: {
-      type: String,
-      required: true,
-      unique: true,
+    requestedBy: {
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "User", 
+      required: true 
     },
     doctorName: {
       type: String,
@@ -30,11 +30,10 @@ const doctorRequestTicketSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      trim: true,
     },
     additionalNotes: {
       type: String,
-      trim: true,
+      default: "No additional details"
     },
     status: {
       type: String,
@@ -45,7 +44,7 @@ const doctorRequestTicketSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: null,
-    },
+      },
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
