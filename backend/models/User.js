@@ -1,6 +1,7 @@
 // models/User.js
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,4 +19,34 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("User", userSchema);
+// Create UserDisplay view
+userSchema.methods.toDisplay = function () {
+  return {
+    userID: this.userID,
+    firstName: this.firstName,
+    lastName: this.lastName,
+    username: this.username,
+    email: this.email,
+    profilePic: this.profilePic,
+  };
+};
+
+  // Hash pswrd before saving user
+  userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) {
+      return next();
+    }
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  // compare a given password with the stored hash
+  userSchema.methods.comparePassword = async function (candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
+  };
+  

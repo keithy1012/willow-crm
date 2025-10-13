@@ -5,7 +5,7 @@ import {
   getPendingTickets,
   approveTicket,
 } from "../controllers/doctorTicketController.js";
-import { requireRole } from "../middleware/authMiddleware.js";
+import { requireRole } from "../middleware/authorization.js";
 
 
 const router = express.Router();

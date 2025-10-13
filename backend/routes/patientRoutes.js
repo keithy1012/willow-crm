@@ -1,5 +1,6 @@
 // routes/patientRoutes.js
 import express from "express";
+import { protect } from "../middleware/authentication.js";
 import {
   createPatient,
   getAllPatients,
@@ -11,9 +12,9 @@ import {
 const router = express.Router();
 
 router.post("/", createPatient);
-router.get("/", getAllPatients);
-router.get("/:id", getPatientById);
-router.put("/:id", updatePatient);
-router.delete("/:id", deletePatient);
+router.get("/", protect, getAllPatients);
+router.get("/:id", protect, getPatientById);
+router.put("/:id", protect, updatePatient);
+router.delete("/:id", protect, deletePatient);
 
 export default router;
