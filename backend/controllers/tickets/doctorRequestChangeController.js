@@ -1,4 +1,5 @@
 // controllers/doctorRequestChangeTicketController.js
+import mongoose from "mongoose";
 import DoctorRequestTicket from "../../models/tickets/DoctorRequestTicket.js";
 
 // Create new doctor request change ticket
@@ -28,7 +29,7 @@ export const getPendingTickets = async (req, res) => {
 // Get a specific ticket by id
 export const getTicketByID = async (req, res) => {
   try {
-    const ticket = await DoctorRequestTicket.findOne({ _id: req.params.ticketId });
+    const ticket = await DoctorRequestTicket.findById({ _id: req.params.id });
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
     return res.json(ticket);
   } catch (err) {
@@ -39,7 +40,8 @@ export const getTicketByID = async (req, res) => {
 // Get all tickets in Progress by a Ops member by id
 export const getInProgressTicketsByOpsId = async (req, res) => {
   try {
-    const tickets = await DoctorRequestTicket.find({ responsibleMember: req.params.opsId, status:"In Progress" });
+    const opsId = new mongoose.Types.ObjectId(req.params.opsId);
+    const tickets = await DoctorRequestTicket.find({ responsibleMember: opsId, status:"In Progress" });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
@@ -50,7 +52,8 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
 // Get all tickets (disregard status) by a Ops member by id 
 export const getAllTicketsByOpsId = async (req, res) => {
   try {
-    const tickets = await DoctorRequestTicket.find({ responsibleMember: req.params.opsId });
+    const opsId = new mongoose.Types.ObjectId(req.params.opsId);
+    const tickets = await DoctorRequestTicket.find({ responsibleMember: opsId });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
