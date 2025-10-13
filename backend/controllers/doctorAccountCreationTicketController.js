@@ -6,8 +6,7 @@ import { createDoctor } from "./doctorController.js";
 export const submitDoctorTicket = async (req, res) => {
   try {
     const ticket = new Doctoraccountcreationrequest({
-      requestedBy: req.user._id,
-      ...req.body,               
+      ...req.body          
     });
 
     await ticket.save();
@@ -19,7 +18,16 @@ export const submitDoctorTicket = async (req, res) => {
 
 export const getPendingTickets = async (req, res) => {
   try {
-    const tickets = await Doctoraccountcreationrequest.find({ status: "Pending" }).populate("requestedBy", "firstName lastName email");
+    const tickets = await Doctoraccountcreationrequest.find({ status: "Pending" });
+    res.json(tickets);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getAllTicketsByID = async (req, res) => {
+  try {
+    const tickets = await Doctoraccountcreationrequest.find({ reviewedBy: req.params.userID });
     res.json(tickets);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -33,18 +41,19 @@ export const approveTicket = async (req, res) => {
 
     // Build the doctor payload for createDoctor
     const doctorData = {
-      user: ticket.user,
       firstName: ticket.firstName,
       lastName: ticket.lastName,
       email: ticket.email,
+      username: ticket.username,
+      password: ticket.password,
       phoneNumber: ticket.phoneNumber,
+      profilePic: ticket.profilePic,
       bioContent: ticket.bioContent,
       education: ticket.education,
       graduationDate: ticket.graduationDate,
       speciality: ticket.speciality,
       availability: ticket.availability,
-      role: "Doctor",
-      password: "temporaryPassword123",
+      role: "Doctor"
     };
 
     // Call doctorController.createDoctor
