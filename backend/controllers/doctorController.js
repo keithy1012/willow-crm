@@ -70,3 +70,33 @@ export const getDoctorsBySpeciality = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+// Creates a Doctor from the Doctor Acocunt Creation Ticket
+export const createDoctorFromData = async (doctorData) => {
+  // Create a user entry first
+  const user = new User({
+    firstName: doctorData.firstName,
+    lastName: doctorData.lastName,
+    email: doctorData.email,
+    username: doctorData.username,
+    gender: doctorData.gender,
+    password: doctorData.password,
+    phoneNumber: doctorData.phoneNumber,
+    profilePic: doctorData.profilePic,
+    role: "Doctor",
+  });
+  const savedUser = await user.save();
+
+  // Create the doctor entry and link to the user
+  const doctor = new Doctor({
+    user: savedUser._id,
+    bioContent: doctorData.bioContent,
+    education: doctorData.education,
+    graduationDate: doctorData.graduationDate,
+    speciality: doctorData.speciality,
+    availability: doctorData.availability,
+  });
+  const savedDoctor = await doctor.save();
+
+  return { savedUser, savedDoctor };
+};
