@@ -1,13 +1,11 @@
 // controllers/doctorTicketController.js
-import Doctorrequestticket from "../models/DoctorTicketRequest.js";
-import { createDoctor } from "./doctorController.js";
-
+import Doctoraccountcreationrequest from "../../models/tickets/DoctorAccountCreationRequest.js";
+import { createDoctorFromData } from "../doctors/doctorController.js";
 
 export const submitDoctorTicket = async (req, res) => {
   try {
-    const ticket = new Doctorrequestticket({
-      requestedBy: req.user._id,
-      ...req.body,               
+    const ticket = new Doctoraccountcreationrequest({
+      ...req.body          
     });
 
     await ticket.save();
@@ -19,56 +17,54 @@ export const submitDoctorTicket = async (req, res) => {
 
 export const getPendingTickets = async (req, res) => {
   try {
-    const tickets = await Doctorrequestticket.find({ status: "Pending" }).populate("requestedBy", "firstName lastName email");
+    const tickets = await Doctoraccountcreationrequest.find({ status: "Pending" });
     res.json(tickets);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+export const getAllTicketsByID = async (req, res) => {
+  try {
+    const tickets = await Doctoraccountcreationrequest.find({ reviewedBy: req.params.userID });
+    res.json(tickets);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 export const approveTicket = async (req, res) => {
   try {
-    const ticket = await Doctorrequestticket.findById(req.params.ticketId);
+    const ticket = await Doctoraccountcreationrequest.findById(req.params.ticketId);
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
 
-    // Build the doctor payload for createDoctor
+    // Prepare the doctor data from the ticket
     const doctorData = {
-      user: ticket.user,
       firstName: ticket.firstName,
       lastName: ticket.lastName,
       email: ticket.email,
+      username: ticket.username,
+      password: ticket.password,
       phoneNumber: ticket.phoneNumber,
+      profilePic: ticket.profilePic,
       bioContent: ticket.bioContent,
       education: ticket.education,
       graduationDate: ticket.graduationDate,
       speciality: ticket.speciality,
       availability: ticket.availability,
-      role: "Doctor",
-      password: "temporaryPassword123",
     };
 
-    // Call doctorController.createDoctor
-    const fakeReq = { body: doctorData };
-    let doctorResponse;
+    const { savedUser, savedDoctor } = await createDoctorFromData(doctorData);
 
-    const fakeRes = {
-      status: (code) => ({
-        json: (data) => {
-          doctorResponse = { code, data };
-        },
-      }),
-    };
-
-    await createDoctor(fakeReq, fakeRes);
-
-    // Update the ticket status
     ticket.status = "Approved";
     ticket.reviewedBy = req.user._id;
     await ticket.save();
 
-    res.json({
+    res.status(200).json({
       message: "Doctor approved and account created",
-      doctor: doctorResponse?.data,
+      user: savedUser,
+      doctor: savedDoctor,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

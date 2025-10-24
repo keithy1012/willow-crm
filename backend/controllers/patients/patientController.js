@@ -1,6 +1,6 @@
 // controllers/patientController.js
-import Patient from "../models/Patient.js";
-import User from "../models/User.js";
+import Patient from "../../models/patients/Patient.js";
+import User from "../../models/users/User.js"
 // Create new patient
 export const createPatient = async (req, res) => {
   try {
