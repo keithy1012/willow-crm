@@ -19,7 +19,7 @@ export const createDoctor = async (req, res) => {
     };
     const user = new User(userData);
     const savedUser = await user.save();
-  
+
     const doctorData = {
       user: savedUser._id, // link Doctor to User
       bioContent: req.body.bioContent,
@@ -40,7 +40,54 @@ export const createDoctor = async (req, res) => {
   }
 };
 
-// Get All Doctors 
+// search doctors by name only
+export const searchDoctorsByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ error: "Name parameter is required" });
+    }
+
+    // Find all doctors and populate user info
+    const doctors = await Doctor.find()
+      .populate("user", "firstName lastName email phoneNumber profilePic")
+      .populate("availability");
+
+    const filteredDoctors = doctors.filter((doctor) => {
+      const fullName =
+        `${doctor.user.firstName} ${doctor.user.lastName}`.toLowerCase();
+      const firstName = doctor.user.firstName.toLowerCase();
+      const lastName = doctor.user.lastName.toLowerCase();
+      const searchTerm = name.toLowerCase();
+      return (
+        fullName.includes(searchTerm) ||
+        firstName.includes(searchTerm) ||
+        lastName.includes(searchTerm)
+      );
+    });
+
+    const result = filteredDoctors.map((doctor) => ({
+      _id: doctor._id,
+      user: doctor.user,
+      bioContent: doctor.bioContent,
+      education: doctor.education,
+      graduationDate: doctor.graduationDate,
+      speciality: doctor.speciality,
+      availability: doctor.availability,
+    }));
+
+    return res.json({
+      searchTerm: name,
+      count: result.length,
+      doctors: result,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Get All Doctors
 export const getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find().populate(
@@ -53,17 +100,20 @@ export const getAllDoctors = async (req, res) => {
   }
 };
 
-
 // Get all doctors by speciality
 export const getDoctorsBySpeciality = async (req, res) => {
   try {
-    const doctors = await Doctor.find({ speciality: req.params.speciality }).populate(
+    const doctors = await Doctor.find({
+      speciality: req.params.speciality,
+    }).populate(
       "user",
       "firstName lastName email username gender phoneNumber profilePic role"
     );
 
     if (!doctors || doctors.length === 0) {
-      return res.status(404).json({ error: "No doctors found for this speciality" });
+      return res
+        .status(404)
+        .json({ error: "No doctors found for this speciality" });
     }
 
     return res.json(doctors);

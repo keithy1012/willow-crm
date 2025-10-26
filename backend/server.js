@@ -10,6 +10,7 @@ import itMemberRoutes from "./routes/its/itRoutes.js"
 import doctorAccountCreationRoutes from "./routes/tickets/doctorAccountCreationRoutes.js"
 import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRoutes.js";
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js"
+import availabilityRoutes from "./routes/availabilityRoutes.js"  
 
 dotenv.config({ path: './backend/.env'});
 connectDB();
@@ -28,7 +29,9 @@ app.use("/api/itMembers", itMemberRoutes)
 app.use("/api/tickets/doctorCreate", doctorAccountCreationRoutes); // used to create doctor entities
 app.use("/api/tickets/patientChange", patientRequestChangeRoutes); // for patients to request changes
 app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes); // for doctors to request changes
+app.use("/api/availability", availabilityRoutes);  
+
 
 app.listen(process.env.PORT || 5000, () => {
-  console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+  console.log(`Server running on port ${process.env.PORT || 5000}`);
 });
