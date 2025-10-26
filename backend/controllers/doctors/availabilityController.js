@@ -1,6 +1,5 @@
 import Availability from "../../models/doctors/Availability.js";
-import Doctor from "../../models/doctors/Doctor.js";
-
+import Doctor from "../../../models/doctors/doctors/Doctor.js";
 export const createRecurringAvailability = async (req, res) => {
   try {
     const { doctorId } = req.params;
@@ -250,121 +249,155 @@ export const searchDoctorsByDateTime = async (req, res) => {
   try {
     const { date, name } = req.query;
 
-    if (!date) {
-      return res.status(400).json({ error: "Date parameter is required" });
+    let dayOfWeek = null;
+    let requestedDate = null;
+
+    if (date) {
+      const [year, month, day] = date.split("-").map(Number);
+      requestedDate = new Date(year, month - 1, day);
+      dayOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ][requestedDate.getDay()];
     }
 
-    const [year, month, day] = date.split("-").map(Number);
-    const requestedDate = new Date(year, month - 1, day);
-
-    const dayOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][requestedDate.getDay()];
-
-    // Build the search pipeline
     let availableDoctors = [];
+    if (!date && name) {
+      // Get all doctors matching the name
+      const allAvailabilities = await Availability.find({
+        isActive: true,
+      }).populate({
+        path: "doctor",
+        populate: {
+          path: "user",
+          select: "firstName lastName email phoneNumber profilePic",
+        },
+      });
 
-    // 1. Find all single date availabilities for this specific date
-    const singleDateAvails = await Availability.find({
-      type: "Single",
-      date: requestedDate,
-      isActive: true,
-      "timeSlots.0": { $exists: true }, // Has at least one time slot
-    }).populate({
-      path: "doctor",
-      populate: {
-        path: "user",
-        select: "firstName lastName email phoneNumber profilePic",
-      },
-    });
+      const doctorMap = new Map();
 
-    // 2. Find all recurring availabilities for this day of week
-    const recurringAvails = await Availability.find({
-      type: "Recurring",
-      dayOfWeek: dayOfWeek,
-      isActive: true,
-    }).populate({
-      path: "doctor",
-      populate: {
-        path: "user",
-        select: "firstName lastName email phoneNumber profilePic",
-      },
-    });
+      for (const avail of allAvailabilities) {
+        if (!avail.doctor) continue;
 
-    // Track which doctors we've already added (single date takes priority)
-    const doctorMap = new Map();
+        const fullName =
+          `${avail.doctor.user.firstName} ${avail.doctor.user.lastName}`.toLowerCase();
+        const searchTerm = name.toLowerCase();
 
-    // Process single date availabilities first (higher priority)
-    for (const avail of singleDateAvails) {
-      if (!avail.doctor) continue;
-
-      let availableSlots = avail.timeSlots.filter((slot) => !slot.isBooked);
-
-      if (availableSlots.length > 0) {
-        const doctorId = avail.doctor._id.toString();
-        doctorMap.set(doctorId, {
-          doctor: avail.doctor,
-          availabilityType: "Single",
-          timeSlots: availableSlots,
-        });
+        if (fullName.includes(searchTerm)) {
+          const doctorId = avail.doctor._id.toString();
+          if (!doctorMap.has(doctorId)) {
+            doctorMap.set(doctorId, {
+              doctor: avail.doctor,
+              availabilityType: avail.type,
+              timeSlots: avail.timeSlots.filter((slot) => !slot.isBooked),
+            });
+          }
+        }
       }
-    }
 
-    // Process recurring availabilities (only if doctor not already in map)
-    for (const avail of recurringAvails) {
-      if (!avail.doctor) continue;
-
-      const doctorId = avail.doctor._id.toString();
-
-      // Skip if this doctor already has a single date entry
-      if (doctorMap.has(doctorId)) continue;
-
-      // Check if doctor has a blocking entry for this date
-      const hasBlockingEntry = await Availability.findOne({
-        doctor: doctorId,
+      availableDoctors = Array.from(doctorMap.values());
+    } else if (date) {
+      // 1. Find all single date availabilities for this specific date
+      const singleDateAvails = await Availability.find({
         type: "Single",
         date: requestedDate,
         isActive: true,
-        timeSlots: { $size: 0 }, // Empty slots means blocked
+        "timeSlots.0": { $exists: true }, // Has at least one time slot
+      }).populate({
+        path: "doctor",
+        populate: {
+          path: "user",
+          select: "firstName lastName email phoneNumber profilePic",
+        },
       });
 
-      if (hasBlockingEntry) continue;
+      // 2. Find all recurring availabilities for this day of week
+      const recurringAvails = await Availability.find({
+        type: "Recurring",
+        dayOfWeek: dayOfWeek,
+        isActive: true,
+      }).populate({
+        path: "doctor",
+        populate: {
+          path: "user",
+          select: "firstName lastName email phoneNumber profilePic",
+        },
+      });
 
-      let availableSlots = avail.timeSlots.filter((slot) => !slot.isBooked);
+      // Track which doctors we've already added (single date takes priority)
+      const doctorMap = new Map();
 
-      // Filter by time if specified
-      if (availableSlots.length > 0) {
-        doctorMap.set(doctorId, {
-          doctor: avail.doctor,
-          availabilityType: "Recurring",
-          timeSlots: availableSlots,
+      // Process single date availabilities first (higher priority)
+      for (const avail of singleDateAvails) {
+        if (!avail.doctor) continue;
+
+        let availableSlots = avail.timeSlots.filter((slot) => !slot.isBooked);
+
+        if (availableSlots.length > 0) {
+          const doctorId = avail.doctor._id.toString();
+          doctorMap.set(doctorId, {
+            doctor: avail.doctor,
+            availabilityType: "Single",
+            timeSlots: availableSlots,
+          });
+        }
+      }
+
+      // Process recurring availabilities (only if doctor not already in map)
+      for (const avail of recurringAvails) {
+        if (!avail.doctor) continue;
+
+        const doctorId = avail.doctor._id.toString();
+
+        // Skip if this doctor already has a single date entry
+        if (doctorMap.has(doctorId)) continue;
+
+        // Check if doctor has a blocking entry for this date
+        const hasBlockingEntry = await Availability.findOne({
+          doctor: doctorId,
+          type: "Single",
+          date: requestedDate,
+          isActive: true,
+          timeSlots: { $size: 0 }, // Empty slots means blocked
+        });
+
+        if (hasBlockingEntry) continue;
+
+        let availableSlots = avail.timeSlots.filter((slot) => !slot.isBooked);
+
+        // Filter by time if specified
+        if (availableSlots.length > 0) {
+          doctorMap.set(doctorId, {
+            doctor: avail.doctor,
+            availabilityType: "Recurring",
+            timeSlots: availableSlots,
+          });
+        }
+      }
+
+      availableDoctors = Array.from(doctorMap.values());
+
+      // Filter by name if provided
+      if (name) {
+        const searchTerm = name.toLowerCase();
+        availableDoctors = availableDoctors.filter((item) => {
+          const fullName =
+            `${item.doctor.user.firstName} ${item.doctor.user.lastName}`.toLowerCase();
+          const firstName = item.doctor.user.firstName.toLowerCase();
+          const lastName = item.doctor.user.lastName.toLowerCase();
+
+          return (
+            fullName.includes(searchTerm) ||
+            firstName.includes(searchTerm) ||
+            lastName.includes(searchTerm)
+          );
         });
       }
-    }
-
-    availableDoctors = Array.from(doctorMap.values());
-
-    // Filter by name if provided
-    if (name) {
-      const searchTerm = name.toLowerCase();
-      availableDoctors = availableDoctors.filter((item) => {
-        const fullName =
-          `${item.doctor.user.firstName} ${item.doctor.user.lastName}`.toLowerCase();
-        const firstName = item.doctor.user.firstName.toLowerCase();
-        const lastName = item.doctor.user.lastName.toLowerCase();
-
-        return (
-          fullName.includes(searchTerm) ||
-          firstName.includes(searchTerm) ||
-          lastName.includes(searchTerm)
-        );
-      });
     }
 
     return res.json({

@@ -10,7 +10,7 @@ import itMemberRoutes from "./routes/its/itRoutes.js"
 import doctorAccountCreationRoutes from "./routes/tickets/doctorAccountCreationRoutes.js"
 import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRoutes.js";
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js"
-import availabilityRoutes from "./routes/availabilityRoutes.js"  
+import availabilityRoutes from "./routes/doctors/availabilityRoutes.js"  
 
 dotenv.config({ path: './backend/.env'});
 connectDB();
