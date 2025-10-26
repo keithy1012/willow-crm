@@ -1,5 +1,5 @@
 import Availability from "../../models/doctors/Availability.js";
-import Doctor from "../models/Doctor.js";
+import Doctor from "../../models/doctors/Doctor.js";
 
 export const createRecurringAvailability = async (req, res) => {
   try {
