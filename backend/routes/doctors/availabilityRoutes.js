@@ -6,7 +6,7 @@ import {
   removeTimeSlot,
   getDoctorAvailabilityForDate,
   searchDoctorsByDateTime,
-} from "../controllers/doctors/availabilityController.js";
+} from "../../controllers/doctors/availabilityController.js";
 
 const router = express.Router();
 

@@ -5,7 +5,7 @@ import { createDoctorFromData } from "../doctors/doctorController.js";
 export const submitDoctorTicket = async (req, res) => {
   try {
     const ticket = new Doctoraccountcreationrequest({
-      ...req.body          
+      ...req.body,
     });
 
     await ticket.save();
@@ -17,7 +17,9 @@ export const submitDoctorTicket = async (req, res) => {
 
 export const getPendingTickets = async (req, res) => {
   try {
-    const tickets = await Doctoraccountcreationrequest.find({ status: "Pending" });
+    const tickets = await Doctoraccountcreationrequest.find({
+      status: "Pending",
+    });
     res.json(tickets);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -26,17 +28,20 @@ export const getPendingTickets = async (req, res) => {
 
 export const getAllTicketsByID = async (req, res) => {
   try {
-    const tickets = await Doctoraccountcreationrequest.find({ reviewedBy: req.params.userID });
+    const tickets = await Doctoraccountcreationrequest.find({
+      reviewedBy: req.params.userID,
+    });
     res.json(tickets);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-
 export const approveTicket = async (req, res) => {
   try {
-    const ticket = await Doctoraccountcreationrequest.findById(req.params.ticketId);
+    const ticket = await Doctoraccountcreationrequest.findById(
+      req.params.ticketId
+    );
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
 
     // Prepare the doctor data from the ticket
@@ -52,7 +57,6 @@ export const approveTicket = async (req, res) => {
       education: ticket.education,
       graduationDate: ticket.graduationDate,
       speciality: ticket.speciality,
-      availability: ticket.availability,
     };
 
     const { savedUser, savedDoctor } = await createDoctorFromData(doctorData);
