@@ -1,21 +1,20 @@
 // routes/doctorRoutes.js
-
 import express from "express";
 import {
-  createDoctor,
   getAllDoctors,
   getDoctorsBySpeciality,
-} from "../controllers/doctorController.js";
+  getDoctorsByAvailability
+} from "../../controllers/doctors/doctorController.js";
 
 const router = express.Router();
-
-// Creates a Doctor
-router.post("/", createDoctor);
 
 // Get all doctors
 router.get("/", getAllDoctors);
 
 // Get doctors for a speciality
 router.get("/speciality/:speciality", getDoctorsBySpeciality);
+
+// Get doctors by availability
+router.get("/availability", getDoctorsByAvailability)
 
 export default router;

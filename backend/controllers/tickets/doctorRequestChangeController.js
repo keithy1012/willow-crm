@@ -1,5 +1,6 @@
 // controllers/doctorRequestChangeTicketController.js
-import DoctorRequestTicket from "../models/DoctorRequestTicket.js";
+import mongoose from "mongoose";
+import DoctorRequestTicket from "../../models/tickets/DoctorRequestTicket.js";
 
 // Create new doctor request change ticket
 export const createChangeTicket = async (req, res) => {
@@ -8,7 +9,6 @@ export const createChangeTicket = async (req, res) => {
       requestedBy: req.user._id,
       ...req.body,               
     });
-
     await ticket.save();
     res.status(201).json({ message: "Ticket submitted successfully", ticket });
   } catch (err) {
@@ -29,7 +29,7 @@ export const getPendingTickets = async (req, res) => {
 // Get a specific ticket by id
 export const getTicketByID = async (req, res) => {
   try {
-    const ticket = await DoctorRequestTicket.findOne({ _id: req.params.ticketId });
+    const ticket = await DoctorRequestTicket.findById({ _id: req.params.id });
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
     return res.json(ticket);
   } catch (err) {
@@ -40,7 +40,8 @@ export const getTicketByID = async (req, res) => {
 // Get all tickets in Progress by a Ops member by id
 export const getInProgressTicketsByOpsId = async (req, res) => {
   try {
-    const tickets = await DoctorRequestTicket.find({ responsibleMember: req.params.opsId, status:"In Progress" });
+    const opsId = new mongoose.Types.ObjectId(req.params.opsId);
+    const tickets = await DoctorRequestTicket.find({ responsibleMember: opsId, status:"In Progress" });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
@@ -51,7 +52,8 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
 // Get all tickets (disregard status) by a Ops member by id 
 export const getAllTicketsByOpsId = async (req, res) => {
   try {
-    const tickets = await DoctorRequestTicket.find({ responsibleMember: req.params.opsId });
+    const opsId = new mongoose.Types.ObjectId(req.params.opsId);
+    const tickets = await DoctorRequestTicket.find({ responsibleMember: opsId });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
@@ -73,7 +75,6 @@ export const startTicketProgress = async (req, res) => {
     ticket.status = "In Progress";
     ticket.responsibleMember = req.user._id; 
     await ticket.save();
-
     res.json({
       message: "Ticket moved to In Progress",
       ticket,
@@ -94,12 +95,10 @@ export const completeTicket = async (req, res) => {
     if (!ticket) {
       return res.status(404).json({ error: "Ticket not found or not in progress." });
     }
-
     ticket.status = "Completed";
     ticket.approvedBy = req.user._id; 
     ticket.dateCompleted = new Date();
     await ticket.save();
-
     res.json({
       message: "Ticket marked as Completed",
       ticket,

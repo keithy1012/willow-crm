@@ -8,7 +8,7 @@ const doctorTicketSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
     username: { type: String, unique: true },
-    password: { type: String, required: true, select: false },
+    password: { type: String, required: true},
     gender: { type: String, enum: ["Male", "Female", "Other"] },
     bioContent: { type: String, required: true },
     education: { type: String, required: true },
