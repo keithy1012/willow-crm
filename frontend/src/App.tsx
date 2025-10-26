@@ -13,6 +13,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from "./Onboarding/Landing.tsx";
 import SignUp1 from "./Onboarding/SignUp1.tsx"; 
 import SignUp2 from "./Onboarding/SignUp2.tsx"; 
+import SignUp3 from "./Onboarding/SignUp3.tsx";
+
 function App() {
   return (
     <SignupProvider>
@@ -21,6 +23,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/signup1" element={<SignUp1 />} />
           <Route path="/signup2" element={<SignUp2 />} />
+          <Route path="/signup3" element={<SignUp3 />} />
         </Routes>
       </Router>
     </SignupProvider>
