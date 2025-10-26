@@ -8,13 +8,17 @@ import LongTextArea from "./components/input/LongTextArea.tsx";
 import SearchBar from "./components/input/SearchBar.tsx";
 import Dashboard from "./Patients/Dashboard.tsx";
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Landing from "./Onboarding/Landing.tsx";
+import SignUp1 from "./Onboarding/SignUp1.tsx"; 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Dashboard />
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/signup1" element={<SignUp1 />} />
+      </Routes>
+    </Router>
   );
 }
 
