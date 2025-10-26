@@ -15,6 +15,7 @@ module.exports = {
         success: "#38AF5C",
         error: "#A62525", 
         stroke: "#E9E9E9", 
+        darkerStroke: "#C8C8C8"
       },
       fontFamily: {
         sans: ['DM Sans', 'system-ui', 'sans-serif'],
