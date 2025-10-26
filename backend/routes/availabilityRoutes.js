@@ -5,8 +5,8 @@ import {
   removeAvailabilityForDate,
   removeTimeSlot,
   getDoctorAvailabilityForDate,
-  searchDoctorsByDateTime
-} from "../controllers/availabilityController.js";
+  searchDoctorsByDateTime,
+} from "../controllers/doctors/availabilityController.js";
 
 const router = express.Router();
 
@@ -24,4 +24,4 @@ router.get("/doctor/:doctorId", getDoctorAvailabilityForDate);
 // Search
 router.get("/search", searchDoctorsByDateTime);
 
-export default router; 
+export default router;

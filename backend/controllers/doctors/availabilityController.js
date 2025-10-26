@@ -1,4 +1,4 @@
-import Availability from "../models/Availability.js";
+import Availability from "../../models/doctors/Availability.js";
 import Doctor from "../models/Doctor.js";
 
 export const createRecurringAvailability = async (req, res) => {
