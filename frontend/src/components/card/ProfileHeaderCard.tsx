@@ -18,10 +18,10 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
   return (
     <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-stroke">
       <div className="flex items-center space-x-3">
-        <ProfileAvatar imageUrl={profilePic} name={name} size={64} />
+        <ProfileAvatar imageUrl={profilePic} name={name} size={48} />
         <div className="flex flex-col justify-center">
-          <h2 className="text-lg text-primaryText">{name}</h2>
-          <p className="text-sm text-secondaryText">@{username}</p>
+          <h2 className="text-md text-primaryText">{name}</h2>
+          <p className="text-xs text-secondaryText">@{username}</p>
         </div>
       </div>
 
