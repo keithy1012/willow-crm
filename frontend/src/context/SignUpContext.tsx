@@ -8,7 +8,12 @@ interface SignupData {
   sex: string;
   username: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
+  birthdate: string,
+  street: string,
+  city: string,
+  state: string,
+  zipcode: string
 }
 
 interface SignupContextValue {
@@ -28,6 +33,11 @@ export const SignupProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     username: "",
     password: "",
     confirmPassword: "",
+    birthdate:"",
+    street:"",
+    city:"",
+    state:"",
+    zipcode:""
   });
 
   const setSignupData = (data: Partial<SignupData>) => {

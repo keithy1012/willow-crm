@@ -14,7 +14,8 @@ import Landing from "./Onboarding/Landing.tsx";
 import SignUp1 from "./Onboarding/SignUp1.tsx"; 
 import SignUp2 from "./Onboarding/SignUp2.tsx"; 
 import SignUp3 from "./Onboarding/SignUp3.tsx";
-
+import RollSelection from "./Onboarding/RollSelection.tsx";
+import PatientOnboarding1 from "./Onboarding/Patient/PatientOnboarding1.tsx";
 function App() {
   return (
     <SignupProvider>
@@ -24,6 +25,8 @@ function App() {
           <Route path="/signup1" element={<SignUp1 />} />
           <Route path="/signup2" element={<SignUp2 />} />
           <Route path="/signup3" element={<SignUp3 />} />
+          <Route path="/roleselection" element={<RollSelection />} />
+          <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
         </Routes>
       </Router>
     </SignupProvider>

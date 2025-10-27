@@ -39,7 +39,7 @@ const SignUp3: React.FC = () => {
   const handleSubmit = () => {
     if (!validate()) return;
     console.log("Final signup data:", signupData);
-    navigate("/done");
+    navigate("/roleselection");
   };
 
   return (
