@@ -1,22 +1,22 @@
-// This file defines the routes related to messaging conversations. 
-// It exports functions to handle HTTP requests related to conversations.
+// backend/routes/messaging/conversations.js
+router.get("/conversations", authMiddleware, async (req, res) => {
+  const conversations = await Conversation.find({
+    participants: req.user.id,
+  }).populate("participants lastMessage");
+  res.json(conversations);
+});
 
-const express = require('express');
-const router = express.Router();
-const MessagesController = require('../../controllers/messagesController');
+router.post("/conversations", authMiddleware, async (req, res) => {
+  const { recipientId } = req.body;
+  // Create conversation logic
+});
 
-const messagesController = new MessagesController();
-
-// Route to get all conversations
-router.get('/', messagesController.getAllConversations);
-
-// Route to create a new conversation
-router.post('/', messagesController.createConversation);
-
-// Route to get a specific conversation by ID
-router.get('/:id', messagesController.getConversationById);
-
-// Route to delete a conversation
-router.delete('/:id', messagesController.deleteConversation);
-
-module.exports = router;
+// backend/routes/messaging/messages.js
+router.get("/messages/:conversationId", authMiddleware, async (req, res) => {
+  const messages = await Message.find({
+    conversation: req.params.conversationId,
+  })
+    .populate("sender")
+    .sort("createdAt");
+  res.json(messages);
+});
