@@ -63,7 +63,7 @@ const validate = () => {
   const handleSubmit = () => {
     if (!validate()) return;
     console.log("Final signup data:", signupData);
-    navigate("/roleselection");
+    navigate("/patientonboarding2");
   };
 
   return (
@@ -129,7 +129,7 @@ const validate = () => {
 
         {/* Finish */}
         <div className="mt-6 w-full flex justify-center">
-          <PrimaryButton text="Finish" variant="primary" size="small" onClick={handleSubmit} />
+          <PrimaryButton text="Next" variant="primary" size="small" onClick={handleSubmit} />
         </div>
       </div>
     </div>

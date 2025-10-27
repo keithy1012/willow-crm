@@ -1,6 +1,7 @@
 // controllers/patientController.js
 import Patient from "../../models/patients/Patient.js";
 import User from "../../models/users/User.js"
+import EmergencyContact from "../../models/patients/EmergencyContact.js"
 // Create new patient
 export const createPatient = async (req, res) => {
   try {
@@ -18,14 +19,22 @@ export const createPatient = async (req, res) => {
     const user = new User(userData);
     const savedUser = await user.save();
   
+    const emergencycontactData = {
+      name: req.body.ec_name,
+      phoneNumber: req.body.ec_phone,
+      relationship: req.body.ec_relationship
+    }
+    const newContact = new EmergencyContact(emergencycontactData)
+    const savedContact = await newContact.save(); 
+
     const patientData = {
-      user: savedUser._id, // link Patient → User
-      birthday: req.body.birthday,
+      user: savedUser._id,
+      birthday: req.body.birthdate,
       address: req.body.address,
       bloodtype: req.body.bloodtype,
       allergies: req.body.allergies,
       medicalHistory: req.body.medicalHistory,
-      emergencyContact: req.body.emergencyContact,
+      emergencyContact: savedContact._id
     };
 
     const patient = new Patient(patientData);

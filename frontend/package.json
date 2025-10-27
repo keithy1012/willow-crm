@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "http://localhost:5050",
   "dependencies": {
     "@fontsource/dm-sans": "^5.2.8",
     "@phosphor-icons/react": "^2.1.10",
