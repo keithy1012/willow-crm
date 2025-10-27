@@ -1,5 +1,4 @@
-import Doctor from "../../../../backend/models/doctors/Doctor";
-import PrimaryButton from "../buttons/PrimaryButton.tsx";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface DoctorResultCardProps {
   doctorId: string;

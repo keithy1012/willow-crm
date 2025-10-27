@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { X, FirstAid } from "@phosphor-icons/react";
-import PrimaryButton from "../buttons/PrimaryButton.tsx";
-import LongTextArea from "../input/LongTextArea.tsx";
+import { X, FirstAid } from "phosphor-react";
+import PrimaryButton from "../buttons/PrimaryButton";
+import LongTextArea from "../input/LongTextArea";
 
 interface AppointmentBookingModalProps {
   isOpen: boolean;

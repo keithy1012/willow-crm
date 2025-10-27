@@ -1,5 +1,5 @@
-import { Pill } from "@phosphor-icons/react";
-import PrimaryButton from "../buttons/PrimaryButton.tsx";
+import { Pill } from "phosphor-react";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface MedicationCardProps {
   medication: string;

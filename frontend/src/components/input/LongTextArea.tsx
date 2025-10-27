@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PrimaryButton from "../buttons/PrimaryButton.tsx";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface LongTextAreaProps {
   placeholder: string;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface SidebarItemProps {
   text: string;
@@ -13,36 +13,29 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isActive = false,
   onClick,
 }) => {
-  const [isClicked, setIsClicked] = useState(isActive);
-
-  const handleClick = () => {
-    setIsClicked(!isClicked);
-    onClick?.();
-  };
-
   return (
     <div
       className={`
         relative rounded-lg w-full h-10 flex items-center gap-3
         text-left text-base text-black cursor-pointer transition-all duration-200 px-2 py-2
         ${
-          isClicked
+          isActive
             ? "shadow-sm bg-foreground border border-stroke"
             : "bg-transparent hover:bg-foreground hover:border hover:border-stroke hover:shadow-sm"
         }
       `}
-      onClick={handleClick}
+      onClick={onClick} // just call the parent's click handler
     >
       <div className="w-4 h-5 relative flex items-center justify-center">
         {IconComponent ? (
           <IconComponent
             size={16}
-            className={isClicked ? "text-primary" : "text-primaryText"}
+            className={isActive ? "text-primary" : "text-primaryText"}
           />
         ) : (
           <div
             className={`w-4 h-4 rounded ${
-              isClicked ? "bg-primary" : "bg-primaryText"
+              isActive ? "bg-primary" : "bg-primaryText"
             }`}
             style={{
               maskSize: "contain",
