@@ -9,6 +9,9 @@ interface LongTextAreaProps {
   className?: string;
   value?: string;
   onChange?: (text: string) => void;
+  minHeight?: string | number;
+  maxHeight?: string | number;
+  bgColor?: string;
 }
 
 const LongTextArea: React.FC<LongTextAreaProps> = ({
@@ -19,6 +22,9 @@ const LongTextArea: React.FC<LongTextAreaProps> = ({
   className = "",
   value = "",
   onChange,
+  minHeight = "50px",
+  maxHeight = "200px",
+  bgColor = "bg-foreground",
 }) => {
   const [text, setText] = useState(value);
 
@@ -29,9 +35,7 @@ const LongTextArea: React.FC<LongTextAreaProps> = ({
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
     setText(newText);
-    if (onChange) {
-      onChange(newText);
-    }
+    if (onChange) onChange(newText);
   };
 
   const handleSubmit = () => {
@@ -49,7 +53,7 @@ const LongTextArea: React.FC<LongTextAreaProps> = ({
 
   return (
     <div
-      className={`bg-foreground border border-stroke rounded-lg shadow-sm p-4 ${className}`}
+      className={`border border-stroke rounded-lg shadow-sm p-4 ${bgColor} ${className}`}
     >
       <div className="flex flex-col gap-4">
         <textarea
@@ -57,8 +61,8 @@ const LongTextArea: React.FC<LongTextAreaProps> = ({
           value={text}
           onChange={handleTextChange}
           onKeyDown={handleKeyPress}
-          className="w-full min-h-[50px] max-h-[100px] bg-transparent resize-none outline-none text-primaryText placeholder-secondaryText text-base"
-          rows={5}
+          className={`w-full bg-transparent resize-none outline-none text-primaryText placeholder-secondaryText text-base`}
+          style={{ minHeight, maxHeight }}
         />
         {button && (
           <div className="flex justify-end">

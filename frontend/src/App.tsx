@@ -13,7 +13,9 @@ import HelpSupportPage from "./Patients/HelpSupport";
 const App: React.FC = () => {
   return (
     <div className="flex">
-      <PatientSidebar />
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <PatientSidebar />
+      </div>
       <div className="flex-1">
         <Routes>
           <Route path="/" element={<Dashboard />} />
