@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import RoleSelectionButton from "../components/buttons/RoleSelectionButton.tsx";
+import RoleSelectionButton from "../../components/buttons/RoleSelectionButton.tsx";
 import { useSignup } from "../../context/SignUpContext.tsx";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
@@ -26,10 +26,10 @@ const StaffOnboarding: React.FC = () => {
 
   const createUser = async (endpoint: string, redirect: string) => {
     const payload = buildBasePayload();
-    console.log("Sending payload:", payload);
+    console.log("Sending payload to create ", endpoint, ": " , payload);
 
     try {
-      const res = await fetch(`/api/${endpoint}`, {
+      const res = await fetch(`http://localhost:5050/api/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

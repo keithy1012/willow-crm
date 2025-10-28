@@ -77,7 +77,7 @@ const finalPayload = {
   console.log("Final signupData:", finalPayload);
 
   try {
-    const response = await fetch("/api/patients", {
+    const response = await fetch("http://localhost:5050/api/patients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(finalPayload),
