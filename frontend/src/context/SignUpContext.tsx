@@ -19,7 +19,11 @@ interface SignupData {
   contact_phone:string,
   bloodType:string,
   allergies: string[],
-  medicalHistory:string[]
+  medicalHistory:string[],
+  bioContent:string,
+  education:string,
+  graduationDate:string,
+  speciality:string
 }
 
 interface SignupContextValue {
@@ -49,8 +53,11 @@ export const SignupProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     contact_phone:"",
     bloodType:"",
     allergies:[],
-    medicalHistory:[]
-
+    medicalHistory:[],
+    bioContent:"",
+    education:"",
+    graduationDate:"",
+    speciality:""
   });
 
   const setSignupData = (data: Partial<SignupData>) => {

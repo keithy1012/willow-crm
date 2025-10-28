@@ -17,7 +17,7 @@ const RollSelection: React.FC = () => {
 
 const directStaff = () => {
     console.log("Redirecting to Staff");
-    navigate("/done");
+    navigate("/staffonboarding");
   };
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
