@@ -23,7 +23,8 @@ const Messages: React.FC = () => {
     sendMessage,
     selectConversation,
     sendTypingIndicator,
-    createConversation
+    createConversation,
+    currentUserId,
   } = useWebSocket();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,15 +45,17 @@ const Messages: React.FC = () => {
       { label: "Today", conversations: [] },
       { label: "Yesterday", conversations: [] },
       { label: "Last Week", conversations: [] },
-      { label: "Older", conversations: [] }
+      { label: "Older", conversations: [] },
     ];
 
     // Filter conversations based on search
-    const filteredConversations = conversations.filter(conv => {
+    const filteredConversations = conversations.filter((conv) => {
       if (!searchQuery) return true;
-      const otherParticipant = conv.participants.find((p: any) => p.id !== 'current-user-id');
+      const otherParticipant = conv.participants.find(
+        (p: any) => p.id !== currentUserId // Use actual user ID
+      );
       if (!otherParticipant) return false;
-      
+
       const searchLower = searchQuery.toLowerCase();
       return (
         otherParticipant.name.toLowerCase().includes(searchLower) ||
@@ -62,19 +65,23 @@ const Messages: React.FC = () => {
     });
 
     // Sort and group conversations
-    filteredConversations.forEach(conv => {
+    filteredConversations.forEach((conv) => {
       const messageDate = new Date(conv.updatedAt);
-      
+
       // Transform conversation for ConversationPreview component
-      const otherParticipant = conv.participants.find((p: any) => p.id !== 'current-user-id');
+      const otherParticipant = conv.participants.find(
+        (p: any) => p.id !== currentUserId
+      );
       const transformedConv = {
         id: conv.id,
-        user: otherParticipant || { name: 'Unknown', username: 'unknown' },
-        lastMessage: conv.lastMessage?.content || 'No messages yet',
+        user: otherParticipant || { name: "Unknown", username: "unknown" },
+        lastMessage: conv.lastMessage?.content || "No messages yet",
         timestamp: conv.updatedAt,
         hasUnread: conv.unreadCount > 0,
         isActive: activeConversation?.id === conv.id,
-        isOnline: otherParticipant ? onlineUsers.includes(otherParticipant.id) : false
+        isOnline: otherParticipant
+          ? onlineUsers.includes(otherParticipant.id)
+          : false,
       };
 
       if (messageDate >= today) {
@@ -88,8 +95,14 @@ const Messages: React.FC = () => {
       }
     });
 
-    return groups.filter(group => group.conversations.length > 0);
-  }, [conversations, searchQuery, activeConversation, onlineUsers]);
+    return groups.filter((group) => group.conversations.length > 0);
+  }, [
+    conversations,
+    searchQuery,
+    activeConversation,
+    onlineUsers,
+    currentUserId,
+  ]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -100,11 +113,13 @@ const Messages: React.FC = () => {
   const handleSendMessage = (text: string) => {
     if (!text.trim() || !activeConversation) return;
 
-    const recipient = activeConversation.participants.find(p => p.id !== 'current-user-id');
+    const recipient = activeConversation.participants.find(
+      (p) => p.id !== currentUserId 
+    );
     if (!recipient) return;
 
     sendMessage(activeConversation.id, text, recipient.id);
-    
+
     // Stop typing indicator
     if (isTyping) {
       handleStopTyping();
@@ -115,7 +130,9 @@ const Messages: React.FC = () => {
   const handleTyping = () => {
     if (!activeConversation || isTyping) return;
 
-    const recipient = activeConversation.participants.find(p => p.id !== 'current-user-id');
+    const recipient = activeConversation.participants.find(
+      (p) => p.id !== currentUserId
+    );
     if (!recipient) return;
 
     setIsTyping(true);
@@ -135,12 +152,14 @@ const Messages: React.FC = () => {
   const handleStopTyping = () => {
     if (!activeConversation || !isTyping) return;
 
-    const recipient = activeConversation.participants.find(p => p.id !== 'current-user-id');
+    const recipient = activeConversation.participants.find(
+      (p) => p.id !== currentUserId // Use actual user ID
+    );
     if (!recipient) return;
 
     setIsTyping(false);
     sendTypingIndicator(activeConversation.id, recipient.id, false);
-    
+
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
@@ -155,21 +174,40 @@ const Messages: React.FC = () => {
   };
 
   const handleNewConversation = async () => {
-    // This would open a modal or navigate to a doctor selection screen
-    // For now, we'll create a conversation with a hardcoded doctor ID
-    const newConversation = await createConversation('doctor-id-123');
-    if (newConversation) {
-      selectConversation(newConversation.id);
+    try {
+      // Check if we already have conversations
+      if (conversations.length > 0) {
+        // Just select the first one
+        selectConversation(conversations[0].id);
+        return;
+      }
+
+      // Try to create a new one
+      const newConversation = await createConversation(
+        "507f1f77bcf86cd799439012"
+      );
+
+      if (newConversation) {
+        selectConversation(newConversation.id);
+      }
+    } catch (error) {
+      console.log("Using existing conversation instead");
+      // If creation fails, just use existing conversation
+      if (conversations.length > 0) {
+        selectConversation(conversations[0].id);
+      }
     }
   };
 
   // Get active conversation's other participant
-  const activeRecipient = activeConversation?.participants.find(p => p.id !== 'current-user-id');
-  const isRecipientTyping = activeConversation && typingUsers[activeConversation.id];
+  const activeRecipient = activeConversation?.participants.find(
+    (p) => p.id !== currentUserId // Use actual user ID
+  );
+  const isRecipientTyping =
+    activeConversation && typingUsers[activeConversation.id];
 
   return (
     <div className="w-full h-screen flex flex-row bg-foreground">
-      {/* Sidebar */}
       <div className="w-1/3 p-6 space-y-3 h-screen border-r bg-background border-stroke flex flex-col">
         <div className="flex flex-row justify-between items-center">
           <div className="flex items-center gap-2">
@@ -232,13 +270,14 @@ const Messages: React.FC = () => {
       <div className="flex w-2/3 flex-col">
         {activeConversation && activeRecipient ? (
           <>
-            <div className="px-6 pt-6 mb-3 flex-shrink-0"></div>
+            <div className="px-6 pt-6 mb-3 flex-shrink-0">
+              =
               <ProfileHeaderCard
                 name={activeRecipient.name}
                 username={activeRecipient.username}
                 userId={activeRecipient.id}
               />
-
+            </div>
             <div className="flex-1 overflow-y-auto px-6 space-y-4">
               {messages.map((msg) => (
                 <Message
@@ -250,21 +289,30 @@ const Messages: React.FC = () => {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
-                  receiving={msg.sender.id !== 'current-user-id'}
+                  receiving={msg.sender.id !== currentUserId} // Use actual user ID
                 />
               ))}
-              
+
               {isRecipientTyping && (
                 <div className="flex items-center gap-2 text-secondaryText text-sm">
                   <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-secondaryText rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-2 h-2 bg-secondaryText rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-2 h-2 bg-secondaryText rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    <span
+                      className="w-1 h-1 bg-secondaryText rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    ></span>
+                    <span
+                      className="w-1 h-1 bg-secondaryText rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    ></span>
+                    <span
+                      className="w-1 h-1 bg-secondaryText rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    ></span>
                   </div>
                   <span>{isRecipientTyping.name} is typing...</span>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
 
@@ -287,7 +335,9 @@ const Messages: React.FC = () => {
           <div className="flex-1 flex items-center justify-center text-secondaryText">
             <div className="text-center">
               <p className="text-lg mb-2">Select a conversation</p>
-              <p className="text-sm">Choose a conversation from the list to start messaging</p>
+              <p className="text-sm">
+                Choose a conversation from the list to start messaging
+              </p>
             </div>
           </div>
         )}

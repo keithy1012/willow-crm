@@ -40,6 +40,7 @@ interface WebSocketContextType {
   messages: Message[];
   onlineUsers: string[];
   typingUsers: { [conversationId: string]: User };
+  currentUser: User;
   sendMessage: (
     conversationId: string,
     content: string,
@@ -61,10 +62,12 @@ const WebSocketContext = createContext<WebSocketContextType | undefined>(
 
 export const useWebSocket = () => {
   const context = useContext(WebSocketContext);
-  if (!context) {
-    throw new Error("useWebSocket must be used within a WebSocketProvider");
-  }
-  return context;
+  if (!context)
+    throw new Error("useWebSocket must be used within WebSocketProvider");
+  return {
+    ...context,
+    currentUserId: context.currentUser.id,
+  };
 };
 
 interface WebSocketProviderProps {
@@ -91,7 +94,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     [conversationId: string]: User;
   }>({});
 
-  // Connect to WebSocket
   const connect = useCallback(() => {
     try {
       // Use ws:// for dev, wss:// for production
@@ -145,6 +147,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   // Handle incoming WebSocket messages
   const handleWebSocketMessage = useCallback((data: any) => {
+    console.log("Received WebSocket message:", data.type, data);
+
     switch (data.type) {
       case "auth-success":
         console.log("Authenticated successfully");
@@ -159,11 +163,40 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         break;
 
       case "new-message":
-        handleNewMessage(data.message);
+        console.log("New message received:", data.message);
+        // Handle new message inline to avoid stale closure
+        setMessages((prev) => {
+          // Check if message already exists
+          if (prev.some((m) => m.id === data.message.id)) {
+            return prev;
+          }
+          return [...prev, data.message];
+        });
+
+        // Update conversation list
+        setConversations((prev) =>
+          prev.map((conv) => {
+            if (conv.id === data.message.conversationId) {
+              return {
+                ...conv,
+                lastMessage: data.message,
+                updatedAt: data.message.timestamp,
+                unreadCount: conv.unreadCount + 1,
+              };
+            }
+            return conv;
+          })
+        );
         break;
 
       case "message-sent":
-        handleMessageSent(data.message);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === data.message.tempId || msg.id === data.message.id
+              ? { ...data.message }
+              : msg
+          )
+        );
         break;
 
       case "messages-history":
@@ -193,45 +226,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       default:
         console.log("Unknown message type:", data.type);
     }
-  }, []);
-
-  // Handle new incoming message
-  const handleNewMessage = useCallback(
-    (message: Message) => {
-      // Add to messages if it's for the active conversation
-      if (
-        activeConversation &&
-        message.conversationId === activeConversation.id
-      ) {
-        setMessages((prev) => [...prev, message]);
-      }
-
-      // Update conversation list
-      setConversations((prev) =>
-        prev.map((conv) => {
-          if (conv.id === message.conversationId) {
-            return {
-              ...conv,
-              lastMessage: message,
-              updatedAt: message.timestamp,
-              unreadCount:
-                conv.id === activeConversation?.id ? 0 : conv.unreadCount + 1,
-            };
-          }
-          return conv;
-        })
-      );
-    },
-    [activeConversation]
-  );
-
-  // Handle message sent confirmation
-  const handleMessageSent = useCallback((message: Message) => {
-    setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === message.id ? { ...msg, delivered: true } : msg
-      )
-    );
   }, []);
 
   // Handle typing status
@@ -465,6 +459,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     messages,
     onlineUsers,
     typingUsers,
+    currentUser, // Add currentUser to the context value
     sendMessage,
     markAsRead,
     sendTypingIndicator,

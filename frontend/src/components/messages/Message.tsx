@@ -30,7 +30,7 @@ const Message: React.FC<MessageProps> = ({
       />
 
       <div className="flex flex-col space-y-1 max-w-xs md:max-w-sm">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row gap-6 justify-between">
           <span className="text-sm font-small text-primaryText">{sender}</span>
 
           <span
