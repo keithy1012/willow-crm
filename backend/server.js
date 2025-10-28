@@ -12,7 +12,7 @@ import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRou
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js"
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js"  
 
-dotenv.config({ path: './backend/.env'});
+dotenv.config();
 connectDB();
 
 const app = express();
