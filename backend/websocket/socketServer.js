@@ -1,210 +1,503 @@
-// backend/websocket/socketServer.js
-const WebSocket = require('ws');
-const jwt = require('jsonwebtoken');
-const messageHandler = require('./handlers/messageHandler');
+import { WebSocketServer } from "ws";
+import Conversation from "../models/messaging/Conversation.js";
+import Message from "../models/messaging/Message.js";
 
 class SocketServer {
   constructor() {
     this.wss = null;
-    this.clients = new Map(); // userId -> ws connection
-    this.userSockets = new Map(); // userId -> Set of connections (for multiple devices)
+    this.clients = new Map(); 
+    this.userSockets = new Map();
   }
 
   initialize(server) {
-    this.wss = new WebSocket.Server({ 
+    this.wss = new WebSocketServer({
       server,
-      path: '/ws'
+      path: "/ws",
     });
 
-    this.wss.on('connection', (ws, req) => {
-      console.log('New WebSocket connection');
-      
-      // Setup ping-pong for connection health
+    this.wss.on("connection", (ws, req) => {
+      console.log("New WebSocket connection");
+
       ws.isAlive = true;
-      ws.on('pong', () => { ws.isAlive = true; });
-      
-      // Handle incoming messages
-      ws.on('message', async (data) => {
+      ws.on("pong", () => {
+        ws.isAlive = true;
+      });
+
+      ws.on("message", async (data) => {
         try {
           const message = JSON.parse(data.toString());
           await this.handleMessage(ws, message);
         } catch (error) {
-          console.error('Error handling message:', error);
-          this.sendError(ws, 'Invalid message format');
+          console.error("Error handling message:", error);
+          this.sendError(ws, "Invalid message format");
         }
       });
 
-      // Handle disconnect
-      ws.on('close', () => {
+      ws.on("close", () => {
         this.handleDisconnect(ws);
       });
 
-      ws.on('error', (error) => {
-        console.error('WebSocket error:', error);
+      ws.on("error", (error) => {
+        console.error("WebSocket error:", error);
       });
     });
 
-    // Heartbeat interval to detect broken connections
     this.startHeartbeat();
   }
 
   async handleMessage(ws, message) {
     switch (message.type) {
-      case 'auth':
+      case "auth":
         await this.handleAuth(ws, message.token);
         break;
-        
-      case 'ping':
-        ws.send(JSON.stringify({ type: 'pong' }));
+
+      case "get-conversations":
+        await this.handleGetConversations(ws);
         break;
-        
-      case 'message':
-        await messageHandler.handleNewMessage(this, ws, message.data);
+
+      case "get-messages":
+        await this.handleGetMessages(ws, message.data);
         break;
-        
-      case 'typing':
-        await messageHandler.handleTyping(this, ws, message.data);
+
+      case "send-message":
+        await this.handleSendMessage(ws, message.data);
         break;
-        
-      case 'read':
-        await messageHandler.handleMarkAsRead(this, ws, message.data);
+
+      case "typing":
+        await this.handleTyping(ws, message.data);
         break;
-        
-      case 'get-online-users':
-        this.sendOnlineUsers(ws);
+
+      case "create-conversation":
+        await this.handleCreateConversation(ws, message.data);
         break;
-        
+
+      case "ping":
+        ws.send(JSON.stringify({ type: "pong" }));
+        break;
+
       default:
-        console.warn('Unknown message type:', message.type);
+        console.warn("Unknown message type:", message.type);
     }
   }
 
   async handleAuth(ws, token) {
     try {
-      // Verify JWT token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      
-      // Store user info on the connection
-      ws.userId = decoded.userId;
-      ws.userRole = decoded.role;
-      ws.userName = decoded.name;
-      
-      // Add to clients map
+      let userId, user;
+
+      if (token === "user1") {
+        userId = "507f1f77bcf86cd799439011";
+        user = {
+          id: "507f1f77bcf86cd799439011",
+          name: "Dr. Smith",
+          username: "drsmith",
+          avatar: null,
+          role: "Doctor",
+        };
+      } else if (token === "user2") {
+        userId = "507f1f77bcf86cd799439012";
+        user = {
+          id: "507f1f77bcf86cd799439012",
+          name: "John Patient",
+          username: "johnpatient",
+          avatar: null,
+          role: "Patient",
+        };
+      } else {
+        console.error("Unknown token:", token);
+        ws.close(1008, "Invalid token");
+        return;
+      }
+
+      ws.userId = userId;
+      ws.user = user;
+
+      console.log(
+        "✅ User authenticated:",
+        user.name,
+        "| ID:",
+        userId,
+        "| Token:",
+        token
+      );
+
+      // Store in clients map
       this.clients.set(ws.userId, ws);
-      
-      // Track multiple connections per user
+
       if (!this.userSockets.has(ws.userId)) {
         this.userSockets.set(ws.userId, new Set());
       }
       this.userSockets.get(ws.userId).add(ws);
-      
-      // Send success message
-      ws.send(JSON.stringify({
-        type: 'auth-success',
-        data: {
-          userId: ws.userId,
-          userName: ws.userName
-        }
-      }));
-      
-      // Notify others that user is online
-      this.broadcastUserStatus(ws.userId, 'online');
-      
-      console.log(`User ${ws.userId} authenticated`);
-      
+
+      // Send success
+      ws.send(
+        JSON.stringify({
+          type: "auth-success",
+          user: ws.user,
+        })
+      );
+
+      // Send conversations
+      await this.handleGetConversations(ws);
+
+      // Send online users
+      this.sendOnlineUsers(ws);
     } catch (error) {
-      console.error('Auth failed:', error);
-      ws.send(JSON.stringify({
-        type: 'auth-error',
-        error: 'Authentication failed'
-      }));
-      ws.close(1008, 'Invalid token');
+      console.error("Auth error:", error);
+      ws.close(1008, "Authentication failed");
+    }
+  }
+
+  async handleGetConversations(ws) {
+    if (!ws.userId) {
+      this.sendError(ws, "Not authenticated");
+      return;
+    }
+
+    try {
+      const conversations = await Conversation.find({
+        participants: ws.userId,
+      })
+        .populate("lastMessage")
+        .sort("-updatedAt");
+
+      const transformedConversations = conversations.map((conv) => {
+        // Get the OTHER participant
+        const otherParticipantId = conv.participants.find(
+          (id) => id.toString() !== ws.userId
+        );
+
+        const otherParticipant =
+          otherParticipantId?.toString() === "507f1f77bcf86cd799439011"
+            ? {
+                id: "507f1f77bcf86cd799439011",
+                name: "Dr. Smith",
+                username: "drsmith",
+                avatar: null,
+                role: "Doctor",
+              }
+            : {
+                id: "507f1f77bcf86cd799439012",
+                name: "John Patient",
+                username: "johnpatient",
+                avatar: null,
+                role: "Patient",
+              };
+
+        return {
+          id: conv._id.toString(),
+          participants: [ws.user, otherParticipant],
+          lastMessage: conv.lastMessage
+            ? {
+                content: conv.lastMessage.content,
+                timestamp: conv.lastMessage.createdAt,
+              }
+            : null,
+          unreadCount: 0,
+          updatedAt: conv.updatedAt,
+        };
+      });
+
+      console.log(
+        `📋 Sent ${transformedConversations.length} conversations to ${ws.user.name}`
+      );
+
+      ws.send(
+        JSON.stringify({
+          type: "conversations-list",
+          conversations: transformedConversations,
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      ws.send(
+        JSON.stringify({
+          type: "conversations-list",
+          conversations: [],
+        })
+      );
+    }
+  }
+
+  async handleGetMessages(ws, data) {
+    if (!ws.userId) {
+      this.sendError(ws, "Not authenticated");
+      return;
+    }
+
+    const { conversationId } = data;
+
+    try {
+      const conversation = await Conversation.findOne({
+        _id: conversationId,
+        participants: ws.userId,
+      });
+
+      if (!conversation) {
+        console.log("Conversation not found or user not participant");
+        ws.send(
+          JSON.stringify({
+            type: "messages-history",
+            messages: [],
+          })
+        );
+        return;
+      }
+
+      const messages = await Message.find({
+        conversation: conversationId,
+      })
+        .sort("createdAt")
+        .limit(50);
+
+      const transformedMessages = messages.map((msg) => {
+        const senderId = msg.sender.toString();
+        const senderInfo =
+          senderId === "507f1f77bcf86cd799439011"
+            ? {
+                id: "507f1f77bcf86cd799439011",
+                name: "Dr. Smith",
+                username: "drsmith",
+                avatar: null,
+              }
+            : {
+                id: "507f1f77bcf86cd799439012",
+                name: "John Patient",
+                username: "johnpatient",
+                avatar: null,
+              };
+
+        return {
+          id: msg._id.toString(),
+          conversationId: msg.conversation.toString(),
+          sender: senderInfo,
+          content: msg.content,
+          timestamp: msg.createdAt,
+          read: msg.read || false,
+          delivered: msg.delivered || true,
+        };
+      });
+
+      console.log(
+        `💬 Sent ${transformedMessages.length} messages to ${ws.user.name}`
+      );
+
+      ws.send(
+        JSON.stringify({
+          type: "messages-history",
+          messages: transformedMessages,
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      ws.send(
+        JSON.stringify({
+          type: "messages-history",
+          messages: [],
+        })
+      );
+    }
+  }
+
+  async handleSendMessage(ws, data) {
+    if (!ws.userId) {
+      this.sendError(ws, "Not authenticated");
+      return;
+    }
+
+    const { conversationId, content, tempId } = data;
+
+    try {
+      console.log(
+        `📤 ${ws.user.name} sending message: "${content}" to conversation ${conversationId}`
+      );
+
+      // Save to database
+      const message = new Message({
+        conversation: conversationId,
+        sender: ws.userId,
+        content: content,
+        delivered: true,
+        read: false,
+      });
+
+      await message.save();
+
+      // Update conversation
+      await Conversation.findByIdAndUpdate(conversationId, {
+        lastMessage: message._id,
+        updatedAt: new Date(),
+      });
+
+      const messagePayload = {
+        id: message._id.toString(),
+        conversationId: conversationId,
+        sender: {
+          id: ws.userId,
+          name: ws.user.name,
+          username: ws.user.username,
+          avatar: ws.user.avatar,
+        },
+        content: content,
+        timestamp: message.createdAt.toISOString(),
+        read: false,
+        delivered: true,
+        tempId: tempId,
+      };
+
+      console.log(`✅ Message saved with ID: ${message._id}`);
+
+      // Send confirmation to sender
+      ws.send(
+        JSON.stringify({
+          type: "message-sent",
+          message: messagePayload,
+        })
+      );
+
+      // Send to recipient
+      const conversation = await Conversation.findById(conversationId);
+      const recipientId = conversation.participants.find(
+        (id) => id.toString() !== ws.userId
+      );
+
+      if (recipientId) {
+        const recipientWs = this.clients.get(recipientId.toString());
+        if (recipientWs && recipientWs.readyState === 1) {
+          // WebSocket.OPEN = 1
+          console.log(`📨 Forwarding message to ${recipientWs.user.name}`);
+          recipientWs.send(
+            JSON.stringify({
+              type: "new-message",
+              message: messagePayload,
+            })
+          );
+        } else {
+          console.log(`⚠️ Recipient ${recipientId} is not online`);
+        }
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      this.sendError(ws, "Failed to send message");
+    }
+  }
+
+  async handleTyping(ws, data) {
+    if (!ws.userId) return;
+
+    const { conversationId, recipientId, isTyping } = data;
+
+    const recipientWs = this.clients.get(recipientId);
+    if (recipientWs && recipientWs.readyState === 1) {
+      recipientWs.send(
+        JSON.stringify({
+          type: "typing-status",
+          conversationId,
+          user: ws.user,
+          isTyping,
+        })
+      );
+    }
+  }
+
+  async handleCreateConversation(ws, data) {
+    if (!ws.userId) {
+      this.sendError(ws, "Not authenticated");
+      return;
+    }
+
+    const { recipientId } = data;
+    const validRecipientId = recipientId || "507f1f77bcf86cd799439012";
+
+    try {
+      let conversation = await Conversation.findOne({
+        participants: { $all: [ws.userId, validRecipientId] },
+        type: "direct",
+      });
+
+      if (conversation) {
+        console.log("Conversation already exists");
+      } else {
+        conversation = new Conversation({
+          participants: [ws.userId, validRecipientId],
+          type: "direct",
+          createdBy: ws.userId,
+          isActive: true,
+        });
+        await conversation.save();
+        console.log("✅ New conversation created");
+      }
+
+      const otherParticipant =
+        validRecipientId === "507f1f77bcf86cd799439011"
+          ? {
+              id: "507f1f77bcf86cd799439011",
+              name: "Dr. Smith",
+              username: "drsmith",
+              role: "Doctor",
+            }
+          : {
+              id: "507f1f77bcf86cd799439012",
+              name: "John Patient",
+              username: "johnpatient",
+              role: "Patient",
+            };
+
+      ws.send(
+        JSON.stringify({
+          type: "conversation-created",
+          conversation: {
+            id: conversation._id.toString(),
+            participants: [ws.user, otherParticipant],
+            lastMessage: null,
+            unreadCount: 0,
+            updatedAt: conversation.updatedAt,
+          },
+        })
+      );
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+      this.sendError(ws, "Failed to create conversation");
     }
   }
 
   handleDisconnect(ws) {
     if (!ws.userId) return;
-    
-    console.log(`User ${ws.userId} disconnected`);
-    
-    // Remove from clients map
+
+    console.log(`❌ User ${ws.user?.name || ws.userId} disconnected`);
+
     this.clients.delete(ws.userId);
-    
-    // Remove from user sockets
+
     const userSockets = this.userSockets.get(ws.userId);
     if (userSockets) {
       userSockets.delete(ws);
       if (userSockets.size === 0) {
         this.userSockets.delete(ws.userId);
-        // User is completely offline
-        this.broadcastUserStatus(ws.userId, 'offline');
       }
     }
   }
 
-  // Send message to specific user
-  sendToUser(userId, message) {
-    const client = this.clients.get(userId);
-    if (client && client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(message));
-      return true;
-    }
-    return false;
-  }
-
-  // Send message to multiple users
-  sendToUsers(userIds, message) {
-    const messageStr = JSON.stringify(message);
-    userIds.forEach(userId => {
-      const client = this.clients.get(userId);
-      if (client && client.readyState === WebSocket.OPEN) {
-        client.send(messageStr);
-      }
-    });
-  }
-
-  // Broadcast to all connected users except sender
-  broadcast(message, excludeUserId = null) {
-    const messageStr = JSON.stringify(message);
-    this.clients.forEach((client, userId) => {
-      if (userId !== excludeUserId && client.readyState === WebSocket.OPEN) {
-        client.send(messageStr);
-      }
-    });
-  }
-
-  // Broadcast user status change
-  broadcastUserStatus(userId, status) {
-    this.broadcast({
-      type: 'user-status',
-      data: {
-        userId,
-        status
-      }
-    }, userId);
-  }
-
-  // Send list of online users
   sendOnlineUsers(ws) {
     const onlineUsers = Array.from(this.clients.keys());
-    ws.send(JSON.stringify({
-      type: 'online-users',
-      data: onlineUsers
-    }));
+    ws.send(
+      JSON.stringify({
+        type: "online-users",
+        users: onlineUsers,
+      })
+    );
   }
 
-  // Send error message
   sendError(ws, error) {
-    ws.send(JSON.stringify({
-      type: 'error',
-      error
-    }));
+    ws.send(
+      JSON.stringify({
+        type: "error",
+        error,
+      })
+    );
   }
 
-  // Heartbeat to detect broken connections
   startHeartbeat() {
     setInterval(() => {
-      this.wss.clients.forEach(ws => {
+      this.wss.clients.forEach((ws) => {
         if (ws.isAlive === false) {
           this.handleDisconnect(ws);
           return ws.terminate();
@@ -212,21 +505,8 @@ class SocketServer {
         ws.isAlive = false;
         ws.ping();
       });
-    }, 30000); // 30 seconds
-  }
-
-  // Get online status for a user
-  isUserOnline(userId) {
-    return this.clients.has(userId);
-  }
-
-  // Get all online users
-  getOnlineUsers() {
-    return Array.from(this.clients.keys());
+    }, 30000);
   }
 }
 
-// Create singleton instance
-const socketServer = new SocketServer();
-
-module.exports = socketServer;
+export default new SocketServer();
