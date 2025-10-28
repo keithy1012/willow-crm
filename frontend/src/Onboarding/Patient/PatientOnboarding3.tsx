@@ -50,29 +50,32 @@ const handleSubmit = async () => {
     medicalHistory: formattedMedicalHistory,
   };
 
-// Format allergies and medical history (already arrays of strings in context)
-const finalAllergies = signupData.allergies.map((a: string) => a.trim()).filter((a: string) => a.length > 0);
-const finalMedHistory = signupData.medicalHistory.map((m: string) => m.trim()).filter((m: string) => m.length > 0);
-const finalAddress = `${signupData.street}, ${signupData.city}, ${signupData.state} ${signupData.zipcode}`;
+  // Update context so signupData reflects the formatted arrays
+  setSignupData({ allergies: formattedAllergies, medicalHistory: formattedMedicalHistory });
 
-// Restructure finalData to match backend model
-const finalPayload = {
-  firstName: signupData.firstName,
-  lastName: signupData.lastName,
-  email: signupData.email,
-  phone: signupData.phone,
-  sex: signupData.sex,
-  username: signupData.username,
-  password: signupData.password,
-  birthdate: signupData.birthdate,
-  address: finalAddress,
-  ec_name: signupData.contact_name,
-  ec_relationship: signupData.contact_relationship,
-  ec_phone: signupData.contact_phone,
-  bloodtype: signupData.bloodType,
-  allergies: finalAllergies,
-  medicalHistory: finalMedHistory,
-};
+  // Format allergies and medical history (use formatted arrays from inputs)
+  const finalAllergies = formattedAllergies;
+  const finalMedHistory = formattedMedicalHistory;
+  const finalAddress = `${signupData.street}, ${signupData.city}, ${signupData.state} ${signupData.zipcode}`;
+
+  // Restructure finalData to match backend model
+  const finalPayload = {
+    firstName: signupData.firstName,
+    lastName: signupData.lastName,
+    email: signupData.email,
+    phone: signupData.phone,
+    sex: signupData.sex,
+    username: signupData.username,
+    password: signupData.password,
+    birthdate: signupData.birthdate,
+    address: finalAddress,
+    ec_name: signupData.contact_name,
+    ec_relationship: signupData.contact_relationship,
+    ec_phone: signupData.contact_phone,
+    bloodtype: signupData.bloodType,
+    allergies: finalAllergies,
+    medicalHistory: finalMedHistory,
+  };
 
   console.log("Final signupData:", finalPayload);
 

@@ -53,6 +53,7 @@ const validate = () => {
 
   const handleSubmit = () => {
     if (!validate()) return;
+    /* CREATE A DOCTOR REQUEST TICKET */
     console.log("Final signup data:", signupData);
     navigate("/patientonboarding2");
   };
