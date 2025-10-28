@@ -104,6 +104,3 @@ export const getCurrentUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-// Keep for backward compatibility
-export const createUser = register;
