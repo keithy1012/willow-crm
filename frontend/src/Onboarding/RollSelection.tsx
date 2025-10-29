@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import RoleSelectionButton from "../components/buttons/RoleSelectionButton.tsx"
+import RoleSelectionButton from "../components/buttons/RoleSelectionButton";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
-const StaffIcon = "/FirstAid.svg"
-const PatientIcon = "/userPlus.svg"
+const StaffIcon = "/FirstAid.svg";
+const PatientIcon = "/userPlus.svg";
 
 const RollSelection: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const RollSelection: React.FC = () => {
     navigate("/patientonboarding1");
   };
 
-const directStaff = () => {
+  const directStaff = () => {
     console.log("Redirecting to Staff");
     navigate("/staffonboarding");
   };
@@ -37,17 +37,21 @@ const directStaff = () => {
       </h1>
 
       <div className="z-10 w-full max-w-lg mx-auto mt-32 flex flex-col gap-6">
-        <p className="text-xl md:text-2xl font-semibold text-gray-700">I'm a new...</p>
+        <p className="text-xl md:text-2xl font-semibold text-gray-700">
+          I'm a new...
+        </p>
 
         {/* Patient */}
         <div className="flex flex-col">
           <RoleSelectionButton
             text="Patient"
-            icon={<img src={PatientIcon} alt="Patient Icon" className="w-6 h-6" />}
+            icon={
+              <img src={PatientIcon} alt="Patient Icon" className="w-6 h-6" />
+            }
             variant="primary"
             size="medium"
             onClick={() => directPatient()}
-            />
+          />
         </div>
 
         {/* Staff */}
@@ -58,7 +62,7 @@ const directStaff = () => {
             variant="primary"
             size="medium"
             onClick={() => directStaff()}
-            />
+          />
         </div>
       </div>
     </div>

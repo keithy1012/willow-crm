@@ -1,8 +1,8 @@
 import React from "react";
-import Field from "../components/input/Field.tsx";
-import PrimaryButton from "../components/buttons/PrimaryButton.tsx";
+import Field from "../components/input/Field";
+import PrimaryButton from "../components/buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
-import { useSignup } from "../context/SignUpContext.tsx";
+import { useSignup } from "../context/SignUpContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
@@ -16,18 +16,22 @@ const SignUp3: React.FC = () => {
     confirmPassword?: string;
   }>({});
 
-  const handleChange = (field: keyof typeof signupData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSignupData({ [field]: e.target.value });
-  };
+  const handleChange =
+    (field: keyof typeof signupData) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSignupData({ ...signupData, [field]: e.target.value });
+    };
 
   const validate = () => {
-    const errs: { username?: string; password?: string; confirmPassword?: string } = {};
+    const errs: {
+      username?: string;
+      password?: string;
+      confirmPassword?: string;
+    } = {};
 
-    if (!signupData.username?.trim())
-      errs.username = "Please enter a username";
+    if (!signupData.username?.trim()) errs.username = "Please enter a username";
 
-    if (!signupData.password?.trim())
-      errs.password = "Please enter a password";
+    if (!signupData.password?.trim()) errs.password = "Please enter a password";
 
     if (signupData.password !== signupData.confirmPassword)
       errs.confirmPassword = "Passwords don't match!";
@@ -60,7 +64,9 @@ const SignUp3: React.FC = () => {
       </h1>
 
       <div className="z-10 w-full max-w-lg mx-auto mt-32 flex flex-col gap-6">
-        <p className="text-xl md:text-2xl font-semibold text-gray-700">Almost there!</p>
+        <p className="text-xl md:text-2xl font-semibold text-gray-700">
+          Almost there!
+        </p>
 
         {/* Username */}
         <div className="flex flex-col">

@@ -1,15 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../components/buttons/PrimaryButton.tsx"; 
+import PrimaryButton from "../components/buttons/PrimaryButton";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 
 const LandingPage: React.FC = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/signup1"); // Redirect to signup1.tsx page
+    navigate("/signup1"); // Redirect to signup1 page
   };
   return (
     <div className="relative w-full h-screen bg-white flex flex-col items-center justify-center overflow-hidden">
@@ -28,12 +28,19 @@ const navigate = useNavigate();
       />
 
       {/* Main content */}
-      <h1 className="text-6xl md:text-8xl font-bold text-gray-900 z-10">Willow CRM</h1>
+      <h1 className="text-6xl md:text-8xl font-bold text-gray-900 z-10">
+        Willow CRM
+      </h1>
       <p className="mt-4 text-2xl md:text-3xl text-gray-600 z-10 mb-4">
         Modernize Healthcare
       </p>
 
-      <PrimaryButton text={"Get Started"} variant={"primary"} size={"small"} onClick={handleGetStarted}></PrimaryButton>
+      <PrimaryButton
+        text={"Get Started"}
+        variant={"primary"}
+        size={"small"}
+        onClick={handleGetStarted}
+      ></PrimaryButton>
     </div>
   );
 };

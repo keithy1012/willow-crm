@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import RoleSelectionButton from "../../components/buttons/RoleSelectionButton.tsx";
-import { useSignup } from "../../context/SignUpContext.tsx";
+import RoleSelectionButton from "../../components/buttons/RoleSelectionButton";
+import { useSignup } from "../../context/SignUpContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
@@ -26,7 +26,7 @@ const StaffOnboarding: React.FC = () => {
 
   const createUser = async (endpoint: string, redirect: string) => {
     const payload = buildBasePayload();
-    console.log("Sending payload to create ", endpoint, ": " , payload);
+    console.log("Sending payload to create ", endpoint, ": ", payload);
 
     try {
       const res = await fetch(`http://localhost:5050/api/${endpoint}`, {
@@ -60,8 +60,16 @@ const StaffOnboarding: React.FC = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
-      <img src={TopRightBlob} alt="Top Right Blob" className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96" />
-      <img src={BottomLeftBlob} alt="Bottom Left Blob" className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96" />
+      <img
+        src={TopRightBlob}
+        alt="Top Right Blob"
+        className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96"
+      />
+      <img
+        src={BottomLeftBlob}
+        alt="Bottom Left Blob"
+        className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96"
+      />
 
       <h1 className="text-4xl md:text-6xl font-bold text-gray-900 z-10 absolute top-8 left-8">
         Willow CRM
@@ -82,7 +90,9 @@ const StaffOnboarding: React.FC = () => {
 
         <RoleSelectionButton
           text="Finance"
-          icon={<img src={FinanceLogo} alt="Finance Icon" className="w-6 h-6" />}
+          icon={
+            <img src={FinanceLogo} alt="Finance Icon" className="w-6 h-6" />
+          }
           variant="primary"
           size="medium"
           onClick={directFinance}

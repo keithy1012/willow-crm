@@ -1,24 +1,14 @@
 import React from "react";
-import Field from "../../components/input/Field.tsx";
-import PrimaryButton from "../../components/buttons/PrimaryButton.tsx";
-import Dropdown from "../../components/input/Dropdown.tsx";
+import Field from "../../components/input/Field";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+import Dropdown from "../../components/input/Dropdown";
 import { useNavigate } from "react-router-dom";
-import { useSignup } from "../../context/SignUpContext.tsx";
+import { useSignup } from "../../context/SignUpContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 
-const bloodTypes = [
-  "None",
-  "A+",
-  "A-",
-  "B+",
-  "B-",
-  "AB+",
-  "AB-",
-  "O+",
-  "O-",
-];
+const bloodTypes = ["None", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const PatientOnboarding2: React.FC = () => {
   const navigate = useNavigate();
@@ -47,13 +37,11 @@ const PatientOnboarding2: React.FC = () => {
     if (!signupData.contact_relationship?.trim())
       errs.relationship = "Enter relationship";
 
-    if (!signupData.contact_phone?.trim())
-      errs.phone = "Enter phone number";
+    if (!signupData.contact_phone?.trim()) errs.phone = "Enter phone number";
     else if (!phoneRegex.test(signupData.contact_phone))
       errs.phone = "Must be a 10-digit number";
 
-    if (!signupData.bloodType)
-      errs.bloodType = "Select your blood type";
+    if (!signupData.bloodType) errs.bloodType = "Select your blood type";
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -84,7 +72,6 @@ const PatientOnboarding2: React.FC = () => {
 
       {/* Form Content */}
       <div className="z-10 w-full max-w-4xl mx-auto mt-32 grid grid-cols-1 md:grid-cols-2 gap-10">
-        
         {/* Emergency Contact */}
         <div className="flex flex-col gap-4">
           <p className="text-xl font-semibold text-gray-700">
@@ -126,8 +113,10 @@ const PatientOnboarding2: React.FC = () => {
           <Dropdown
             label="Select Blood Type"
             options={bloodTypes}
-            selected={signupData.bloodType}
-            onChange={(value) => setSignupData({ bloodType: value === "None" ? "" : value })}
+            value={signupData.bloodType} 
+            onChange={(value) =>
+              setSignupData({ bloodType: value === "None" ? "" : value })
+            }
           />
 
           {errors.bloodType && (
