@@ -28,6 +28,7 @@ import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
 import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
 import Login from "./Login/LoginScreen"
+import ForgotPassword from "./Login/ForgotPassword";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -88,6 +89,7 @@ const AppContent: React.FC = () => {
           <Route path="/staffonboarding" element={<StaffOnboarding />} />
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
 
           <Route element={<PatientLayout />}>
             <Route path="/patientdashboard" element={<Dashboard />} />

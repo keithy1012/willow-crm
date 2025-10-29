@@ -39,18 +39,24 @@ const LandingPage: React.FC = () => {
         Modernize Healthcare
       </p>
 
+      <div className="mb-2">
       <PrimaryButton
         text={"Sign Up!"}
         variant={"primary"}
         size={"small"}
         onClick={handleGetStarted}
       ></PrimaryButton>
+      </div>
+      
+      <div className="mt-2">
       <PrimaryButton
         text={"Login"}
         variant={"primary"}
         size={"small"}
         onClick={handleLogin}
       ></PrimaryButton>
+      </div>
+
     </div>
   );
 };
