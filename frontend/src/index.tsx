@@ -6,7 +6,7 @@ import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/600.css";
 import "@fontsource/dm-sans/700.css";
-import App from "./App"; 
+import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 
@@ -15,8 +15,6 @@ console.log(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <App />
   </React.StrictMode>
 );
