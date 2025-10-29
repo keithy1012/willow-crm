@@ -50,12 +50,52 @@ const DoctorOnboarding: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
-    /* CREATE A DOCTOR REQUEST TICKET */
-    console.log("Final signup data:", signupData);
-    navigate("/patientonboarding2");
+
+    const finalPayload = {
+      firstName: signupData.firstName,
+      lastName: signupData.lastName,
+      email: signupData.email,
+      phoneNumber: signupData.phone,
+      username: signupData.username,
+      password: signupData.password,
+      gender: signupData.sex,
+      bioContent: signupData.bioContent,
+      education: signupData.education,
+      graduationDate: signupData.graduationDate,
+      speciality: signupData.speciality,
+      status: "Pending",
+      reviewedBy: null,
+      notes: "Submitted initial credentials for review.",
+      profilePic: null,
+    };
+
+    console.log("Doctor Ticket Request Payload:", finalPayload);
+
+    try {
+      const response = await fetch("http://localhost:5050/api/tickets/doctorCreate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(finalPayload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert("Failed to submit doctor request: " + errorText);
+        return;
+      }
+
+      alert("Doctor request submitted! Awaiting approval.");
+      navigate("/");
+    } catch (error) {
+      console.error("Error submitting doctor request:", error);
+      alert("Unexpected error — please try again later.");
+    }
   };
+
 
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
