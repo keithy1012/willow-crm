@@ -7,6 +7,7 @@ interface ProfileHeaderCardProps {
   username: string;
   profilePic?: string;
   userId: string;
+  message?: boolean;
 }
 
 const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
@@ -14,6 +15,7 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
   username,
   profilePic,
   userId,
+  message,
 }) => {
   return (
     <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-stroke">
@@ -24,8 +26,16 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
           <p className="text-xs text-secondaryText">@{username}</p>
         </div>
       </div>
-
-      <PrimaryButton text="View Profile" variant="primary" size="small" />
+      <div className="space-x-4">
+        <PrimaryButton
+          text="View Profile"
+          variant={message ? "outline" : "primary"}
+          size="small"
+        />
+        {message && (
+          <PrimaryButton text="Message" variant="primary" size="small" />
+        )}
+      </div>
     </div>
   );
 };

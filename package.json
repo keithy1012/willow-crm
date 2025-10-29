@@ -22,6 +22,7 @@
   "dependencies": {
     "@fontsource/dm-sans": "^5.2.8",
     "@remix-run/router": "^1.23.0",
+    "dotenv": "^17.2.3",
     "phosphor-react": "^1.4.1",
     "react": "^18.3.1",
     "react-day-picker": "^9.11.1",

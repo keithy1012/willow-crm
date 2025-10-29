@@ -1,4 +1,3 @@
-// backend/routes/messaging/conversations.js
 router.get("/conversations", authMiddleware, async (req, res) => {
   const conversations = await Conversation.find({
     participants: req.user.id,

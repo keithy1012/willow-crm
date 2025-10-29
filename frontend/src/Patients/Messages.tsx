@@ -24,7 +24,7 @@ const Messages: React.FC = () => {
     selectConversation,
     sendTypingIndicator,
     createConversation,
-    currentUserId,
+    currentUserId, // Get the actual current user ID
   } = useWebSocket();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,7 +70,7 @@ const Messages: React.FC = () => {
 
       // Transform conversation for ConversationPreview component
       const otherParticipant = conv.participants.find(
-        (p: any) => p.id !== currentUserId
+        (p: any) => p.id !== currentUserId // Use actual user ID
       );
       const transformedConv = {
         id: conv.id,
@@ -114,7 +114,7 @@ const Messages: React.FC = () => {
     if (!text.trim() || !activeConversation) return;
 
     const recipient = activeConversation.participants.find(
-      (p) => p.id !== currentUserId 
+      (p) => p.id !== currentUserId // Use actual user ID
     );
     if (!recipient) return;
 
@@ -131,7 +131,7 @@ const Messages: React.FC = () => {
     if (!activeConversation || isTyping) return;
 
     const recipient = activeConversation.participants.find(
-      (p) => p.id !== currentUserId
+      (p) => p.id !== currentUserId // Use actual user ID
     );
     if (!recipient) return;
 
@@ -175,27 +175,24 @@ const Messages: React.FC = () => {
 
   const handleNewConversation = async () => {
     try {
-      // Check if we already have conversations
-      if (conversations.length > 0) {
-        // Just select the first one
-        selectConversation(conversations[0].id);
-        return;
-      }
+      // Use the ACTUAL user IDs from your registered users
+      // Sarah's ID: 6900715116c2aa83a8c26399
+      // Dr. Mike's ID: 69006cc8f64fa74e85bd273e
 
-      // Try to create a new one
-      const newConversation = await createConversation(
-        "507f1f77bcf86cd799439012"
-      );
+      const otherUserId =
+        currentUserId === "6900715116c2aa83a8c26399"
+          ? "69006cc8f64fa74e85bd273e" // If Sarah, talk to Dr. Mike
+          : "6900715116c2aa83a8c26399"; // If Dr. Mike, talk to Sarah
+
+      console.log("Creating conversation with:", otherUserId);
+
+      const newConversation = await createConversation(otherUserId);
 
       if (newConversation) {
         selectConversation(newConversation.id);
       }
     } catch (error) {
-      console.log("Using existing conversation instead");
-      // If creation fails, just use existing conversation
-      if (conversations.length > 0) {
-        selectConversation(conversations[0].id);
-      }
+      console.log("Error creating conversation:", error);
     }
   };
 
@@ -208,6 +205,7 @@ const Messages: React.FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-row bg-foreground">
+      {/* Sidebar */}
       <div className="w-1/3 p-6 space-y-3 h-screen border-r bg-background border-stroke flex flex-col">
         <div className="flex flex-row justify-between items-center">
           <div className="flex items-center gap-2">
@@ -270,14 +268,13 @@ const Messages: React.FC = () => {
       <div className="flex w-2/3 flex-col">
         {activeConversation && activeRecipient ? (
           <>
-            <div className="px-6 pt-6 mb-3 flex-shrink-0">
-              =
-              <ProfileHeaderCard
-                name={activeRecipient.name}
-                username={activeRecipient.username}
-                userId={activeRecipient.id}
-              />
-            </div>
+            <div className="px-6 pt-6 mb-3 flex-shrink-0"></div>
+            <ProfileHeaderCard
+              name={activeRecipient.name}
+              username={activeRecipient.username}
+              userId={activeRecipient.id}
+            />
+
             <div className="flex-1 overflow-y-auto px-6 space-y-4">
               {messages.map((msg) => (
                 <Message
@@ -297,15 +294,15 @@ const Messages: React.FC = () => {
                 <div className="flex items-center gap-2 text-secondaryText text-sm">
                   <div className="flex gap-1">
                     <span
-                      className="w-1 h-1 bg-secondaryText rounded-full animate-bounce"
+                      className="w-2 h-2 bg-secondaryText rounded-full animate-bounce"
                       style={{ animationDelay: "0ms" }}
                     ></span>
                     <span
-                      className="w-1 h-1 bg-secondaryText rounded-full animate-bounce"
+                      className="w-2 h-2 bg-secondaryText rounded-full animate-bounce"
                       style={{ animationDelay: "150ms" }}
                     ></span>
                     <span
-                      className="w-1 h-1 bg-secondaryText rounded-full animate-bounce"
+                      className="w-2 h-2 bg-secondaryText rounded-full animate-bounce"
                       style={{ animationDelay: "300ms" }}
                     ></span>
                   </div>

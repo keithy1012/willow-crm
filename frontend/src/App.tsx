@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import PatientSidebar from "./components/sidebar/PatientSidebar";
 import Dashboard from "./Patients/Dashboard";
@@ -44,38 +44,65 @@ const PatientLayout: React.FC = () => {
 
 const AppContent: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const urlUser = searchParams.get("user");
-  const storageUser = localStorage.getItem("testUser");
-  const token = urlUser || storageUser || "user1";
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [token, setToken] = useState<string | null>(null);
 
-  if (urlUser && urlUser !== storageUser) {
-    localStorage.setItem("testUser", urlUser);
-  }
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    const storedUser = localStorage.getItem("currentUser");
 
-  const currentUser =
-    token === "user1"
-      ? {
-          id: "507f1f77bcf86cd799439011",
-          name: "Dr. Smith",
-          username: "drsmith",
-          role: "Doctor" as const,
-        }
-      : {
-          id: "507f1f77bcf86cd799439012",
-          name: "John Patient",
-          username: "johnpatient",
-          role: "Patient" as const,
-        };
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setCurrentUser(JSON.parse(storedUser));
+    } else {
+      const urlUser = searchParams.get("user");
+      const testUserToken = localStorage.getItem("testUser");
+      const testToken = urlUser || testUserToken || "user1";
 
-  const handleUserSwitch = (userType: string) => {
-    const newToken = userType === "doctor" ? "user1" : "user2";
-    localStorage.setItem("testUser", newToken);
-    // Update URL and reload
-    window.location.href = `${window.location.pathname}?user=${newToken}`;
-  };
+      if (urlUser && urlUser !== testUserToken) {
+        localStorage.setItem("testUser", urlUser);
+      }
+
+      setToken(testToken);
+      setCurrentUser(
+        testToken === "user1"
+          ? {
+              id: "507f1f77bcf86cd799439011",
+              firstName: "Dr",
+              lastName: "Smith",
+              username: "drsmith",
+              role: "Doctor" as const,
+            }
+          : {
+              id: "507f1f77bcf86cd799439012",
+              firstName: "John",
+              lastName: "Patient",
+              username: "johnpatient",
+              role: "Patient" as const,
+            }
+      );
+    }
+  }, [searchParams]);
+
+  // Format user for WebSocketProvider
+  const formattedUser = currentUser
+    ? {
+        id: currentUser._id || currentUser.id,
+        name: `${currentUser.firstName} ${currentUser.lastName}`,
+        username: currentUser.username,
+        avatar: currentUser.profilePic,
+        role: currentUser.role,
+      }
+    : {
+        // Default user if nothing else is available
+        id: "507f1f77bcf86cd799439012",
+        name: "John Patient",
+        username: "johnpatient",
+        role: "Patient" as const,
+      };
 
   return (
-    <WebSocketProvider token={token} currentUser={currentUser}>
+    <WebSocketProvider token={token || "user2"} currentUser={formattedUser}>
       <SignupProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
