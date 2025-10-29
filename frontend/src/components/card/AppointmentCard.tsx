@@ -66,11 +66,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
       <div className="flex flex-row gap-1">
         <PaperclipHorizontal size={20} className="text-primaryText" />
-        <p>View Pre-Appointment Instructions</p>
+        {!past && <p>View Pre-Appointment Instructions</p>}
+        {past && <p>View After Visit Summary</p>}
       </div>
       <div className="flex flex-row gap-1">
         <Notepad size={20} className="text-primaryText" />
-        <p>Notes: {notes ? notes : "No additional notes provided."}</p>
+        {!past && (
+          <p>Notes: {notes ? notes : "No additional notes provided."}</p>
+        )}
+        {past && (
+          <p>Notes and Instructions: {notes ? notes : "No additional notes provided."}</p>
+        )}
       </div>
     </div>
   );
