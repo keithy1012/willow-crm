@@ -11,6 +11,10 @@ const LandingPage: React.FC = () => {
   const handleGetStarted = () => {
     navigate("/signup1"); // Redirect to signup1 page
   };
+
+  const handleLogin = () => {
+    navigate("/login"); // redirect to login page
+  }
   return (
     <div className="relative w-full h-screen bg-white flex flex-col items-center justify-center overflow-hidden">
       {/* Top-right SVG */}
@@ -35,12 +39,24 @@ const LandingPage: React.FC = () => {
         Modernize Healthcare
       </p>
 
+      <div className="mb-2">
       <PrimaryButton
-        text={"Get Started"}
+        text={"Sign Up!"}
         variant={"primary"}
         size={"small"}
         onClick={handleGetStarted}
       ></PrimaryButton>
+      </div>
+      
+      <div className="mt-2">
+      <PrimaryButton
+        text={"Login"}
+        variant={"primary"}
+        size={"small"}
+        onClick={handleLogin}
+      ></PrimaryButton>
+      </div>
+
     </div>
   );
 };

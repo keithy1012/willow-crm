@@ -2,12 +2,19 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Setup __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load .env FIRST, before ANY other imports!
 dotenv.config({ path: path.join(__dirname, ".env") });
 
+// Log environment variables for debugging
+console.log("🔍 Checking environment variables:");
+console.log("MONGO_URI:", process.env.MONGO_URI ? "✅" : "❌");
+console.log("PORT:", process.env.PORT || 5000);
+
+// Now import everything else
 import express from "express";
 import cors from "cors";
 import http from "http";
@@ -17,22 +24,20 @@ import patientRoutes from "./routes/patients/patientRoutes.js";
 import doctorRoutes from "./routes/doctors/doctorRoutes.js";
 import opsMemberRoutes from "./routes/ops/opsMemberRoutes.js";
 import itMemberRoutes from "./routes/its/itRoutes.js";
+import financeMemberRoutes from "./routes/finance/financeRoutes.js";
 import doctorAccountCreationRoutes from "./routes/tickets/doctorAccountCreationRoutes.js";
 import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRoutes.js";
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
 import socketServer from "./websocket/socketServer.js";
 
-// Tell dotenv to look in the same folder as server.js
-dotenv.config({ path: path.join(__dirname, ".env") });
-
-console.log("🔍 Checking environment variables:");
-console.log("MONGO_URI:", process.env.MONGO_URI ? "✅" : "❌");
-console.log("PORT:", process.env.PORT);
-
+// Connect to MongoDB
 connectDB();
 
+// Initialize Express app
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -42,6 +47,7 @@ app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/opsMembers", opsMemberRoutes);
 app.use("/api/itMembers", itMemberRoutes);
+app.use("/api/financeMembers", financeMemberRoutes);
 app.use("/api/tickets/doctorCreate", doctorAccountCreationRoutes);
 app.use("/api/tickets/patientChange", patientRequestChangeRoutes);
 app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
