@@ -29,7 +29,7 @@ const RollSelection: React.FC = () => {
       <img
         src={BottomLeftBlob}
         alt="Bottom Left Blob"
-        className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96"
+        className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
       />
 
       <h1 className="text-4xl md:text-6xl font-bold text-gray-900 z-10 absolute top-8 left-8">

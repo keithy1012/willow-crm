@@ -24,7 +24,7 @@ const LandingPage: React.FC = () => {
       <img
         src={BottomLeftBlob}
         alt="Bottom Left Blob"
-        className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96"
+        className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
       />
 
       {/* Main content */}
