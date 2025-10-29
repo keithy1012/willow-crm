@@ -1,5 +1,5 @@
-import { FirstAidIcon } from "@phosphor-icons/react";
-import PrimaryButton from "../buttons/PrimaryButton.tsx";
+import { FirstAid } from "phosphor-react";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface UpcomingAppointmentProps {
   date: string;
@@ -18,7 +18,7 @@ const UpcomingAppointmentCard: React.FC<UpcomingAppointmentProps> = ({
     <div className="bg-background p-4 shadow-sm rounded-lg w-full">
       <div className="flex flex-col space-y-3">
         <div className="flex items-center gap-2">
-          <FirstAidIcon size={24} className="text-primary" />
+          <FirstAid size={24} className="text-primary" />
           <span className="text-lg text-left font-medium text-primaryText">
             Appointment - {date}
           </span>

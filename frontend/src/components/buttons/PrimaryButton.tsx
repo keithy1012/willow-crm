@@ -1,25 +1,64 @@
-import { Button } from "react-native";
+import React, { useState, useEffect } from "react";
 
 interface ButtonProps {
   text: string;
   onClick?: () => void;
   variant: "primary" | "outline";
   size: "small" | "medium" | "large";
+  className?: string;
+  selected?: boolean;
+  controlled?: boolean;
+  toggleable?: boolean;
+  disabled?: boolean;
 }
+
 const PrimaryButton: React.FC<ButtonProps> = ({
   text,
   onClick,
   variant,
   size,
+  className = "",
+  selected = false,
+  controlled = false,
+  toggleable = true,
+  disabled = false,
 }) => {
+  const [isSelected, setIsSelected] = useState(selected);
+
+  useEffect(() => {
+    if (controlled) {
+      setIsSelected(selected);
+    }
+  }, [selected, controlled]);
+
+  const handleClick = () => {
+    if (disabled) return;
+
+    if (!controlled && toggleable) {
+      setIsSelected(!isSelected);
+    }
+    if (onClick) onClick();
+  };
+
   const baseStyles =
-    "inline-flex items-center justify-center shadow-md font-md rounded-lg";
+    "inline-flex items-center justify-center shadow-md font-md rounded-lg transition-all duration-200 transform";
+
+  const disabledStyles = disabled
+    ? "opacity-50 cursor-not-allowed"
+    : "cursor-pointer";
 
   const variants = {
     primary:
-      "bg-primary text-background hover:bg-opacity-90 shadow-md",
-    outline:
-      "border-2 border-primary border-1 bg-background shadow-md text-primary hover:bg-primary hover:text-background",
+      "bg-primary border border-primary text-background " +
+      (disabled ? "" : "hover:scale-105 hover:shadow-lg active:scale-100"),
+    outline: (controlled ? selected : isSelected)
+      ? "bg-primary border border-primary text-background " +
+        (disabled ? "" : "hover:scale-105 hover:shadow-lg active:scale-100")
+      : "border border-primary border-1 bg-background shadow-md text-primary " +
+        (disabled
+          ? ""
+          : "hover:bg-primary hover:text-background hover:scale-105 hover:shadow-lg " +
+            "active:scale-100 active:bg-primary active:text-background"),
   };
 
   const sizes = {
@@ -30,8 +69,10 @@ const PrimaryButton: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]}`}
-      onClick={onClick}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabledStyles} ${className}`}
+      onClick={handleClick}
+      disabled={disabled}
+      type="button"
     >
       {text}
     </button>

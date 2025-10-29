@@ -1,11 +1,13 @@
+// This file defines the patient's dashboard UI.
+
 import React, { useState } from "react";
-import PatientSidebar from "../components/sidebar/PatientSidebar.tsx";
-import DoctorSearchBar from "../components/input/SearchBar.tsx";
-import LongTextArea from "../components/input/LongTextArea.tsx";
-import MedicationCard from "../components/card/MedicationCard.tsx";
-import UpcomingAppointmentCard from "../components/card/UpcomingAppointmentCard.tsx";
-import DoctorSearchResults from "../components/dashboard/DoctorSearchResults.tsx";
-import DoctorResultCard from "../components/card/DoctorResultCard.tsx";
+import DoctorSearchBar from "../components/input/SearchBar";
+import LongTextArea from "../components/input/LongTextArea";
+import MedicationCard from "../components/card/MedicationCard";
+import UpcomingAppointmentCard from "../components/card/UpcomingAppointmentCard";
+import DoctorSearchResults from "../components/dashboard/DoctorSearchResults";
+import DoctorResultCard from "../components/card/DoctorResultCard";
+import AppointmentBookingModal from "../components/modal/BookingModal";
 
 const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -13,6 +15,13 @@ const Dashboard: React.FC = () => {
   const [searchDate, setSearchDate] = useState("");
   const [searchName, setSearchName] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("");
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<{
+    doctorId: string;
+    doctorName: string;
+    time: string;
+    date: string;
+  } | null>(null);
 
   const handleSearch = async (
     doctorQuery: string,
@@ -73,10 +82,13 @@ const Dashboard: React.FC = () => {
 
   // NEED TO HANDLE BOOKING
   const handleBookAppointment = (doctorId: string, timeSlot: any) => {
-    console.log("Booking appointment:", doctorId, timeSlot);
-    alert(
-      `Booking appointment for ${timeSlot.startTime} - ${timeSlot.endTime}`
-    );
+    setSelectedBooking({
+      doctorId,
+      doctorName: "Dr. John Doe", // Get from your data
+      time: timeSlot.startTime,
+      date: searchDate,
+    });
+    setShowBookingModal(true);
   };
 
   // NEED TO HANDLE MESSAGING
@@ -91,11 +103,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="flex w-full min-h-screen bg-background">
-      <div className="fixed left-0 top-0 h-screen z-10">
-        <PatientSidebar />
-      </div>
-
-      <div className="flex-1 ml-56 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         <div className="bg-gradient-to-b from-primary to-[#6886AC] text-white py-8 px-6">
           <div className="text-center mb-6">
             <h2 className="text-lg font-sm mb-4">
@@ -138,6 +146,18 @@ const Dashboard: React.FC = () => {
               onBookAppointment={handleBookAppointment}
               onMessageDoctor={handleMessageDoctor}
             />
+            <AppointmentBookingModal
+              isOpen={showBookingModal}
+              onClose={() => setShowBookingModal(false)}
+              doctorName={selectedBooking?.doctorName ?? ""}
+              appointmentTime={selectedBooking?.time ?? ""}
+              appointmentDate={selectedBooking?.date ?? ""}
+              onComplete={(data) => {
+                console.log("Booking completed:", data);
+                // Send to your backend
+                setShowBookingModal(false);
+              }}
+            />
           </div>
         ) : (
           <div className="p-12">
@@ -161,6 +181,7 @@ const Dashboard: React.FC = () => {
                     placeholder="Ask a question here..."
                     buttonText="Send"
                     onSubmit={handleAskQuestion}
+                    button={true}
                   />
                 </div>
 

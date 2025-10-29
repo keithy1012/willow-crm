@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MagnifyingGlass, Calendar } from "@phosphor-icons/react";
+import { MagnifyingGlass, Calendar } from "phosphor-react";
 
 interface DoctorSearchBarProps {
   onSearch?: (doctorQuery: string, availabilityQuery: string) => void;

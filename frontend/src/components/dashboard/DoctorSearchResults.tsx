@@ -1,6 +1,6 @@
 import React from "react";
-import DoctorResultCard from "../card/DoctorResultCard.tsx";
-import BookingButton from "../buttons/BookingButton.tsx";
+import DoctorResultCard from "../card/DoctorResultCard";
+import BookingButton from "../buttons/BookingButton";
 const noResultsImage = "/533.Checking-The-Calendar.png";
 interface TimeSlot {
   startTime: string;
