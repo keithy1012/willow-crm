@@ -6,6 +6,7 @@ interface SmallInfoCardProps {
   title: string;
   value: string | number | Date;
   backgroundWhite?: boolean;
+  width?: string | number;
 }
 
 const SmallInfoCard: React.FC<SmallInfoCardProps> = ({
@@ -13,13 +14,14 @@ const SmallInfoCard: React.FC<SmallInfoCardProps> = ({
   title,
   value,
   backgroundWhite,
+  width,
 }) => {
   return (
     <div
       className={
         backgroundWhite
-          ? "flex items-start p-4 rounded-xl shadow-sm border border-stroke bg-background"
-          : "flex items-center p-4 rounded-xl shadow-sm border border-stroke bg-foreground"
+          ? `flex items-start p-4 rounded-xl shadow-sm border border-stroke bg-background w-${width}`
+          : `flex items-center p-4 rounded-xl shadow-sm border border-stroke bg-foreground w-${width}`
       }
     >
       <div className="flex w-full flex-col gap-3 ">
@@ -27,7 +29,7 @@ const SmallInfoCard: React.FC<SmallInfoCardProps> = ({
           className={
             backgroundWhite
               ? "text-sm text-secondaryText border-b border-stroke pb-2"
-              : "text-sm text-primary"
+              : "text-sm text-primary border-b border-darkerStroke pb-2"
           }
         >
           {title}
