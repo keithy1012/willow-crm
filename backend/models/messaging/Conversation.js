@@ -17,7 +17,6 @@ const conversationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["direct", "group"],
       default: "direct",
     },
 
@@ -27,18 +26,12 @@ const conversationSchema = new mongoose.Schema(
       required: true,
     },
 
-    // For group conversations
-    name: String,
-    avatar: String,
-
-    // Track unread count per participant
     unreadCounts: {
       type: Map,
       of: Number,
       default: new Map(),
     },
 
-    // Track last read message per participant
     lastRead: {
       type: Map,
       of: mongoose.Schema.Types.ObjectId,
@@ -55,12 +48,10 @@ const conversationSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
 conversationSchema.index({ participants: 1 });
 conversationSchema.index({ updatedAt: -1 });
 conversationSchema.index({ participants: 1, isActive: 1 });
 
-// Ensure no duplicate direct conversations
 conversationSchema.index(
   { participants: 1, type: 1 },
   {

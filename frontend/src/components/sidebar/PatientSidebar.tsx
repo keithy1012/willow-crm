@@ -29,7 +29,7 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({
   const [isNavigating, setIsNavigating] = useState(false);
 
   const menuItems = [
-    { text: "Dashboard", icon: House, path: "/" },
+    { text: "Dashboard", icon: House, path: "/patientdashboard" },
     { text: "Messages", icon: ChatCircle, path: "/messages" },
     { text: "Appointments", icon: Calendar, path: "/appointments" },
     { text: "Medical Records", icon: FileText, path: "/medical-records" },

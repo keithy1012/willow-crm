@@ -23,21 +23,9 @@ const messageSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["text", "image", "file", "system"],
       default: "text",
     },
 
-    // For file/image messages
-    attachments: [
-      {
-        filename: String,
-        url: String,
-        size: Number,
-        mimeType: String,
-      },
-    ],
-
-    // Message status
     delivered: {
       type: Boolean,
       default: false,
@@ -60,22 +48,6 @@ const messageSchema = new mongoose.Schema(
         },
       },
     ],
-
-    // For message editing
-    edited: {
-      type: Boolean,
-      default: false,
-    },
-
-    editedAt: Date,
-
-    // For soft delete
-    deleted: {
-      type: Boolean,
-      default: false,
-    },
-
-    deletedAt: Date,
   },
   {
     timestamps: true,

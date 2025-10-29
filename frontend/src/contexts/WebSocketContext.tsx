@@ -40,7 +40,7 @@ interface WebSocketContextType {
   messages: Message[];
   onlineUsers: string[];
   typingUsers: { [conversationId: string]: User };
-  currentUser: User;
+  currentUser: User; // Added currentUser to context
   sendMessage: (
     conversationId: string,
     content: string,
@@ -94,9 +94,17 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     [conversationId: string]: User;
   }>({});
 
+  // Connect to WebSocket
   const connect = useCallback(() => {
     try {
-      // Use ws:// for dev, wss:// for production
+      // Get token fresh from localStorage each time
+      const freshToken = localStorage.getItem("authToken");
+
+      console.log(
+        "🔌 Connecting with token:",
+        freshToken ? freshToken.substring(0, 30) + "..." : "NO TOKEN"
+      );
+
       const wsUrl = process.env.REACT_APP_WS_URL || "ws://localhost:3001/ws";
       ws.current = new WebSocket(wsUrl);
 
@@ -104,20 +112,19 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         console.log("WebSocket connected");
         setIsConnected(true);
 
-        // Send authentication
-        ws.current?.send(
-          JSON.stringify({
-            type: "auth",
-            token: token,
-          })
-        );
+        // Send authentication with fresh token
+        if (freshToken) {
+          ws.current?.send(
+            JSON.stringify({
+              type: "auth",
+              token: freshToken,
+            })
+          );
+        } else {
+          console.error("❌ No token in localStorage!");
+        }
 
-        // Load conversations
-        ws.current?.send(
-          JSON.stringify({
-            type: "get-conversations",
-          })
-        );
+        // Don't send get-conversations here - it's sent after auth succeeds in handleAuth
       };
 
       ws.current.onmessage = (event) => {
@@ -143,7 +150,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       console.error("Failed to connect:", error);
       setIsConnected(false);
     }
-  }, [token]);
+  }, []); // Remove token dependency
 
   // Handle incoming WebSocket messages
   const handleWebSocketMessage = useCallback((data: any) => {
