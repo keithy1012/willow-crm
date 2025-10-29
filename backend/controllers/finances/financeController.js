@@ -1,5 +1,5 @@
 import FinanceMember from "../../models/finance/FinanceMember.js";
-import User from "../../models/User.js";
+import User from "../../models/users/User.js"
 
 // Create new Finance member
 export const createFinanceMember = async (req, res) => {

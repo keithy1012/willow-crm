@@ -7,7 +7,7 @@ import {
   getFinanceMemberById, 
   updateFinanceMember,
   deleteFinanceMember
-} from "../../controllers/its/financeController.js";
+} from "../../controllers/finances/financeController.js"
 
 const router = express.Router();
 

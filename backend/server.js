@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import http from 'http';
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -15,7 +17,11 @@ import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoute
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
 import socketServer from "./websocket/socketServer.js";
 
-dotenv.config();
+// Load .env from absolute backend folder path reliably
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '.env') });
+
 connectDB();
 
 const app = express();
