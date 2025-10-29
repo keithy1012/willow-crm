@@ -8,6 +8,7 @@ import patientRoutes from "./routes/patients/patientRoutes.js";
 import doctorRoutes from "./routes/doctors/doctorRoutes.js";
 import opsMemberRoutes from "./routes/ops/opsMemberRoutes.js";
 import itMemberRoutes from "./routes/its/itRoutes.js";
+import financeMemberRoutes from "./routes/finance/financeRoutes.js"
 import doctorAccountCreationRoutes from "./routes/tickets/doctorAccountCreationRoutes.js";
 import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRoutes.js";
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
@@ -27,6 +28,7 @@ app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/opsMembers", opsMemberRoutes);
 app.use("/api/itMembers", itMemberRoutes);
+app.use("/api/financeMembers", financeMemberRoutes)
 app.use("/api/tickets/doctorCreate", doctorAccountCreationRoutes);
 app.use("/api/tickets/patientChange", patientRequestChangeRoutes);
 app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
