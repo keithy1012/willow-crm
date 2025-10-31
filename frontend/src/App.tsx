@@ -30,7 +30,9 @@ import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
 import Login from "./Login/LoginScreen"
 import ForgotPassword from "./Login/ForgotPassword";
 
-import OpsDashboard from "./Operations/Dashboard"
+import OpsDoctorDashboard from "Operations/DoctorDashboard";
+import OpsPatientDashboard from "Operations/PatientDashboard";
+
 import OpsSidebar from "components/sidebar/OpsSidebar";
 const PatientLayout: React.FC = () => {
   return (
@@ -150,7 +152,8 @@ const AppContent: React.FC = () => {
           />
 
           <Route element={<OpsLayout />}>
-            <Route path="/opsdashboard/doctors" element={<OpsDashboard />} />
+            <Route path="/opsdashboard/doctors" element={<OpsDoctorDashboard />} />
+            <Route path="/opsdashboard/patients" element={<OpsPatientDashboard />} />
           </Route>
 
         </Routes>
