@@ -60,7 +60,7 @@ const server = http.createServer(app);
 socketServer.initialize(server);
 
 // Define PORT
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 
 // Start server (only use server.listen, not app.listen)
 server.listen(PORT, () => {

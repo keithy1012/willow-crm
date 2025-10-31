@@ -30,17 +30,37 @@ const LoginScreen: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
+const handleSubmit = async () => {
+  if (!validate()) return;
 
-    try {
-      // TODO: call backend login API
-      navigate("/roleselection");
-    } catch (err: any) {
-      console.error(err);
-      setErrors({ password: "Invalid credentials" });
+  try {
+    const res = await fetch("http://localhost:5050/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // Handle backend error messages
+      setErrors({ password: data.error || "Invalid credentials" });
+      return;
     }
-  };
+
+    // Save token + user info to localStorage
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    // Navigate after successful login
+    navigate("/roleselection");
+  } catch (err) {
+    console.error("Login error:", err);
+    setErrors({ password: "Something went wrong. Please try again." });
+  }
+};
 
   const handleForgotPassword = () => {
     navigate("/forgotpassword");

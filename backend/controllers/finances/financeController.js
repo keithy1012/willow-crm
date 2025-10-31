@@ -4,28 +4,47 @@ import User from "../../models/users/User.js"
 // Create new Finance member
 export const createFinanceMember = async (req, res) => {
   try {
-    const userData = {
+    const userPayload = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       username: req.body.username,
       gender: req.body.gender,
-      password: req.body.password, // TODO: hash before saving
+      password: req.body.password,
       phoneNumber: req.body.phoneNumber,
       profilePic: req.body.profilePic,
       role: "Finance",
     };
 
-    const user = new User(userData);
-    const savedUser = await user.save();
+    const registerResponse = await axios.post(
+      "http://localhost:5050/api/users/register",
+      userPayload
+    );
 
-    const financeMember = new FinanceMember({ user: savedUser._id });
-    const savedFinanceMember = await financeMember.save();
+    if (!registerResponse.data?.user?._id) {
+      return res.status(500).json({ error: "Failed to create user" });
+    }
 
-    res.status(201).json(savedFinanceMember);
+    const userId = registerResponse.data.user._id;
+
+    const financeMember = await FinanceMember.create({ user: userId });
+
+    res.status(201).json({
+      success: true,
+      message: "Finance member and linked user created successfully",
+      user: registerResponse.data.user,
+      financeMember,
+      token: registerResponse.data.token,
+    });
   } catch (error) {
-    console.error("Error creating Finance member:", error);
-    res.status(500).json({ message: "Server error", error });
+    console.error("Error creating Finance member:", error.message);
+
+    // If error came from the register API
+    if (error.response?.data) {
+      return res.status(error.response.status || 500).json(error.response.data);
+    }
+
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
