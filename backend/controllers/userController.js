@@ -56,7 +56,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email)
 
     // Validate input
     if (!email || !password) {
@@ -66,15 +65,16 @@ export const login = async (req, res) => {
     // Find user and include password field (since it's excluded by default)
     const user = await User.findOne({ email }).select("+password");
     console.log(user._id)
+    console.log(user.password)
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Invalid credentials - No User" });
     }
 
     // Check if password matches
-    const isPasswordValid = await user.comparePassword(password);
-
+    //const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = (password === user.password) // TODO: Change bac to comparePassword
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Incorrect Password" });
     }
 
     // Generate JWT token

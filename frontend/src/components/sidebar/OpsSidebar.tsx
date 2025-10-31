@@ -1,45 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import IconSidebar from "./IconSidebar";
-import {
-  House,
-  ChatCircle,
-  FileText,
-  Pill,
-  Bug,
-  Question,
-  Calendar,
-} from "phosphor-react";
-
+import { House, Bug, Question } from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
-interface OpsSidebarProps {
-  userName?: string;
-  username?: string;
-  userInitials?: string;
-}
+interface OpsSidebarProps {}
 
-const OpsSidebar: React.FC<OpsSidebarProps> = ({
-  userName = "Lok Ye Young",
-  username = "lokyeyoung",
-  userInitials,
-}) => {
+const OpsSidebar: React.FC<OpsSidebarProps> = () => {
   const [activeItem, setActiveItem] = useState("Messages");
   const [isNavigating, setIsNavigating] = useState(false);
+  const [userName, setUserName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [userInitials, setUserInitials] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Pull user info from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+
+      const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+      const initials =
+        (user.firstName?.[0] || "") + (user.lastName?.[0] || "");
+
+      setUserName(fullName || "Unknown User");
+      setUsername(user.username || user.email || "unknown");
+      setUserInitials(initials.toUpperCase());
+    }
+  }, []);
 
   const menuItems = [
     { text: "Doctor Request Tickets", icon: House, path: "/opsdashboard/doctors" },
     { text: "Patient Request Tickets", icon: House, path: "/opsdashboard/patients" },
-    { text: "History", icon: House, path: "/opsdashboard/history" }
+    { text: "History", icon: House, path: "/opsdashboard/history" },
   ];
 
   const bottomItems = [
     { text: "Bug Report", icon: Bug, path: "/bug-report" },
     { text: "Help / Support", icon: Question, path: "/help-support" },
   ];
-
-  const navigate = useNavigate();
 
   const handleItemClick = (text: string, path: string) => {
     if (isNavigating) return;
