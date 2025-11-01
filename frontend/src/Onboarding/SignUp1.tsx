@@ -15,6 +15,7 @@ const SignUp1: React.FC = () => {
     lastName?: string;
     email?: string;
   }>({});
+  const [checkingEmail, setCheckingEmail] = React.useState(false);
 
   const handleChange =
     (field: keyof typeof signupData) =>
@@ -22,7 +23,7 @@ const SignUp1: React.FC = () => {
       setSignupData({ ...signupData, [field]: e.target.value });
     };
 
-  const validate = () => {
+  const validate = async () => {
     const errs: { firstName?: string; lastName?: string; email?: string } = {};
     if (!signupData.firstName || !signupData.firstName.trim())
       errs.firstName = "Please enter a first name";
@@ -32,47 +33,59 @@ const SignUp1: React.FC = () => {
       errs.email = "Please enter an email";
     } else {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!re.test(signupData.email))
+      if (!re.test(signupData.email)) {
         errs.email = "Please enter a valid email address";
+      } else {
+        setCheckingEmail(true);
+        try {
+          const res = await fetch(
+            `/api/users/email-check?email=${encodeURIComponent(
+              signupData.email
+            )}`
+          );
+          const data = await res.json();
+          if (data.exists) {
+            errs.email = "This email is already in use";
+          }
+        } catch (error) {
+          console.error("Email check failed", error);
+          errs.email = "Error checking email. Please try again.";
+        } finally {
+          setCheckingEmail(false);
+        }
+      }
     }
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
 
-  const nextPage = () => {
-    if (!validate()) return;
+  const nextPage = async () => {
+    if (!(await validate())) return; // Await async validate
     navigate("/signup2");
   };
 
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
-      {/* Top-right SVG */}
+      {" "}
       <img
         src={TopRightBlob}
         alt="Top Right Blob"
         className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96"
-      />
-
-      {/* Bottom-left SVG */}
+      />{" "}
       <img
         src={BottomLeftBlob}
         alt="Bottom Left Blob"
         className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
-      />
-
-      {/* Willow Logo / Title */}
+      />{" "}
       <h1 className="text-4xl md:text-6xl font-bold text-gray-900 z-10 absolute top-8 left-8">
-        Willow CRM
+        Willow CRM{" "}
       </h1>
-
-      {/* Main Form Content */}
       <div className="z-10 w-full max-w-lg mx-auto mt-32 flex flex-col gap-6">
         <p className="text-xl md:text-2xl font-semibold text-gray-700">
           Welcome! Please fill in your details:
         </p>
 
-        {/* First Name */}
         <div className="flex flex-col">
           <label className="text-gray-600 mb-2">First Name</label>
           <Field
@@ -87,7 +100,6 @@ const SignUp1: React.FC = () => {
           )}
         </div>
 
-        {/* Last Name */}
         <div className="flex flex-col">
           <label className="text-gray-600 mb-2">Last Name</label>
           <Field
@@ -100,7 +112,6 @@ const SignUp1: React.FC = () => {
           )}
         </div>
 
-        {/* Email */}
         <div className="flex flex-col">
           <label className="text-gray-600 mb-2">Email</label>
           <Field
@@ -113,14 +124,14 @@ const SignUp1: React.FC = () => {
           )}
         </div>
 
-        {/* Next Button */}
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton
-            text={"Next"}
+            text={checkingEmail ? "Checking..." : "Next"}
             variant={"primary"}
             size={"small"}
             onClick={nextPage}
-          ></PrimaryButton>
+            disabled={checkingEmail}
+          />
         </div>
       </div>
     </div>
