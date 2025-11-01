@@ -29,7 +29,7 @@ import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
 import Login from "./Login/LoginScreen"
 import ForgotPassword from "./Login/ForgotPassword";
-
+import Error from "./Error/ErrorPage"
 import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
 import OpsHistory from "Operations/HistoryDashboard";
@@ -157,6 +157,8 @@ const AppContent: React.FC = () => {
             <Route path="/opsdashboard/history" element={<OpsHistory />} />
 
           </Route>
+
+          <Route path="/error" element={<Error />} />
 
         </Routes>
       </SignupProvider>
