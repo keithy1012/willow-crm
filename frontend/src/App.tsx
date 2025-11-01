@@ -32,7 +32,7 @@ import ForgotPassword from "./Login/ForgotPassword";
 
 import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
-
+import OpsHistory from "Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 const PatientLayout: React.FC = () => {
   return (
@@ -154,6 +154,8 @@ const AppContent: React.FC = () => {
           <Route element={<OpsLayout />}>
             <Route path="/opsdashboard/doctors" element={<OpsDoctorDashboard />} />
             <Route path="/opsdashboard/patients" element={<OpsPatientDashboard />} />
+            <Route path="/opsdashboard/history" element={<OpsHistory />} />
+
           </Route>
 
         </Routes>
