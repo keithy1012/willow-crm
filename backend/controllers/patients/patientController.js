@@ -1,68 +1,75 @@
-// controllers/patientController.js
 import Patient from "../../models/patients/Patient.js";
-import User from "../../models/users/User.js"
-import EmergencyContact from "../../models/patients/EmergencyContact.js"
+import User from "../../models/users/User.js";
+import EmergencyContact from "../../models/patients/EmergencyContact.js";
+
 // Create new patient
 export const createPatient = async (req, res) => {
   try {
-    const userPayload = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      username: req.body.username,
-      gender: req.body.gender,
-      password: req.body.password,
-      phoneNumber: req.body.phoneNumber,
-      profilePic: req.body.profilePic,
+    const {
+      firstName,
+      lastName,
+      email,
+      username,
+      gender,
+      password,
+      phoneNumber,
+      profilePic,
+      ec_name,
+      ec_phone,
+      ec_relationship,
+      birthdate,
+      address,
+      bloodtype,
+      allergies,
+      medicalHistory,
+    } = req.body;
+
+    // Create user directly
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      username,
+      gender,
+      password,
+      phoneNumber,
+      profilePic,
       role: "Patient",
-    };
+    });
 
-    const registerResponse = await axios.post(
-      "http://localhost:5050/api/users/register",
-      userPayload
-    );
+    await newUser.save();
 
-    if (!registerResponse.data?.user?._id) {
-      return res.status(500).json({ error: "Failed to create user" });
-    }
+    // Create emergency contact
+    const emergencyContact = await EmergencyContact.create({
+      name: ec_name,
+      phoneNumber: ec_phone,
+      relationship: ec_relationship,
+    });
 
-    const userId = registerResponse.data.user._id;
-
-    const emergencyContactData = {
-      name: req.body.ec_name,
-      phoneNumber: req.body.ec_phone,
-      relationship: req.body.ec_relationship,
-    };
-
-    const savedContact = await EmergencyContact.create(emergencyContactData);
-
-    const patientData = {
-      user: userId,
-      birthday: req.body.birthdate,
-      address: req.body.address,
-      bloodtype: req.body.bloodtype,
-      allergies: req.body.allergies,
-      medicalHistory: req.body.medicalHistory,
-      emergencyContact: savedContact._id,
-    };
-
-    const savedPatient = await Patient.create(patientData);
+    // Create patient linked to user and emergency contact
+    const newPatient = await Patient.create({
+      user: newUser._id,
+      birthday: birthdate,
+      address,
+      bloodtype,
+      allergies,
+      medicalHistory,
+      emergencyContact: emergencyContact._id,
+    });
 
     res.status(201).json({
       success: true,
-      user: registerResponse.data.user,
-      patient: savedPatient,
-      emergencyContact: savedContact,
-      token: registerResponse.data.token,
+      message:
+        "Patient, linked user, and emergency contact created successfully",
+      user: newUser,
+      patient: newPatient,
+      emergencyContact,
     });
   } catch (error) {
-    console.error("Error creating Patient:", error.message);
-
-    if (error.response?.data) {
-      return res.status(error.response.status || 500).json(error.response.data);
-    }
-
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error creating patient:", error.message);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 };
 
@@ -73,13 +80,14 @@ export const getAllPatients = async (req, res) => {
       "user",
       "firstName lastName email username gender phoneNumber profilePic role"
     );
-    return res.json(patients);
+    res.status(200).json(patients);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error("Error fetching patients:", err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Get single patient by ID
+// Get single patient by user ID
 export const getPatientById = async (req, res) => {
   try {
     const patient = await Patient.findOne({ user: req.params.userId }).populate(
@@ -87,13 +95,14 @@ export const getPatientById = async (req, res) => {
       "firstName lastName email username gender phoneNumber profilePic role"
     );
     if (!patient) return res.status(404).json({ error: "Patient not found" });
-    return res.json(patient);
+    res.status(200).json(patient);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error("Error fetching patient:", err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Update patient by ID
+// Update patient by user ID
 export const updatePatient = async (req, res) => {
   try {
     const updatedPatient = await Patient.findOneAndUpdate(
@@ -101,21 +110,32 @@ export const updatePatient = async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
-    if (!updatedPatient) return res.status(404).json({ error: "Patient not found" });
-    return res.json(updatedPatient);
+    if (!updatedPatient)
+      return res.status(404).json({ error: "Patient not found" });
+    res.status(200).json(updatedPatient);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    console.error("Error updating patient:", err);
+    res.status(400).json({ error: err.message });
   }
 };
 
-// Delete patient by ID
+// Delete patient by user ID
 export const deletePatient = async (req, res) => {
   try {
-    const deletedPatient = await Patient.findOneAndDelete({ user: req.params.userId });
+    const deletedPatient = await Patient.findOneAndDelete({
+      user: req.params.userId,
+    });
 
-    if (!deletedPatient) return res.status(404).json({ error: "Patient not found" });
-    return res.json({ message: "Patient deleted successfully" });
+    if (!deletedPatient)
+      return res.status(404).json({ error: "Patient not found" });
+
+    // Delete associated user and emergency contact
+    await User.findByIdAndDelete(deletedPatient.user);
+    await EmergencyContact.findByIdAndDelete(deletedPatient.emergencyContact);
+
+    res.status(200).json({ message: "Patient deleted successfully" });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error("Error deleting patient:", err);
+    res.status(500).json({ error: err.message });
   }
 };
