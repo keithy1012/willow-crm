@@ -37,30 +37,30 @@ export const getTicketByID = async (req, res) => {
   }
 };
 
-// Get all In Progress tickets assigned to a specific Ops member
-export const getInProgressTicketsByOpsId = async (req, res) => {
+// Get all In Progress tickets assigned to a specific IT member
+export const getInProgressTicketsByItId = async (req, res) => {
   try {
-    const opsId = new mongoose.Types.ObjectId(req.params.opsId);
+    const itId = req.params.itId;
+    const itObjectId = new mongoose.Types.ObjectId(itId);
     const tickets = await BugTicket.find({
-      assignedTo: opsId,
+      assignedTo: itObjectId,
       status: "In Progress",
     });
-    if (!tickets || tickets.length === 0)
-      return res.status(404).json({ error: "No tickets found" });
-    return res.json(tickets);
+    // Return empty array when none found
+    return res.json(tickets || []);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
 
-// Get all tickets (any status) assigned to a specific Ops member
-export const getAllTicketsByOpsId = async (req, res) => {
+// Get all tickets (any status) assigned to a specific IT member
+export const getAllTicketsByItId = async (req, res) => {
   try {
-    const opsId = new mongoose.Types.ObjectId(req.params.opsId);
-    const tickets = await BugTicket.find({ assignedTo: opsId });
-    if (!tickets || tickets.length === 0)
-      return res.status(404).json({ error: "No tickets found" });
-    return res.json(tickets);
+    const itId = req.params.itId;
+    const itObjectId = new mongoose.Types.ObjectId(itId);
+    const tickets = await BugTicket.find({ assignedTo: itObjectId });
+    // Return empty array when none found
+    return res.json(tickets || []);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

@@ -3,8 +3,8 @@ import {
   createTicket,
   getPendingTickets,
   getTicketByID,
-  getInProgressTicketsByOpsId,
-  getAllTicketsByOpsId,
+  getInProgressTicketsByItId,
+  getAllTicketsByItId,
   startTicketProgress,
   completeTicket,
 } from "../../controllers/tickets/bugTicketController.js";
@@ -13,36 +13,36 @@ import { authenticate } from "../../middleware/authentication.js";
 
 const router = express.Router();
 
-// Submit a new general ticket (Doctors and Patients can submit)
+// Submit a new general ticket
 router.post("/", authenticate, createTicket);
 
-// Get all pending tickets (Ops team only)
-router.get("/pending", authenticate, requireRole(["Ops"]), getPendingTickets);
+// Get all pending tickets (IT team only)
+router.get("/pending", authenticate, requireRole(["IT"]), getPendingTickets);
 
-// Get a ticket by ID (Ops team only)
-router.get("/:id", authenticate, requireRole(["Ops"]), getTicketByID);
+// Get a ticket by ID (IT team only)
+router.get("/:id", authenticate, requireRole(["IT"]), getTicketByID);
 
-// Get all In Progress tickets by an Ops member ID
+// Get all In Progress tickets by an IT member ID
 router.get(
-  "/:opsId/inprogress",
+  "/:itId/inprogress",
   authenticate,
-  requireRole(["Ops"]),
-  getInProgressTicketsByOpsId
+  requireRole(["IT"]),
+  getInProgressTicketsByItId
 );
 
-// Get all tickets by an Ops member ID
+// Get all tickets by an IT member ID
 router.get(
-  "/:opsId/all",
+  "/:itId/all",
   authenticate,
-  requireRole(["Ops"]),
-  getAllTicketsByOpsId
+  requireRole(["IT"]),
+  getAllTicketsByItId
 );
 
 // Move a ticket from Pending → In Progress
 router.put(
   "/:ticketId/start",
   authenticate,
-  requireRole(["Ops"]),
+  requireRole(["IT"]),
   startTicketProgress
 );
 
@@ -50,7 +50,7 @@ router.put(
 router.put(
   "/:ticketId/complete",
   authenticate,
-  requireRole(["Ops"]),
+  requireRole(["IT"]),
   completeTicket
 );
 
