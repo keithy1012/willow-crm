@@ -3,39 +3,44 @@ import Doctor from "../../models/doctors/Doctor.js";
 import User from "../../models/users/User.js";
 import Availability from "../../models/doctors/Availability.js";
 
-// Create new doctor
 export const createDoctor = async (req, res) => {
   try {
-    const userData = {
+    // Step 1: Create the User directly
+    const user = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       username: req.body.username,
       gender: req.body.gender,
-      password: req.body.password, // Hash before saving in production
+      password: req.body.password, // hashed by pre-save hook if you have one
       phoneNumber: req.body.phoneNumber,
       profilePic: req.body.profilePic,
       role: "Doctor",
-    };
-    const user = new User(userData);
+    });
+
     const savedUser = await user.save();
 
-    const doctorData = {
-      user: savedUser._id, // link Doctor to User
+    // Step 2: Create the Doctor entry and link to the user
+    const doctor = new Doctor({
+      user: savedUser._id,
       bioContent: req.body.bioContent,
       education: req.body.education,
       graduationDate: req.body.graduationDate,
       speciality: req.body.speciality,
-    };
+      availability: req.body.availability || [],
+    });
 
-    const doctor = new Doctor(doctorData);
     const savedDoctor = await doctor.save();
-    return res.status(201).json({
+
+    res.status(201).json({
+      success: true,
+      message: "Doctor profile and user account created successfully",
       user: savedUser,
       doctor: savedDoctor,
     });
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error("Error creating doctor:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

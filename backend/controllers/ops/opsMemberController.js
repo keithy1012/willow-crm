@@ -1,34 +1,36 @@
 import OpsMember from "../../models/ops/OpsMember.js";
 import User from "../../models/users/User.js";
-// Create new ops member
+
 export const createOpsMember = async (req, res) => {
   try {
-    const userData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        username: req.body.username,
-        gender: req.body.gender,
-        password: req.body.password, // Hash before saving in production
-        phoneNumber: req.body.phoneNumber,
-        profilePic: req.body.profilePic,
-        role: "Ops",
-    };
-    const user = new User(userData);
+    // Step 1: Create the User directly
+    const user = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      username: req.body.username,
+      gender: req.body.gender,
+      password: req.body.password, // hashed via pre-save hook
+      phoneNumber: req.body.phoneNumber,
+      profilePic: req.body.profilePic,
+      role: "Ops",
+    });
+
     const savedUser = await user.save();
 
-    const opsMemberData = {
-        user: savedUser._id, // link Ops → User
-    };
-
-    const opsMember = new OpsMember(opsMemberData);
+    // Step 2: Create the OpsMember entry linked to the user
+    const opsMember = new OpsMember({ user: savedUser._id });
     const savedOpsMember = await opsMember.save();
-    return res.status(201).json({
-        user: savedUser,
-        opsMember: savedOpsMember,
+
+    res.status(201).json({
+      success: true,
+      message: "Ops member and user account created successfully",
+      user: savedUser,
+      opsMember: savedOpsMember,
     });
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error("Error creating Ops member:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

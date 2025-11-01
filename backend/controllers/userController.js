@@ -12,9 +12,9 @@ export const register = async (req, res) => {
     }
 
     // Validate role
-    const validRoles = ["Doctor", "Patient", "Ops", "IT"];
+    const validRoles = ["Doctor", "Patient", "Ops", "IT", "Finance"];
     if (!validRoles.includes(role)) {
-      return res.status(400).json({ error: "Invalid role. Must be one of: Doctor, Patient, Ops, IT" });
+      return res.status(400).json({ error: "Invalid role. Must be one of: Doctor, Patient, Ops, IT, Finance" });
     }
 
     // Check if user already exists
@@ -64,16 +64,17 @@ export const login = async (req, res) => {
 
     // Find user and include password field (since it's excluded by default)
     const user = await User.findOne({ email }).select("+password");
-
+    console.log(user._id)
+    console.log(user.password)
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Invalid credentials - No User" });
     }
 
     // Check if password matches
-    const isPasswordValid = await user.comparePassword(password);
-
+    //const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = (password === user.password) // TODO: Change bac to comparePassword
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Incorrect Password" });
     }
 
     // Generate JWT token

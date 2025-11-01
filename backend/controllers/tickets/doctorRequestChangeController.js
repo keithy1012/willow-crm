@@ -7,7 +7,7 @@ export const createChangeTicket = async (req, res) => {
   try {
     const ticket = new DoctorRequestTicket({
       requestedBy: req.user._id,
-      ...req.body,               
+      ...req.body,
     });
     await ticket.save();
     res.status(201).json({ message: "Ticket submitted successfully", ticket });

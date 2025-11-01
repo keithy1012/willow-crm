@@ -29,11 +29,28 @@ import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
 import Login from "./Login/LoginScreen"
 import ForgotPassword from "./Login/ForgotPassword";
+import Error from "./Error/ErrorPage"
+import OpsDoctorDashboard from "Operations/DoctorDashboard";
+import OpsPatientDashboard from "Operations/PatientDashboard";
+import OpsHistory from "Operations/HistoryDashboard";
+import OpsSidebar from "components/sidebar/OpsSidebar";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
       <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
         <PatientSidebar />
+      </div>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+const OpsLayout: React.FC = () => {
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <OpsSidebar />
       </div>
       <div className="flex-1">
         <Outlet />
@@ -133,7 +150,16 @@ const AppContent: React.FC = () => {
             path="/financedashboard"
             element={<div>Finance Dashboard</div>}
           />
-          <Route path="/opsdashboard" element={<div>Ops Dashboard</div>} />
+
+          <Route element={<OpsLayout />}>
+            <Route path="/opsdashboard/doctors" element={<OpsDoctorDashboard />} />
+            <Route path="/opsdashboard/patients" element={<OpsPatientDashboard />} />
+            <Route path="/opsdashboard/history" element={<OpsHistory />} />
+
+          </Route>
+
+          <Route path="/error" element={<Error />} />
+
         </Routes>
       </SignupProvider>
     </WebSocketProvider>
