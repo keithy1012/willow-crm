@@ -6,7 +6,7 @@ import Messages from "./Patients/Messages";
 import Appointments from "./Patients/Appointments";
 import MedicalRecords from "./Patients/MedicalRecords";
 import Medications from "./Patients/Medications";
-import BugReportPage from "./Patients/BugReport";
+import BugReportPage from "./Bugs/BugReport";
 import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./context/SignUpContext";
@@ -27,9 +27,9 @@ import PatientOnboarding2 from "./Onboarding/Patient/PatientOnboarding2";
 import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
 import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
-import Login from "./Login/LoginScreen"
+import Login from "./Login/LoginScreen";
 import ForgotPassword from "./Login/ForgotPassword";
-import Error from "./Error/ErrorPage"
+import Error from "./Error/ErrorPage";
 import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
 import OpsHistory from "Operations/HistoryDashboard";
@@ -152,14 +152,19 @@ const AppContent: React.FC = () => {
           />
 
           <Route element={<OpsLayout />}>
-            <Route path="/opsdashboard/doctors" element={<OpsDoctorDashboard />} />
-            <Route path="/opsdashboard/patients" element={<OpsPatientDashboard />} />
+            <Route
+              path="/opsdashboard/doctors"
+              element={<OpsDoctorDashboard />}
+            />
+            <Route
+              path="/opsdashboard/patients"
+              element={<OpsPatientDashboard />}
+            />
             <Route path="/opsdashboard/history" element={<OpsHistory />} />
-
+            <Route path="/bug-report" element={<BugReportPage />} />
           </Route>
 
           <Route path="/error" element={<Error />} />
-
         </Routes>
       </SignupProvider>
     </WebSocketProvider>

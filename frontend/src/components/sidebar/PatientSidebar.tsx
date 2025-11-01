@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import IconSidebar from "./IconSidebar";
 import {
@@ -20,13 +20,27 @@ interface PatientSidebarProps {
   userInitials?: string;
 }
 
-const PatientSidebar: React.FC<PatientSidebarProps> = ({
-  userName = "Lok Ye Young",
-  username = "lokyeyoung",
-  userInitials,
-}) => {
+const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
   const [activeItem, setActiveItem] = useState("Messages");
   const [isNavigating, setIsNavigating] = useState(false);
+  const [userName, setUserName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [userInitials, setUserInitials] = useState<string>("");
+
+  useEffect(() => {
+    // Pull user info from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+
+      const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+      const initials = (user.firstName?.[0] || "") + (user.lastName?.[0] || "");
+
+      setUserName(fullName || "Unknown User");
+      setUsername(user.username || user.email || "unknown");
+      setUserInitials(initials.toUpperCase());
+    }
+  }, []);
 
   const menuItems = [
     { text: "Dashboard", icon: House, path: "/patientdashboard" },

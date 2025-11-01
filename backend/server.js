@@ -28,6 +28,7 @@ import financeMemberRoutes from "./routes/finance/financeRoutes.js";
 import doctorAccountCreationRoutes from "./routes/tickets/doctorAccountCreationRoutes.js";
 import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRoutes.js";
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
+import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
 import socketServer from "./websocket/socketServer.js";
 
@@ -51,6 +52,7 @@ app.use("/api/financeMembers", financeMemberRoutes);
 app.use("/api/tickets/doctorCreate", doctorAccountCreationRoutes);
 app.use("/api/tickets/patientChange", patientRequestChangeRoutes);
 app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
+app.use("/api/tickets/bugTicket", bugTicketRoutes);
 app.use("/api/availability", availabilityRoutes);
 
 // Create HTTP server
