@@ -95,36 +95,39 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   }>({});
 
   // Connect to WebSocket
+  // In WebSocketContext.tsx, update the connect function:
+
   const connect = useCallback(() => {
     try {
-      // Get token fresh from localStorage each time
-      const freshToken = localStorage.getItem("authToken");
+      // Get token using the CORRECT key name
+      const authToken = token || localStorage.getItem("token"); // Changed from "authToken"
 
       console.log(
         "🔌 Connecting with token:",
-        freshToken ? freshToken.substring(0, 30) + "..." : "NO TOKEN"
+        authToken ? authToken.substring(0, 30) + "..." : "NO TOKEN"
       );
 
-      const wsUrl = process.env.REACT_APP_WS_URL || "ws://localhost:3001/ws";
+      const wsUrl = process.env.REACT_APP_WS_URL || "ws://localhost:5050/ws";
       ws.current = new WebSocket(wsUrl);
 
       ws.current.onopen = () => {
         console.log("WebSocket connected");
         setIsConnected(true);
 
-        // Send authentication with fresh token
-        if (freshToken) {
+        // Check if we have a real JWT token (not test placeholders)
+        if (authToken && authToken !== "user1" && authToken !== "user2") {
+          console.log("🔐 Sending authentication");
           ws.current?.send(
             JSON.stringify({
               type: "auth",
-              token: freshToken,
+              token: authToken,
             })
           );
         } else {
-          console.error("❌ No token in localStorage!");
+          console.warn(
+            "⚠️ No valid auth token - running without authentication"
+          );
         }
-
-        // Don't send get-conversations here - it's sent after auth succeeds in handleAuth
       };
 
       ws.current.onmessage = (event) => {
@@ -150,7 +153,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       console.error("Failed to connect:", error);
       setIsConnected(false);
     }
-  }, []); // Remove token dependency
+  }, [token]);
 
   // Handle incoming WebSocket messages
   const handleWebSocketMessage = useCallback((data: any) => {
@@ -228,6 +231,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
       case "error":
         console.error("Server error:", data.error);
+        break;
+      case "auth-error":
+        console.error("Authentication failed:", data.error);
+        // Clear invalid token and redirect to login
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
+        // Optionally redirect to login
+        // window.location.href = "/login";
         break;
 
       default:

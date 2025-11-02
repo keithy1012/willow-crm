@@ -55,19 +55,19 @@ const handleSubmit = async () => {
     localStorage.setItem("user", JSON.stringify(data.user));
 
     // Navigate after successful login
-    if (data.user.role == "Ops") {
+    if (data.user.role === "Ops") {
       navigate("/opsdashboard/doctors")
     }
-    else if (data.user.role == "Finance") { 
+    else if (data.user.role === "Finance") { 
       navigate("/financedashboard")
     }
-    else if (data.user.role == "IT") { 
+    else if (data.user.role === "IT") { 
       navigate("/itdashboard")
     }
-    else if (data.user.role == "Patient") { 
+    else if (data.user.role === "Patient") { 
       navigate("/patientdashboard")
     }
-    else if (data.user.role == "Doctor") { 
+    else if (data.user.role === "Doctor") { 
       navigate("/doctordashboard")
     }
     else {

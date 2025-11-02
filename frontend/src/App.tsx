@@ -27,9 +27,9 @@ import PatientOnboarding2 from "./Onboarding/Patient/PatientOnboarding2";
 import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
 import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
-import Login from "./Login/LoginScreen"
+import Login from "./Login/LoginScreen";
 import ForgotPassword from "./Login/ForgotPassword";
-import Error from "./Error/ErrorPage"
+import Error from "./Error/ErrorPage";
 import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
 import OpsHistory from "Operations/HistoryDashboard";
@@ -64,40 +64,56 @@ const AppContent: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  // In App.tsx, update the useEffect in AppContent:
+
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    const storedUser = localStorage.getItem("currentUser");
+    // Check for auth token using the CORRECT key names
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
+      // Real authentication token exists
+      console.log("Using real auth token");
       setToken(storedToken);
       setCurrentUser(JSON.parse(storedUser));
     } else {
+      // No real auth, check for test mode
       const urlUser = searchParams.get("user");
       const testUserToken = localStorage.getItem("testUser");
-      const testToken = urlUser || testUserToken || "user1";
 
-      if (urlUser && urlUser !== testUserToken) {
-        localStorage.setItem("testUser", urlUser);
+      if (urlUser || testUserToken) {
+        // Test mode - but DON'T pass these as auth tokens
+        console.log("Using test mode - no real auth");
+        const testMode = urlUser || testUserToken || "user1";
+
+        if (urlUser && urlUser !== testUserToken) {
+          localStorage.setItem("testUser", urlUser);
+        }
+
+        // Don't set a fake token - WebSocket needs real auth
+        setToken(null);
+        setCurrentUser(
+          testMode === "user1"
+            ? {
+                id: "507f1f77bcf86cd799439011",
+                firstName: "Dr",
+                lastName: "Smith",
+                username: "drsmith",
+                role: "Doctor" as const,
+              }
+            : {
+                id: "507f1f77bcf86cd799439012",
+                firstName: "John",
+                lastName: "Patient",
+                username: "johnpatient",
+                role: "Patient" as const,
+              }
+        );
+      } else {
+        // No auth and no test mode
+        setToken(null);
+        setCurrentUser(null);
       }
-
-      setToken(testToken);
-      setCurrentUser(
-        testToken === "user1"
-          ? {
-              id: "507f1f77bcf86cd799439011",
-              firstName: "Dr",
-              lastName: "Smith",
-              username: "drsmith",
-              role: "Doctor" as const,
-            }
-          : {
-              id: "507f1f77bcf86cd799439012",
-              firstName: "John",
-              lastName: "Patient",
-              username: "johnpatient",
-              role: "Patient" as const,
-            }
-      );
     }
   }, [searchParams]);
 
@@ -119,7 +135,7 @@ const AppContent: React.FC = () => {
       };
 
   return (
-    <WebSocketProvider token={token || "user2"} currentUser={formattedUser}>
+    <WebSocketProvider token={token || ""} currentUser={formattedUser}>
       <SignupProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -152,14 +168,18 @@ const AppContent: React.FC = () => {
           />
 
           <Route element={<OpsLayout />}>
-            <Route path="/opsdashboard/doctors" element={<OpsDoctorDashboard />} />
-            <Route path="/opsdashboard/patients" element={<OpsPatientDashboard />} />
+            <Route
+              path="/opsdashboard/doctors"
+              element={<OpsDoctorDashboard />}
+            />
+            <Route
+              path="/opsdashboard/patients"
+              element={<OpsPatientDashboard />}
+            />
             <Route path="/opsdashboard/history" element={<OpsHistory />} />
-
           </Route>
 
           <Route path="/error" element={<Error />} />
-
         </Routes>
       </SignupProvider>
     </WebSocketProvider>
