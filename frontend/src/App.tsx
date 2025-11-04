@@ -6,7 +6,7 @@ import Messages from "./Patients/Messages";
 import Appointments from "./Patients/Appointments";
 import MedicalRecords from "./Patients/MedicalRecords";
 import Medications from "./Patients/Medications";
-import BugReportPage from "./Patients/BugReport";
+import BugReportPage from "./Bugs/BugReport";
 import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./context/SignUpContext";
@@ -27,13 +27,17 @@ import PatientOnboarding2 from "./Onboarding/Patient/PatientOnboarding2";
 import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
 import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
-import Login from "./Login/LoginScreen"
+import Login from "./Login/LoginScreen";
 import ForgotPassword from "./Login/ForgotPassword";
-import Error from "./Error/ErrorPage"
+import Error from "./Error/ErrorPage";
 import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
 import OpsHistory from "Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
+
+import ItSidebar from "components/sidebar/ItSidebar";
+import PendingDashboard from "IT/PendingDashboard";
+import ITHistory from "IT/ITHistory";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -51,6 +55,19 @@ const OpsLayout: React.FC = () => {
     <div className="flex">
       <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
         <OpsSidebar />
+      </div>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
+const ItsLayout: React.FC = () => {
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <ItSidebar />
       </div>
       <div className="flex-1">
         <Outlet />
@@ -145,21 +162,30 @@ const AppContent: React.FC = () => {
             <Route path="/help-support" element={<HelpSupportPage />} />
           </Route>
 
-          <Route path="/itdashboard" element={<div>IT Dashboard</div>} />
+          <Route element={<OpsLayout />}>
+            <Route
+              path="/opsdashboard/doctors"
+              element={<OpsDoctorDashboard />}
+            />
+            <Route
+              path="/opsdashboard/patients"
+              element={<OpsPatientDashboard />}
+            />
+            <Route path="/opsdashboard/history" element={<OpsHistory />} />
+            <Route path="/bug-report" element={<BugReportPage />} />
+          </Route>
+
+          <Route element={<ItsLayout />}>
+            <Route path="/itdashboard/pending" element={<PendingDashboard />} />
+            <Route path="/itdashboard/history" element={<ITHistory />} />
+          </Route>
+
           <Route
             path="/financedashboard"
             element={<div>Finance Dashboard</div>}
           />
 
-          <Route element={<OpsLayout />}>
-            <Route path="/opsdashboard/doctors" element={<OpsDoctorDashboard />} />
-            <Route path="/opsdashboard/patients" element={<OpsPatientDashboard />} />
-            <Route path="/opsdashboard/history" element={<OpsHistory />} />
-
-          </Route>
-
           <Route path="/error" element={<Error />} />
-
         </Routes>
       </SignupProvider>
     </WebSocketProvider>

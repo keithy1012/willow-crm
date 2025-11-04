@@ -11,7 +11,9 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
 
   const validate = () => {
     const errs: { email?: string; password?: string } = {};
@@ -30,55 +32,49 @@ const LoginScreen: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-const handleSubmit = async () => {
-  if (!validate()) return;
+  const handleSubmit = async () => {
+    if (!validate()) return;
 
-  try {
-    const res = await fetch("http://localhost:5050/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("http://localhost:5050/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      // Handle backend error messages
-      setErrors({ password: data.error || "Invalid credentials" });
-      return;
-    }
+      if (!res.ok) {
+        // Handle backend error messages
+        setErrors({ password: data.error || "Invalid credentials" });
+        return;
+      }
 
-    // Save token + user info to localStorage
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+      // Save token + user info to localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    // Navigate after successful login
-    if (data.user.role == "Ops") {
-      navigate("/opsdashboard/doctors")
+      // Navigate after successful login
+      if (data.user.role == "Ops") {
+        navigate("/opsdashboard/doctors");
+      } else if (data.user.role == "Finance") {
+        navigate("/financedashboard");
+      } else if (data.user.role == "IT") {
+        navigate("/itdashboard/pending");
+      } else if (data.user.role == "Patient") {
+        navigate("/patientdashboard");
+      } else if (data.user.role == "Doctor") {
+        navigate("/doctordashboard");
+      } else {
+        navigate("/error");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrors({ password: "Something went wrong. Please try again." });
     }
-    else if (data.user.role == "Finance") { 
-      navigate("/financedashboard")
-    }
-    else if (data.user.role == "IT") { 
-      navigate("/itdashboard")
-    }
-    else if (data.user.role == "Patient") { 
-      navigate("/patientdashboard")
-    }
-    else if (data.user.role == "Doctor") { 
-      navigate("/doctordashboard")
-    }
-    else {
-      navigate("/error")
-    }
-
-  } catch (err) {
-    console.error("Login error:", err);
-    setErrors({ password: "Something went wrong. Please try again." });
-  }
-};
+  };
 
   const handleForgotPassword = () => {
     navigate("/forgotpassword");
@@ -87,15 +83,25 @@ const handleSubmit = async () => {
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col p-8 overflow-hidden">
       {/* Background blobs */}
-      <img src={TopRightBlob} alt="Top Right Blob" className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96" />
-      <img src={BottomLeftBlob} alt="Bottom Left Blob" className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96" />
+      <img
+        src={TopRightBlob}
+        alt="Top Right Blob"
+        className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96"
+      />
+      <img
+        src={BottomLeftBlob}
+        alt="Bottom Left Blob"
+        className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
+      />
 
       <h1 className="text-4xl md:text-6xl font-bold text-gray-900 absolute top-8 left-8 z-10">
         Willow CRM
       </h1>
 
       <div className="z-10 w-full max-w-lg mx-auto mt-32 flex flex-col gap-6">
-        <p className="text-xl md:text-2xl font-semibold text-gray-700">Welcome back!</p>
+        <p className="text-xl md:text-2xl font-semibold text-gray-700">
+          Welcome back!
+        </p>
 
         {/* Email */}
         <div className="flex flex-col">
@@ -106,7 +112,9 @@ const handleSubmit = async () => {
             value={email}
             onChange={(e: any) => setEmail(e.target.value)}
           />
-          {errors.email && <span className="text-sm text-red-500 mt-1">{errors.email}</span>}
+          {errors.email && (
+            <span className="text-sm text-red-500 mt-1">{errors.email}</span>
+          )}
         </div>
 
         {/* Password */}
@@ -118,7 +126,9 @@ const handleSubmit = async () => {
             value={password}
             onChange={(e: any) => setPassword(e.target.value)}
           />
-          {errors.password && <span className="text-sm text-red-500 mt-1">{errors.password}</span>}
+          {errors.password && (
+            <span className="text-sm text-red-500 mt-1">{errors.password}</span>
+          )}
         </div>
 
         {/* Forgot Password */}

@@ -11,7 +11,7 @@ interface Ticket {
   description: string;
 }
 
-const OpsPatientDashboard: React.FC = () => {
+const PendingDashboard: React.FC = () => {
   const [pendingTickets, setPendingTickets] = useState<Ticket[]>([]);
   const [inProgressTickets, setInProgressTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ const OpsPatientDashboard: React.FC = () => {
 
   // Fetch tickets
   useEffect(() => {
-    if (!user || user.role !== "Ops") {
+    if (!user || user.role !== "IT") {
       navigate("/error");
       return;
     }
@@ -48,12 +48,12 @@ const OpsPatientDashboard: React.FC = () => {
           : { "Content-Type": "application/json" };
 
         const [pendingRes, inProgressRes] = await Promise.all([
-          fetch("http://localhost:5050/api/tickets/patientChange/pending", {
+          fetch("http://localhost:5050/api/tickets/bugTicket/pending", {
             method: "GET",
             headers: authHeaders,
           }),
           fetch(
-            `http://localhost:5050/api/tickets/patientChange/${user._id}/inprogress`,
+            `http://localhost:5050/api/tickets/bugTicket/${user._id}/inprogress`,
             {
               method: "GET",
               headers: authHeaders,
@@ -99,7 +99,7 @@ const OpsPatientDashboard: React.FC = () => {
     try {
       const token = user?.token || localStorage.getItem("token") || "";
       await fetch(
-        `http://localhost:5050/api/tickets/patientChange/${selectedTicket._id}/start`,
+        `http://localhost:5050/api/tickets/bugTicket/${selectedTicket._id}/start`,
         {
           method: "PUT",
           headers: {
@@ -125,7 +125,7 @@ const OpsPatientDashboard: React.FC = () => {
     try {
       const token = user?.token || localStorage.getItem("token") || "";
       await fetch(
-        `http://localhost:5050/api/tickets/patientChange/${selectedTicket._id}/complete`,
+        `http://localhost:5050/api/tickets/bugTicket/${selectedTicket._id}/complete`,
         {
           method: "PUT",
           headers: {
@@ -157,7 +157,7 @@ const OpsPatientDashboard: React.FC = () => {
       {/* Header */}
       <div className="bg-gradient-to-b from-primary to-[#6886AC] text-white py-8 px-6">
         <div className="text-center mb-6">
-          <h2 className="text-lg font-sm mb-2">Operations Dashboard</h2>
+          <h2 className="text-lg font-sm mb-2">IT Dashboard</h2>
           <p className="text-sm">Manage and assign tickets for operations</p>
         </div>
       </div>
@@ -167,7 +167,7 @@ const OpsPatientDashboard: React.FC = () => {
         {/* Left column - Pending */}
         <div className="flex-1 bg-foreground border border-gray-200 rounded-xl shadow-sm p-6">
           <h2 className="text-xl font-semibold text-primaryText mb-4">
-            All Patient Tickets
+            All Tickets
           </h2>
           <div className="space-y-4">
             {pendingTickets.length > 0 ? (
@@ -177,7 +177,7 @@ const OpsPatientDashboard: React.FC = () => {
                   title={ticket.title}
                   requestedBy={ticket.requestedBy}
                   description={ticket.description}
-                  buttonLabel="Assign"
+                  buttonLabel="Claim"
                   onButtonClick={() => handleAssignClick(ticket)}
                 />
               ))
@@ -232,4 +232,4 @@ const OpsPatientDashboard: React.FC = () => {
   );
 };
 
-export default OpsPatientDashboard;
+export default PendingDashboard;

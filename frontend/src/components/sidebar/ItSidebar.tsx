@@ -1,31 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import IconSidebar from "./IconSidebar";
-import {
-  House,
-  ChatCircle,
-  FileText,
-  Pill,
-  Bug,
-  Question,
-  Calendar,
-} from "phosphor-react";
-
+import { House, Bug, Question } from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
-interface PatientSidebarProps {
-  userName?: string;
-  username?: string;
-  userInitials?: string;
-}
+interface ItSidebarProps {}
 
-const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
+const ItSidebar: React.FC<ItSidebarProps> = () => {
   const [activeItem, setActiveItem] = useState("Messages");
   const [isNavigating, setIsNavigating] = useState(false);
   const [userName, setUserName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [userInitials, setUserInitials] = useState<string>("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Pull user info from localStorage
@@ -43,19 +31,14 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
   }, []);
 
   const menuItems = [
-    { text: "Dashboard", icon: House, path: "/patientdashboard" },
-    { text: "Messages", icon: ChatCircle, path: "/messages" },
-    { text: "Appointments", icon: Calendar, path: "/appointments" },
-    { text: "Medical Records", icon: FileText, path: "/medical-records" },
-    { text: "Medications", icon: Pill, path: "/medications" },
+    { text: "Pending Tickets", icon: House, path: "/itdashboard/pending" },
+    { text: "Ticket History", icon: House, path: "/itdashboard/history" },
   ];
 
   const bottomItems = [
     { text: "Bug Report", icon: Bug, path: "/bug-report" },
     { text: "Help / Support", icon: Question, path: "/help-support" },
   ];
-
-  const navigate = useNavigate();
 
   const handleItemClick = (text: string, path: string) => {
     if (isNavigating) return;
@@ -102,4 +85,4 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
   );
 };
 
-export default PatientSidebar;
+export default ItSidebar;

@@ -3,7 +3,7 @@ import React from "react";
 interface TicketCardProps {
   title: string;
   requestedBy: string;
-  description: string;
+  description?: string;
   buttonLabel?: string;
   onButtonClick?: () => void;
 }
@@ -15,8 +15,8 @@ const TicketCard: React.FC<TicketCardProps> = ({
   buttonLabel = "View Details",
   onButtonClick,
 }) => {
-  const truncatedDesc =
-    description.length > 50 ? description.slice(0, 50) + "..." : description;
+  const desc = typeof description === "string" ? description : "";
+  const truncatedDesc = desc.length > 50 ? desc.slice(0, 50) + "..." : desc;
 
   return (
     <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-4 flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
