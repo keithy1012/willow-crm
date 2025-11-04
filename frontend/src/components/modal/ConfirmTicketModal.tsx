@@ -45,7 +45,7 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
         </div>
 
         <p className="text-sm text-gray-500 mb-4">
-          You’re about to mark this ticket as <strong>finished</strong>.
+          You’re about to mark this ticket as <strong>in progress</strong>.
         </p>
 
         <hr className="my-3" />
