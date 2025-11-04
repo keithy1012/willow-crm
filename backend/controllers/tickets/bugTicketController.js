@@ -27,6 +27,9 @@ export const getPendingTickets = async (req, res) => {
         return {
           ...ticket.toObject(),
           requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+          requestedByType: user ? `${user.role}` : null,
+          description: ticket.content,
+          ticketName: ticket.title,
         };
       })
     );
@@ -47,6 +50,9 @@ export const getTicketByID = async (req, res) => {
     return res.json({
       ...ticket.toObject(),
       requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+      requestedByType: user ? `${user.role}` : null,
+      description: ticket.content,
+      ticketName: ticket.title,
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -68,6 +74,9 @@ export const getInProgressTicketsByItId = async (req, res) => {
         return {
           ...ticket.toObject(),
           requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+          requestedByType: user ? `${user.role}` : null,
+          description: ticket.content,
+          ticketName: ticket.title,
         };
       })
     );
@@ -90,6 +99,9 @@ export const getAllTicketsByItId = async (req, res) => {
         return {
           ...ticket.toObject(),
           requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+          requestedByType: user ? `${user.role}` : null,
+          description: ticket.content,
+          ticketName: ticket.title,
         };
       })
     );

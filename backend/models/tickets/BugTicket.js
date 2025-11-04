@@ -14,7 +14,7 @@ const ticketSchema = new mongoose.Schema(
     approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     content: { type: String, required: true },
     isResolved: { type: Boolean, required: true },
-    resolvedAt: { type: Date },
+    dateCompleted: { type: Date, required: false },
   },
   { timestamps: true }
 );

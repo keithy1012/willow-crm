@@ -37,7 +37,7 @@ import OpsSidebar from "components/sidebar/OpsSidebar";
 
 import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "IT/PendingDashboard";
-
+import ITHistory from "IT/ITHistory";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -177,6 +177,7 @@ const AppContent: React.FC = () => {
 
           <Route element={<ItsLayout />}>
             <Route path="/itdashboard/pending" element={<PendingDashboard />} />
+            <Route path="/itdashboard/history" element={<ITHistory />} />
           </Route>
 
           <Route
