@@ -3,7 +3,7 @@ import React from "react";
 interface Ticket {
   _id: string;
   title: string;
-  doctorName: string;
+  requestedBy: string;
   description: string;
   createdAt?: string;
 }
@@ -53,7 +53,7 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
         {/* Ticket Details */}
         <div className="space-y-2 text-sm text-gray-700">
           <p>
-            <strong>Doctor Name:</strong> {ticket.doctorName}
+            <strong>Doctor Name:</strong> {ticket.requestedBy}
           </p>
           <p>
             <strong>Ticket Name:</strong> {ticket.title}

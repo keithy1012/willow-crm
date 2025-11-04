@@ -7,7 +7,7 @@ import FinishTicketModal from "components/modal/FinishTicketModal";
 interface Ticket {
   _id: string;
   title: string;
-  doctorName: string;
+  requestedBy: string;
   description: string;
 }
 
@@ -157,7 +157,7 @@ const PendingDashboard: React.FC = () => {
       {/* Header */}
       <div className="bg-gradient-to-b from-primary to-[#6886AC] text-white py-8 px-6">
         <div className="text-center mb-6">
-          <h2 className="text-lg font-sm mb-2">Operations Dashboard</h2>
+          <h2 className="text-lg font-sm mb-2">IT Dashboard</h2>
           <p className="text-sm">Manage and assign tickets for operations</p>
         </div>
       </div>
@@ -175,7 +175,7 @@ const PendingDashboard: React.FC = () => {
                 <TicketCard
                   key={ticket._id}
                   title={ticket.title}
-                  requestedBy={ticket.doctorName}
+                  requestedBy={ticket.requestedBy}
                   description={ticket.description}
                   buttonLabel="Claim"
                   onButtonClick={() => handleAssignClick(ticket)}
@@ -198,7 +198,7 @@ const PendingDashboard: React.FC = () => {
                 <TicketCard
                   key={ticket._id}
                   title={ticket.title}
-                  requestedBy={ticket.doctorName}
+                  requestedBy={ticket.requestedBy}
                   description={ticket.description}
                   buttonLabel="Finish"
                   onButtonClick={() => handleFinishClick(ticket)}

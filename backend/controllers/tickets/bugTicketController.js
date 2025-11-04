@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import BugTicket from "../../models/tickets/BugTicket.js";
-
+import User from "../../models/users/User.js";
 // Create new generic ticket
 export const createTicket = async (req, res) => {
   try {
@@ -20,7 +20,18 @@ export const createTicket = async (req, res) => {
 export const getPendingTickets = async (req, res) => {
   try {
     const tickets = await BugTicket.find({ status: "Pending" });
-    res.json(tickets);
+    // Find user details for each submitter
+    const enrichedTickets = await Promise.all(
+      tickets.map(async (ticket) => {
+        const user = await User.findById(ticket.submitter);
+        return {
+          ...ticket.toObject(),
+          requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+        };
+      })
+    );
+
+    res.json(enrichedTickets);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -31,7 +42,12 @@ export const getTicketByID = async (req, res) => {
   try {
     const ticket = await BugTicket.findById(req.params.id);
     if (!ticket) return res.status(404).json({ error: "Ticket not found" });
-    return res.json(ticket);
+    const user = await User.findById(ticket.submitter);
+
+    return res.json({
+      ...ticket.toObject(),
+      requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+    });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -40,14 +56,23 @@ export const getTicketByID = async (req, res) => {
 // Get all In Progress tickets assigned to a specific IT member
 export const getInProgressTicketsByItId = async (req, res) => {
   try {
-    const itId = req.params.itId;
-    const itObjectId = new mongoose.Types.ObjectId(itId);
+    const itObjectId = new mongoose.Types.ObjectId(req.params.itId);
     const tickets = await BugTicket.find({
       assignedTo: itObjectId,
       status: "In Progress",
     });
-    // Return empty array when none found
-    return res.json(tickets || []);
+
+    const enrichedTickets = await Promise.all(
+      tickets.map(async (ticket) => {
+        const user = await User.findById(ticket.submitter);
+        return {
+          ...ticket.toObject(),
+          requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+        };
+      })
+    );
+
+    return res.json(enrichedTickets);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -56,11 +81,20 @@ export const getInProgressTicketsByItId = async (req, res) => {
 // Get all tickets (any status) assigned to a specific IT member
 export const getAllTicketsByItId = async (req, res) => {
   try {
-    const itId = req.params.itId;
-    const itObjectId = new mongoose.Types.ObjectId(itId);
+    const itObjectId = new mongoose.Types.ObjectId(req.params.itId);
     const tickets = await BugTicket.find({ assignedTo: itObjectId });
-    // Return empty array when none found
-    return res.json(tickets || []);
+
+    const enrichedTickets = await Promise.all(
+      tickets.map(async (ticket) => {
+        const user = await User.findById(ticket.submitter);
+        return {
+          ...ticket.toObject(),
+          requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
+        };
+      })
+    );
+
+    return res.json(enrichedTickets);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

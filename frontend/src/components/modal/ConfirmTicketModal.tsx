@@ -3,7 +3,7 @@ import React from "react";
 interface Ticket {
   _id: string;
   title: string;
-  doctorName: string;
+  requestedBy: string;
   description: string;
   createdAt?: string;
 }
@@ -53,7 +53,7 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
         {/* Ticket Details */}
         <div className="space-y-2 text-sm text-gray-700">
           <p>
-            <strong>Doctor Name:</strong> {ticket.doctorName}
+            <strong>Requested By:</strong> {ticket.requestedBy}
           </p>
           <p>
             <strong>Ticket Name:</strong> {ticket.title}
@@ -81,7 +81,7 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
             onClick={onConfirm}
             className="px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary-dark transition"
           >
-            Finish
+            Claim
           </button>
         </div>
       </div>
