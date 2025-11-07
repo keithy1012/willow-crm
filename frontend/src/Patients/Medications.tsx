@@ -1,5 +1,8 @@
 import { useRequireRole } from "hooks/useRequireRole";
 
-const Medications = () => <h1>Medications</h1>;
-useRequireRole("Patient");
+const Medications = () => {
+  useRequireRole("Patient");
+  return <h1>Medications</h1>;
+};
+
 export default Medications;
