@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TicketHistoryTable from "components/table/ticketsHistoryTable";
+import { useRequireRole } from "hooks/useRequireRole";
 interface Ticket {
   _id: string;
   ticketName: string;
@@ -14,19 +15,9 @@ interface Ticket {
 const OpsHistory: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userID = user?._id;
+  const user = useRequireRole("Ops", true);
 
   useEffect(() => {
-    if (!user || user.role !== "Ops") {
-      navigate("/error");
-      return;
-    }
-
-    if (!userID) return;
-
     const fetchTickets = async () => {
       try {
         const token = user?.token || localStorage.getItem("token") || "";
@@ -35,11 +26,11 @@ const OpsHistory: React.FC = () => {
           : { "Content-Type": "application/json" };
 
         const [doctorRes, patientRes] = await Promise.all([
-          fetch(`http://localhost:5050/api/tickets/doctorChange/${userID}/all`, {
+          fetch(`http://localhost:5050/api/tickets/doctorChange/${user._id}/all`, {
             method: "GET",
             headers,
           }),
-          fetch(`http://localhost:5050/api/tickets/patientChange/${userID}/all`, {
+          fetch(`http://localhost:5050/api/tickets/patientChange/${user._id}/all`, {
             method: "GET",
             headers,
           }),
@@ -77,7 +68,7 @@ const OpsHistory: React.FC = () => {
     };
 
     fetchTickets();
-  }, [userID, navigate, user]);
+  }, [user]);
 
   if (loading) {
     return (

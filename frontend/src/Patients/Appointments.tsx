@@ -3,9 +3,11 @@ import SmallInfoCard from "components/card/SmallInfoCard";
 import Dropdown from "components/input/Dropdown";
 import { Calendar } from "phosphor-react";
 import { useState } from "react";
+import { useRequireRole } from "hooks/useRequireRole";
 
 const Appointments = () => {
   const [sortBy, setSortBy] = useState("upcoming");
+  useRequireRole("Patient");
 
   const pastAppointments = {
     "Past 6 Months": [
