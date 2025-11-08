@@ -93,6 +93,10 @@ const PatientOnboarding4: React.FC = () => {
     // Prepare final address
     const finalAddress = `${signupData.street}, ${signupData.city}, ${signupData.state} ${signupData.zipcode}`;
 
+    // Convert images to base64
+    const frontImageBase64 = frontImage ? await fileToBase64(frontImage) : null;
+    const backImageBase64 = backImage ? await fileToBase64(backImage) : null;
+
     // Restructure data to match backend model
     const finalPayload = {
       firstName: signupData.firstName,
@@ -110,11 +114,11 @@ const PatientOnboarding4: React.FC = () => {
       bloodtype: signupData.bloodType,
       allergies: signupData.allergies,
       medicalHistory: signupData.medicalHistory,
+      insuranceCardFront: frontImageBase64,
+      insuranceCardBack: backImageBase64,
     };
 
     console.log("Final signupData:", finalPayload);
-    console.log("Insurance card front:", frontImage);
-    console.log("Insurance card back:", backImage);
 
     try {
       const response = await fetch("http://localhost:5050/api/patients", {
@@ -132,25 +136,22 @@ const PatientOnboarding4: React.FC = () => {
       const result = await response.json();
       console.log("User created successfully:", result);
 
-      // TODO: Upload insurance card images separately if needed
-      // You can upload images to a separate endpoint after user creation
-      if (result._id && (frontImage || backImage)) {
-        const imageFormData = new FormData();
-        if (frontImage) imageFormData.append("insuranceCardFront", frontImage);
-        if (backImage) imageFormData.append("insuranceCardBack", backImage);
-        
-        await fetch(`http://localhost:5050/api/patients/${result._id}/insurance`, {
-          method: "POST",
-          body: imageFormData,
-        });
-      }
-
       // Navigate to dashboard
       navigate("/patientdashboard");
     } catch (err) {
       console.error("Error creating user:", err);
       alert("An unexpected error occurred. Please try again.");
     }
+  };
+
+  // Helper function to convert File to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   return (
