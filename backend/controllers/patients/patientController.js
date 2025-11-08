@@ -10,9 +10,9 @@ export const createPatient = async (req, res) => {
       lastName,
       email,
       username,
-      gender,
+      sex,
       password,
-      phoneNumber,
+      phone,
       profilePic,
       ec_name,
       ec_phone,
@@ -22,7 +22,21 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
+      insuranceCardFront,
+      insuranceCardBack,
     } = req.body;
+
+    // Function to save base64 image as Buffer
+    const convertBase64ToBuffer = (base64String) => {
+      if (!base64String) return null;
+      // Remove the data URL prefix (data:image/png;base64,)
+      const base64Data = base64String.replace(/^data:image\/\w+;base64,/, '');
+      return Buffer.from(base64Data, 'base64');
+    };
+
+    // Convert insurance card images to Buffer
+    const frontBuffer = convertBase64ToBuffer(insuranceCardFront);
+    const backBuffer = convertBase64ToBuffer(insuranceCardBack);
 
     // Create user directly
     const newUser = new User({
@@ -30,9 +44,9 @@ export const createPatient = async (req, res) => {
       lastName,
       email,
       username,
-      gender,
+      gender: sex,
       password,
-      phoneNumber,
+      phoneNumber: phone,
       profilePic,
       role: "Patient",
     });
@@ -55,6 +69,8 @@ export const createPatient = async (req, res) => {
       allergies,
       medicalHistory,
       emergencyContact: emergencyContact._id,
+      insuranceCardFront: frontBuffer,
+      insuranceCardBack: backBuffer,
     });
 
     res.status(201).json({
