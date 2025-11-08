@@ -54,10 +54,6 @@ const ErrorPage: React.FC = () => {
     navigate(-1);
   };
 
-  const handleGoHome = () => {
-    navigate("/");
-  };
-
   return (
     <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
 
@@ -91,12 +87,6 @@ const ErrorPage: React.FC = () => {
               className="px-6 py-3 bg-primary hover:bg-[#6886AC] text-white font-medium rounded-lg transition-colors duration-200"
             >
               Go Back
-            </button>
-            <button
-              onClick={handleGoHome}
-              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors duration-200"
-            >
-              Go to Home
             </button>
           </div>
 
