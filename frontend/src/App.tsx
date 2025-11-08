@@ -6,7 +6,6 @@ import Messages from "./Patients/Messages";
 import Appointments from "./Patients/Appointments";
 import MedicalRecords from "./Patients/MedicalRecords";
 import Medications from "./Patients/Medications";
-import Insurance from "./Patients/Insurance";
 import BugReportPage from "./Bugs/BugReport";
 import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
@@ -159,7 +158,6 @@ const AppContent: React.FC = () => {
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/medical-records" element={<MedicalRecords />} />
             <Route path="/medications" element={<Medications />} />
-            <Route path="/insurance" element={<Insurance />} />
             <Route path="/bug-report" element={<BugReportPage />} />
             <Route path="/help-support" element={<HelpSupportPage />} />
           </Route>
