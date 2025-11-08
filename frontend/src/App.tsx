@@ -38,6 +38,7 @@ import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "IT/PendingDashboard";
 import ITHistory from "IT/ITHistory";
+import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -147,6 +148,7 @@ const AppContent: React.FC = () => {
           <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
           <Route path="/patientonboarding2" element={<PatientOnboarding2 />} />
           <Route path="/patientonboarding3" element={<PatientOnboarding3 />} />
+          <Route path="/patientonboarding4" element={<PatientOnboarding4 />} />
           <Route path="/staffonboarding" element={<StaffOnboarding />} />
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
