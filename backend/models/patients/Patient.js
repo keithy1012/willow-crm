@@ -18,7 +18,7 @@ const patientSchema = new mongoose.Schema(
     ],
     insuranceCardFront: {
       data: Buffer,
-      contentType: String, // e.g., "image/jpeg" or "image/png"
+      contentType: String,
     },
     insuranceCardBack: {
       data: Buffer,
