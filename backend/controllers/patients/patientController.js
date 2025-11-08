@@ -44,9 +44,9 @@ export const createPatient = async (req, res) => {
       lastName,
       email,
       username,
-      gender: sex,
+      gender: sex, // Frontend sends 'sex', backend expects 'gender'
       password,
-      phoneNumber: phone,
+      phoneNumber: phone, // Frontend sends 'phone', backend expects 'phoneNumber'
       profilePic,
       role: "Patient",
     });
@@ -68,7 +68,7 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
-      emergencyContact: emergencyContact._id,
+      emergencyContact: [emergencyContact._id], // Array to match schema
       insuranceCardFront: frontBuffer,
       insuranceCardBack: backBuffer,
     });
