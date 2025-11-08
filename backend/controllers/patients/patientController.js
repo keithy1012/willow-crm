@@ -54,6 +54,8 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
+      insuranceCardFront,
+      insuranceCardBack,
       emergencyContact: emergencyContact._id,
     });
 
