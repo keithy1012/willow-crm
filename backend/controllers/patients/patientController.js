@@ -22,6 +22,8 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
+      insuranceCardBack,
+      insuranceCardFront,
     } = req.body;
 
     // Create user directly
@@ -54,8 +56,12 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
-      insuranceCardFront,
-      insuranceCardBack,
+      insuranceCardFront: insuranceCardFront
+        ? Buffer.from(insuranceCardFront, "base64")
+        : undefined,
+      insuranceCardBack: insuranceCardBack
+        ? Buffer.from(insuranceCardBack, "base64")
+        : undefined,
       emergencyContact: emergencyContact._id,
     });
 
