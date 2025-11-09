@@ -159,27 +159,19 @@ export const deletePatient = async (req, res) => {
 // Get insurance card images by user ID
 export const getInsuranceCards = async (req, res) => {
   try {
-    const { id } = req.params; // This gets 'id' from the route parameter
+    const { id } = req.params;
     
     console.log("Fetching insurance cards for user ID:", id);
 
     // Find patient by user ID
     const patient = await Patient.findOne({ user: id });
 
-    console.log("Patient found:", patient);
-
     if (!patient) {
       console.log("No patient found for user ID:", id);
-      
-      // Debug: check all patients
-      const allPatients = await Patient.find({});
-      console.log("Total patients in DB:", allPatients.length);
-      console.log("Sample patient user IDs:", allPatients.map(p => p.user));
-      
       return res.status(404).json({ error: "Patient not found" });
     }
 
-    console.log("Patient ID:", patient._id);
+    console.log("Patient found:", patient._id);
     console.log("Has front card:", !!patient.insuranceCardFront);
     console.log("Has back card:", !!patient.insuranceCardBack);
 
