@@ -1,3 +1,4 @@
+// PatientOnboarding3.tsx
 import React, { useState } from "react";
 import Field from "../../components/input/Field";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
@@ -35,7 +36,7 @@ const PatientOnboarding3: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!validate()) return;
 
     // Format allergies and medical history
@@ -49,70 +50,14 @@ const PatientOnboarding3: React.FC = () => {
       .map((m: string) => m.trim())
       .filter((m: string) => m.length > 0);
 
-    // Prepare final user data
-    const finalData = {
-      ...signupData,
-      allergies: formattedAllergies,
-      medicalHistory: formattedMedicalHistory,
-    };
-
-    // Update context so signupData reflects the formatted arrays
+    // Update context with formatted arrays
     setSignupData({
       allergies: formattedAllergies,
       medicalHistory: formattedMedicalHistory,
     });
 
-    // Format allergies and medical history (use formatted arrays from inputs)
-    const finalAllergies = formattedAllergies;
-    const finalMedHistory = formattedMedicalHistory;
-    const finalAddress = `${signupData.street}, ${signupData.city}, ${signupData.state} ${signupData.zipcode}`;
-
-    // Restructure finalData to match backend model
-    const finalPayload = {
-      firstName: signupData.firstName,
-      lastName: signupData.lastName,
-      email: signupData.email,
-      phone: signupData.phone,
-      sex: signupData.sex,
-      username: signupData.username,
-      password: signupData.password,
-      birthdate: signupData.birthdate,
-      address: finalAddress,
-      ec_name: signupData.contact_name,
-      ec_relationship: signupData.contact_relationship,
-      ec_phone: signupData.contact_phone,
-      bloodtype: signupData.bloodType,
-      allergies: finalAllergies,
-      medicalHistory: finalMedHistory,
-    };
-
-    console.log("Final signupData:", finalPayload);
-
-    try {
-      const response = await fetch("http://localhost:5050/api/patients", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalPayload),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        alert("Failed to create patient: " + error);
-        return;
-      }
-
-      const data = await response.json();
-      
-      // Store the token and user data for authentication
-      if (data.token && data.user) {
-        login(data.token, data.user);
-      }
-
-      navigate("/patientdashboard");
-    } catch (err) {
-      console.error("Error creating user:", err);
-      alert("An unexpected error occurred. Please try again.");
-    }
+    // Navigate to insurance card upload page
+    navigate("/patientonboarding4");
   };
 
   return (
@@ -167,7 +112,7 @@ const PatientOnboarding3: React.FC = () => {
           )}
         </div>
 
-        {/* Finish */}
+        {/* Next */}
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton
             text="Next"
