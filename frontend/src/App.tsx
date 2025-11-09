@@ -11,6 +11,7 @@ import BugReportPage from "./Bugs/BugReport";
 import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./context/SignUpContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import {
   BrowserRouter as Router,
   useSearchParams,
@@ -154,74 +155,91 @@ const AppContent: React.FC = () => {
       };
 
   return (
-    <WebSocketProvider token={token || ""} currentUser={formattedUser}>
-      <SignupProvider>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/signup1" element={<SignUp1 />} />
-          <Route path="/signup2" element={<SignUp2 />} />
-          <Route path="/signup3" element={<SignUp3 />} />
-          <Route path="/roleselection" element={<RollSelection />} />
-          <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
-          <Route path="/patientonboarding2" element={<PatientOnboarding2 />} />
-          <Route path="/patientonboarding3" element={<PatientOnboarding3 />} />
-          <Route path="/patientonboarding4" element={<PatientOnboarding4 />} />
-          <Route path="/staffonboarding" element={<StaffOnboarding />} />
-          <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-
-          <Route element={<PatientLayout />}>
-            <Route path="/patientdashboard" element={<Dashboard />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/medical-records" element={<MedicalRecords />} />
-            <Route path="/medications" element={<Medications />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-            <Route path="/help-support" element={<HelpSupportPage />} />
-            <Route path="/insurance" element={<Insurance />} />
-          </Route>
-
-          <Route element={<OpsLayout />}>
+    <AuthProvider>
+      <WebSocketProvider token={token || ""} currentUser={formattedUser}>
+        <SignupProvider>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/signup1" element={<SignUp1 />} />
+            <Route path="/signup2" element={<SignUp2 />} />
+            <Route path="/signup3" element={<SignUp3 />} />
+            <Route path="/roleselection" element={<RollSelection />} />
             <Route
-              path="/opsdashboard/doctors"
-              element={<OpsDoctorDashboard />}
+              path="/patientonboarding1"
+              element={<PatientOnboarding1 />}
             />
             <Route
-              path="/opsdashboard/patients"
-              element={<OpsPatientDashboard />}
-            />
-            <Route path="/opsdashboard/history" element={<OpsHistory />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-          </Route>
-
-          <Route element={<ItsLayout />}>
-            <Route path="/itdashboard/pending" element={<PendingDashboard />} />
-            <Route path="/itdashboard/history" element={<ITHistory />} />
-          </Route>
-
-          <Route
-            path="/financedashboard"
-            element={<div>Finance Dashboard</div>}
-          />
-
-          <Route element={<OpsLayout />}>
-            <Route
-              path="/opsdashboard/doctors"
-              element={<OpsDoctorDashboard />}
+              path="/patientonboarding2"
+              element={<PatientOnboarding2 />}
             />
             <Route
-              path="/opsdashboard/patients"
-              element={<OpsPatientDashboard />}
+              path="/patientonboarding3"
+              element={<PatientOnboarding3 />}
             />
-            <Route path="/opsdashboard/history" element={<OpsHistory />} />
-          </Route>
+            <Route
+              path="/patientonboarding4"
+              element={<PatientOnboarding4 />}
+            />
+            <Route path="/staffonboarding" element={<StaffOnboarding />} />
+            <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
 
-          <Route path="/error" element={<Error />} />
-        </Routes>
-      </SignupProvider>
-    </WebSocketProvider>
+            <Route element={<PatientLayout />}>
+              <Route path="/patientdashboard" element={<Dashboard />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/medical-records" element={<MedicalRecords />} />
+              <Route path="/medications" element={<Medications />} />
+              <Route path="/insurance" element={<Insurance />} />
+              <Route path="/bug-report" element={<BugReportPage />} />
+              <Route path="/help-support" element={<HelpSupportPage />} />
+              <Route path="/insurance" element={<Insurance />} />
+            </Route>
+
+            <Route element={<OpsLayout />}>
+              <Route
+                path="/opsdashboard/doctors"
+                element={<OpsDoctorDashboard />}
+              />
+              <Route
+                path="/opsdashboard/patients"
+                element={<OpsPatientDashboard />}
+              />
+              <Route path="/opsdashboard/history" element={<OpsHistory />} />
+              <Route path="/bug-report" element={<BugReportPage />} />
+            </Route>
+
+            <Route element={<ItsLayout />}>
+              <Route
+                path="/itdashboard/pending"
+                element={<PendingDashboard />}
+              />
+              <Route path="/itdashboard/history" element={<ITHistory />} />
+            </Route>
+
+            <Route
+              path="/financedashboard"
+              element={<div>Finance Dashboard</div>}
+            />
+
+            <Route element={<OpsLayout />}>
+              <Route
+                path="/opsdashboard/doctors"
+                element={<OpsDoctorDashboard />}
+              />
+              <Route
+                path="/opsdashboard/patients"
+                element={<OpsPatientDashboard />}
+              />
+              <Route path="/opsdashboard/history" element={<OpsHistory />} />
+            </Route>
+
+            <Route path="/error" element={<Error />} />
+          </Routes>
+        </SignupProvider>
+      </WebSocketProvider>
+    </AuthProvider>
   );
 };
 
