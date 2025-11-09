@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TicketCard from "../components/card/TicketCard";
 import ConfirmTicketModal from "components/modal/ConfirmTicketModal";
 import FinishTicketModal from "components/modal/FinishTicketModal";
+import { useRequireRole } from "hooks/useRequireRole";
 
 interface Ticket {
   _id: string;
@@ -20,24 +21,12 @@ const OpsDoctorDashboard: React.FC = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
-
-  const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userID = user?._id;
+  const user = useRequireRole("Ops", true);
 
   // Fetch tickets
   useEffect(() => {
-    if (!user || user.role !== "Ops") {
-      navigate("/error");
-      return;
-    }
-
-    if (!userID) return;
-
     const fetchTickets = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem("user") || "{}");
         const token = user?.token || localStorage.getItem("token") || "";
 
         const authHeaders: Record<string, string> = token
@@ -78,7 +67,7 @@ const OpsDoctorDashboard: React.FC = () => {
     };
 
     fetchTickets();
-  }, [userID, navigate, user]);
+  }, [user]);
 
   // Handle "Assign" (confirm modal)
   const handleAssignClick = (ticket: Ticket) => {

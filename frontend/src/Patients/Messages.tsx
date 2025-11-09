@@ -3,9 +3,10 @@ import ProfileHeaderCard from "components/card/ProfileHeaderCard";
 import LongTextArea from "components/input/LongTextArea";
 import SmallSearchBar from "components/input/SmallSearchBar";
 import Message from "components/messages/Message";
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, use } from "react";
 import { NotePencil } from "phosphor-react";
 import { useWebSocket } from "../contexts/WebSocketContext";
+import { useRequireRole } from "hooks/useRequireRole";
 
 interface ConversationGroup {
   label: string;
@@ -31,6 +32,8 @@ const Messages: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useRequireRole("Patient");
 
   // Group conversations by date
   const conversationGroups = useMemo((): ConversationGroup[] => {
