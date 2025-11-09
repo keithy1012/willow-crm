@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import LargeMedicationCard from "components/card/LargeMedicationCard";
 import { Info } from "phosphor-react";

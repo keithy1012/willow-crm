@@ -1,6 +1,7 @@
 import Patient from "../../models/patients/Patient.js";
 import User from "../../models/users/User.js";
 import EmergencyContact from "../../models/patients/EmergencyContact.js";
+import { generateToken } from "../../middleware/authentication.js";
 
 // Create new patient
 export const createPatient = async (req, res) => {
@@ -22,6 +23,8 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
+      insuranceCardBack,
+      insuranceCardFront,
     } = req.body;
 
     // Create user directly
@@ -30,9 +33,9 @@ export const createPatient = async (req, res) => {
       lastName,
       email,
       username,
-      gender,
+      gender: gender || req.body.sex,
       password,
-      phoneNumber,
+      phoneNumber: phoneNumber || req.body.phone,
       profilePic,
       role: "Patient",
     });
@@ -54,14 +57,24 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
+      insuranceCardFront: insuranceCardFront
+        ? Buffer.from(insuranceCardFront, "base64")
+        : undefined,
+      insuranceCardBack: insuranceCardBack
+        ? Buffer.from(insuranceCardBack, "base64")
+        : undefined,
       emergencyContact: emergencyContact._id,
     });
+
+    // Generate JWT token for authentication
+    const token = generateToken(newUser._id);
 
     res.status(201).json({
       success: true,
       message:
         "Patient, linked user, and emergency contact created successfully",
-      user: newUser,
+      token,
+      user: newUser.toJSON(),
       patient: newPatient,
       emergencyContact,
     });
@@ -137,5 +150,34 @@ export const deletePatient = async (req, res) => {
   } catch (err) {
     console.error("Error deleting patient:", err);
     res.status(500).json({ error: err.message });
+  }
+};
+
+// Get a patient's insurance cards
+export const getInsuranceCards = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const patient = await Patient.findOne({ user: userId });
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Convert buffers to base64 strings if they exist
+    const insuranceCardFront = patient.insuranceCardFront
+      ? `data:image/jpeg;base64,${patient.insuranceCardFront.toString(
+          "base64"
+        )}`
+      : null;
+
+    const insuranceCardBack = patient.insuranceCardBack
+      ? `data:image/jpeg;base64,${patient.insuranceCardBack.toString("base64")}`
+      : null;
+
+    res.json({ insuranceCardFront, insuranceCardBack });
+  } catch (err) {
+    console.error("Error fetching insurance cards:", err.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

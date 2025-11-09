@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import RoleSelectionButton from "../../components/buttons/RoleSelectionButton";
 import { useSignup } from "../../context/SignUpContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
@@ -13,6 +14,7 @@ const OpsLogo = "/GearSix.svg";
 const StaffOnboarding: React.FC = () => {
   const navigate = useNavigate();
   const { signupData } = useSignup();
+  const { login } = useAuth();
 
   const buildBasePayload = () => ({
     firstName: signupData.firstName,
@@ -40,6 +42,13 @@ const StaffOnboarding: React.FC = () => {
         console.error("Error:", error);
         alert("Failed to create user: " + error);
         return;
+      }
+
+      const data = await res.json();
+      
+      // Store the token and user data for authentication
+      if (data.token && data.user) {
+        login(data.token, data.user);
       }
 
       navigate(redirect);

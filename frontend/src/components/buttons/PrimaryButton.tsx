@@ -10,6 +10,7 @@ interface ButtonProps {
   controlled?: boolean;
   toggleable?: boolean;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const PrimaryButton: React.FC<ButtonProps> = ({
@@ -22,6 +23,7 @@ const PrimaryButton: React.FC<ButtonProps> = ({
   controlled = false,
   toggleable = true,
   disabled = false,
+  type = "button",
 }) => {
   const [isSelected, setIsSelected] = useState(selected);
 
@@ -72,7 +74,7 @@ const PrimaryButton: React.FC<ButtonProps> = ({
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabledStyles} ${className}`}
       onClick={handleClick}
       disabled={disabled}
-      type="button"
+      type={type}
     >
       {text}
     </button>

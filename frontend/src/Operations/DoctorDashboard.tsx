@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TicketCard from "../components/card/TicketCard";
 import ConfirmTicketModal from "components/modal/ConfirmTicketModal";
 import FinishTicketModal from "components/modal/FinishTicketModal";
+import { useRequireRole } from "hooks/useRequireRole";
 
 interface Ticket {
   _id: string;
   title: string;
-  doctorName: string;
+  requestedBy: string;
   description: string;
 }
 
@@ -20,28 +21,19 @@ const OpsDoctorDashboard: React.FC = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
-
-  const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userID = user?._id;
+  const user = useRequireRole("Ops", true);
 
   // Fetch tickets
   useEffect(() => {
-    if (!user || user.role !== "Ops") {
-      navigate("/error");
-      return;
-    }
-
-    if (!userID) return;
-
     const fetchTickets = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem("user") || "{}");
         const token = user?.token || localStorage.getItem("token") || "";
 
         const authHeaders: Record<string, string> = token
-          ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+          ? {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
           : { "Content-Type": "application/json" };
 
         const [pendingRes, inProgressRes] = await Promise.all([
@@ -49,10 +41,13 @@ const OpsDoctorDashboard: React.FC = () => {
             method: "GET",
             headers: authHeaders,
           }),
-          fetch(`http://localhost:5050/api/tickets/doctorChange/${user._id}/inprogress`, {
-            method: "GET",
-            headers: authHeaders,
-          }),
+          fetch(
+            `http://localhost:5050/api/tickets/doctorChange/${user._id}/inprogress`,
+            {
+              method: "GET",
+              headers: authHeaders,
+            }
+          ),
         ]);
 
         if (!pendingRes.ok || !inProgressRes.ok) {
@@ -72,7 +67,7 @@ const OpsDoctorDashboard: React.FC = () => {
     };
 
     fetchTickets();
-  }, [userID, navigate, user]);
+  }, [user]);
 
   // Handle "Assign" (confirm modal)
   const handleAssignClick = (ticket: Ticket) => {
@@ -92,14 +87,17 @@ const OpsDoctorDashboard: React.FC = () => {
 
     try {
       const token = user?.token || localStorage.getItem("token") || "";
-      await fetch(`http://localhost:5050/api/tickets/doctorChange/${selectedTicket._id}/start`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ claimedBy: user._id }),
-      });
+      await fetch(
+        `http://localhost:5050/api/tickets/doctorChange/${selectedTicket._id}/start`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ claimedBy: user._id }),
+        }
+      );
 
       setIsConfirmModalOpen(false);
       setSelectedTicket(null);
@@ -115,14 +113,17 @@ const OpsDoctorDashboard: React.FC = () => {
 
     try {
       const token = user?.token || localStorage.getItem("token") || "";
-      await fetch(`http://localhost:5050/api/tickets/doctorChange/${selectedTicket._id}/complete`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ finishedBy: user._id }),
-      });
+      await fetch(
+        `http://localhost:5050/api/tickets/doctorChange/${selectedTicket._id}/complete`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ finishedBy: user._id }),
+        }
+      );
 
       setIsFinishModalOpen(false);
       setSelectedTicket(null);
@@ -154,14 +155,16 @@ const OpsDoctorDashboard: React.FC = () => {
       <div className="flex flex-col lg:flex-row gap-8 p-8 bg-gray-50 min-h-screen">
         {/* Left column - Pending */}
         <div className="flex-1 bg-foreground border border-gray-200 rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-primaryText mb-4">All Tickets</h2>
+          <h2 className="text-xl font-semibold text-primaryText mb-4">
+            All Tickets
+          </h2>
           <div className="space-y-4">
             {pendingTickets.length > 0 ? (
               pendingTickets.map((ticket) => (
                 <TicketCard
                   key={ticket._id}
                   title={ticket.title}
-                  requestedBy={ticket.doctorName}
+                  requestedBy={ticket.requestedBy}
                   description={ticket.description}
                   buttonLabel="Assign"
                   onButtonClick={() => handleAssignClick(ticket)}
@@ -175,21 +178,25 @@ const OpsDoctorDashboard: React.FC = () => {
 
         {/* Right column - In Progress */}
         <div className="flex-1 bg-foreground border border-gray-200 rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-primaryText mb-4">In Progress</h2>
+          <h2 className="text-xl font-semibold text-primaryText mb-4">
+            In Progress
+          </h2>
           <div className="space-y-4">
             {inProgressTickets.length > 0 ? (
               inProgressTickets.map((ticket) => (
                 <TicketCard
                   key={ticket._id}
                   title={ticket.title}
-                  requestedBy={ticket.doctorName}
+                  requestedBy={ticket.requestedBy}
                   description={ticket.description}
                   buttonLabel="Finish"
                   onButtonClick={() => handleFinishClick(ticket)}
                 />
               ))
             ) : (
-              <p className="text-gray-500 text-sm">No in-progress tickets found.</p>
+              <p className="text-gray-500 text-sm">
+                No in-progress tickets found.
+              </p>
             )}
           </div>
         </div>

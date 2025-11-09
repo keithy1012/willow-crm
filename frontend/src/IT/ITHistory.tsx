@@ -12,51 +12,46 @@ interface Ticket {
   dateCompleted: string;
 }
 
-const OpsHistory: React.FC = () => {
+const ITHistory: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
-  const user = useRequireRole("Ops", true);
+  const user = useRequireRole("IT", true);
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         const token = user?.token || localStorage.getItem("token") || "";
         const headers: Record<string, string> = token
-          ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+          ? {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
           : { "Content-Type": "application/json" };
 
-        const [doctorRes, patientRes] = await Promise.all([
-          fetch(`http://localhost:5050/api/tickets/doctorChange/${user._id}/all`, {
-            method: "GET",
-            headers,
-          }),
-          fetch(`http://localhost:5050/api/tickets/patientChange/${user._id}/all`, {
+        const [tickets] = await Promise.all([
+          fetch(`http://localhost:5050/api/tickets/bugTicket/${user._id}/all`, {
             method: "GET",
             headers,
           }),
         ]);
 
-        if (!doctorRes.ok || !patientRes.ok) throw new Error("Failed to fetch tickets");
+        if (!tickets.ok) throw new Error("Failed to fetch tickets");
 
-        const doctorData = await doctorRes.json();
-        const patientData = await patientRes.json();
+        const data = await tickets.json();
 
         const combined = [
-          ...doctorData.map((t: any) => ({
+          ...data.map((t: any) => ({
             ...t,
-            requestedByName: t.doctorName,
-            requestedByType: "Doctor",
-          })),
-          ...patientData.map((t: any) => ({
-            ...t,
-            requestedByName: t.patientName,
-            requestedByType: "Patient",
+            requestedByName: t.requestedBy,
+            requestedByType: t.requestedByType,
           })),
         ];
 
         // Sort by completion date descending
         combined.sort(
-          (a, b) => new Date(b.dateCompleted).getTime() - new Date(a.dateCompleted).getTime()
+          (a, b) =>
+            new Date(b.dateCompleted).getTime() -
+            new Date(a.dateCompleted).getTime()
         );
 
         setTickets(combined);
@@ -83,16 +78,20 @@ const OpsHistory: React.FC = () => {
       {/* Header */}
       <div className="bg-gradient-to-b from-primary to-[#6886AC] text-white py-8 px-6">
         <div className="text-left mb-6">
-          <h1 className="text-2xl font-semibold">Hello, {user?.firstName || "Ops"}</h1>
+          <h1 className="text-2xl font-semibold">
+            Hello, {user?.firstName || "IT"}
+          </h1>
         </div>
       </div>
 
       <div className="px-8 py-10">
-            <h2 className="text-lg font-medium mb-6 text-gray-700">Your Ticket History</h2>
-            <TicketHistoryTable tickets={tickets} />
-            </div>
+        <h2 className="text-lg font-medium mb-6 text-gray-700">
+          Your Ticket History
+        </h2>
+        <TicketHistoryTable tickets={tickets} />
+      </div>
     </div>
   );
 };
 
-export default OpsHistory;
+export default ITHistory;
