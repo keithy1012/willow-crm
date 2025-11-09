@@ -68,7 +68,7 @@ export const createPatient = async (req, res) => {
       bloodtype,
       allergies,
       medicalHistory,
-      emergencyContact: [emergencyContact._id], // Array to match schema
+      emergencyContact: [emergencyContact._id],
       insuranceCardFront: frontBuffer,
       insuranceCardBack: backBuffer,
     });
@@ -153,5 +153,52 @@ export const deletePatient = async (req, res) => {
   } catch (err) {
     console.error("Error deleting patient:", err);
     res.status(500).json({ error: err.message });
+  }
+};
+
+// Get insurance card images by user ID
+export const getInsuranceCards = async (req, res) => {
+  try {
+    const { id } = req.params; // This gets 'id' from the route parameter
+    
+    console.log("Fetching insurance cards for user ID:", id);
+
+    // Find patient by user ID
+    const patient = await Patient.findOne({ user: id });
+
+    console.log("Patient found:", patient);
+
+    if (!patient) {
+      console.log("No patient found for user ID:", id);
+      
+      // Debug: check all patients
+      const allPatients = await Patient.find({});
+      console.log("Total patients in DB:", allPatients.length);
+      console.log("Sample patient user IDs:", allPatients.map(p => p.user));
+      
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    console.log("Patient ID:", patient._id);
+    console.log("Has front card:", !!patient.insuranceCardFront);
+    console.log("Has back card:", !!patient.insuranceCardBack);
+
+    // Convert buffers to base64 strings if they exist
+    const insuranceCardFront = patient.insuranceCardFront
+      ? `data:image/png;base64,${patient.insuranceCardFront.toString("base64")}`
+      : null;
+
+    const insuranceCardBack = patient.insuranceCardBack
+      ? `data:image/png;base64,${patient.insuranceCardBack.toString("base64")}`
+      : null;
+
+    res.json({ 
+      success: true,
+      insuranceCardFront, 
+      insuranceCardBack 
+    });
+  } catch (err) {
+    console.error("Error fetching insurance cards:", err.message);
+    res.status(500).json({ error: "Internal server error", details: err.message });
   }
 };
