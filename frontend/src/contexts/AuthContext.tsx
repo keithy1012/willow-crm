@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { jwtDecode } from "jwt-decode";
 
 // Full user data structure from backend
@@ -40,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
-      
+
       if (storedToken && storedUser) {
         try {
           // Check if token is expired

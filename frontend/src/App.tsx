@@ -8,7 +8,7 @@ import MedicalRecords from "./Patients/MedicalRecords";
 import Medications from "./Patients/Medications";
 import Insurance from "./Patients/Insurance";
 import BugReportPage from "./Bugs/BugReport";
-import HelpSupportPage from "./Patients/HelpSupport";
+import HelpSupportPage from "./Help/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./context/SignUpContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -36,11 +36,11 @@ import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
 import OpsHistory from "Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
-
 import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "IT/PendingDashboard";
 import ITHistory from "IT/ITHistory";
 import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
+
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -79,20 +79,59 @@ const ItsLayout: React.FC = () => {
   );
 };
 
+// Role-aware page wrapper that renders the requested page inside the correct sidebar/layout
+const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const storedUser =
+    typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const role = user?.role;
+
+  if (role === "Ops") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <OpsSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "IT") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <ItSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  // Default to Patient layout
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <PatientSidebar />
+      </div>
+      <div className="flex-1">{children}</div>
+    </div>
+  );
+};
+
 const AppContent: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
 
   // In App.tsx, update the useEffect in AppContent:
-
   useEffect(() => {
-    // Check for auth token using the CORRECT key names
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
-      // Real authentication token exists
       console.log("Using real auth token");
       setToken(storedToken);
       setCurrentUser(JSON.parse(storedUser));
@@ -192,9 +231,6 @@ const AppContent: React.FC = () => {
               <Route path="/medical-records" element={<MedicalRecords />} />
               <Route path="/medications" element={<Medications />} />
               <Route path="/insurance" element={<Insurance />} />
-              <Route path="/bug-report" element={<BugReportPage />} />
-              <Route path="/help-support" element={<HelpSupportPage />} />
-              <Route path="/insurance" element={<Insurance />} />
             </Route>
 
             <Route element={<OpsLayout />}>
@@ -207,7 +243,7 @@ const AppContent: React.FC = () => {
                 element={<OpsPatientDashboard />}
               />
               <Route path="/opsdashboard/history" element={<OpsHistory />} />
-              <Route path="/bug-report" element={<BugReportPage />} />
+              {/* bug-report is handled globally */}
             </Route>
 
             <Route element={<ItsLayout />}>
@@ -234,6 +270,24 @@ const AppContent: React.FC = () => {
               />
               <Route path="/opsdashboard/history" element={<OpsHistory />} />
             </Route>
+
+            {/* Global routes that should render under the correct layout based on user role */}
+            <Route
+              path="/bug-report"
+              element={
+                <RoleLayoutWrapper>
+                  <BugReportPage />
+                </RoleLayoutWrapper>
+              }
+            />
+            <Route
+              path="/help-support"
+              element={
+                <RoleLayoutWrapper>
+                  <HelpSupportPage />
+                </RoleLayoutWrapper>
+              }
+            />
 
             <Route path="/error" element={<Error />} />
           </Routes>
