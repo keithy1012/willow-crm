@@ -26,10 +26,10 @@ export const ticketService = {
       apiClient.get<PatientTicket[]>(`/tickets/patientChange/${opsId}/all`),
     
     start: (ticketId: string) => 
-      apiClient.put(`/tickets/patientChange/${ticketId}/start`),
+      apiClient.patch(`/tickets/patientChange/${ticketId}/start`),
     
     complete: (ticketId: string) => 
-      apiClient.put(`/tickets/patientChange/${ticketId}/complete`),
+      apiClient.patch(`/tickets/patientChange/${ticketId}/complete`),
   },
 
   // Doctor Change Tickets
@@ -50,10 +50,10 @@ export const ticketService = {
       apiClient.get<DoctorTicket[]>(`/tickets/doctorChange/${opsId}/all`),
     
     start: (ticketId: string) => 
-      apiClient.put(`/tickets/doctorChange/${ticketId}/start`),
+      apiClient.patch(`/tickets/doctorChange/${ticketId}/start`),
     
     complete: (ticketId: string) => 
-      apiClient.put(`/tickets/doctorChange/${ticketId}/complete`),
+      apiClient.patch(`/tickets/doctorChange/${ticketId}/complete`),
   },
 
   // Bug Tickets
@@ -74,10 +74,10 @@ export const ticketService = {
       apiClient.get<BugTicket>(`/tickets/bugTicket/${id}`),
     
     start: (ticketId: string) => 
-      apiClient.put(`/tickets/bugTicket/${ticketId}/start`),
+      apiClient.patch(`/tickets/bugTicket/${ticketId}/start`),
     
     complete: (ticketId: string) => 
-      apiClient.put(`/tickets/bugTicket/${ticketId}/complete`),
+      apiClient.patch(`/tickets/bugTicket/${ticketId}/complete`),
     
   },
 
@@ -90,7 +90,7 @@ export const ticketService = {
       apiClient.get<DoctorAccountCreationTicket[]>('/tickets/doctorCreate/pending'),
     
     approve: (ticketId: string) => 
-      apiClient.put(`/tickets/doctorCreate/${ticketId}/approve`),
+      apiClient.patch(`/tickets/doctorCreate/${ticketId}/approve`),
     
     getCompletedByUserId: (userId: string) => 
       apiClient.get<DoctorAccountCreationTicket[]>(`/tickets/doctorCreate/completed/${userId}`),

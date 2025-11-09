@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TicketHistoryTable from "components/table/ticketsHistoryTable";
 import { useRequireRole } from "hooks/useRequireRole";
+import { ticketService } from "api";
 interface Ticket {
   _id: string;
   ticketName: string;
@@ -28,16 +29,7 @@ const ITHistory: React.FC = () => {
             }
           : { "Content-Type": "application/json" };
 
-        const [tickets] = await Promise.all([
-          fetch(`http://localhost:5050/api/tickets/bugTicket/${user._id}/all`, {
-            method: "GET",
-            headers,
-          }),
-        ]);
-
-        if (!tickets.ok) throw new Error("Failed to fetch tickets");
-
-        const data = await tickets.json();
+        const data = await ticketService.bug.getAllByItId(user._id);
 
         const combined = [
           ...data.map((t: any) => ({

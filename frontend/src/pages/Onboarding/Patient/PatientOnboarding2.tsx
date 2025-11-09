@@ -2,11 +2,9 @@ import React from "react";
 import Field from "../../../components/input/Field";
 import PrimaryButton from "../../../components/buttons/PrimaryButton";
 import Dropdown from "../../../components/input/Dropdown";
+import OnboardingLayout from "../../../components/layouts/OnboardingLayout";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../../contexts/SignUpContext";
-
-const TopRightBlob = "/onboarding_blob_top_right.svg";
-const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 
 const bloodTypes = ["None", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -23,12 +21,11 @@ const PatientOnboarding2: React.FC = () => {
   const handleChange =
     (field: keyof typeof signupData) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSignupData({ [field]: e.target.value });
+      setSignupData({ ...signupData, [field]: e.target.value });
     };
 
   const validate = () => {
     const errs: typeof errors = {};
-
     const phoneRegex = /^\d{10}$/;
 
     if (!signupData.contact_name?.trim())
@@ -47,31 +44,14 @@ const PatientOnboarding2: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const nextPage = () => {
+  const handleSubmit = () => {
     if (!validate()) return;
-    console.log("Collected emergency info + blood type:", signupData);
     navigate("/patientonboarding3");
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
-      <img
-        src={TopRightBlob}
-        alt="Top Right Blob"
-        className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96"
-      />
-      <img
-        src={BottomLeftBlob}
-        alt="Bottom Left Blob"
-        className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
-      />
-
-      <h1 className="text-4xl md:text-6xl font-bold text-gray-900 z-10 absolute top-8 left-8">
-        Willow CRM
-      </h1>
-
-      {/* Form Content */}
-      <div className="z-10 w-full max-w-4xl mx-auto mt-32 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <OnboardingLayout>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Emergency Contact */}
         <div className="flex flex-col gap-4">
           <p className="text-xl font-semibold text-gray-700">
@@ -115,10 +95,12 @@ const PatientOnboarding2: React.FC = () => {
             options={bloodTypes}
             value={signupData.bloodType}
             onChange={(value) =>
-              setSignupData({ bloodType: value === "None" ? "" : value })
+              setSignupData({
+                ...signupData,
+                bloodType: value === "None" ? "" : value,
+              })
             }
           />
-
           {errors.bloodType && (
             <span className="text-sm text-red-500">{errors.bloodType}</span>
           )}
@@ -126,15 +108,15 @@ const PatientOnboarding2: React.FC = () => {
       </div>
 
       {/* Next Button */}
-      <div className="z-10 w-full flex justify-center mt-10">
+      <div className="w-full flex justify-center mt-10">
         <PrimaryButton
           text="Next"
           variant="primary"
           size="small"
-          onClick={nextPage}
+          onClick={handleSubmit}
         />
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 

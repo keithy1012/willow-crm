@@ -212,7 +212,7 @@ const AppContent: React.FC = () => {
 
             <Route element={<ItsLayout />}>
               <Route
-                path="/itdashboard/pending"
+                path="/itdashboard"
                 element={<PendingDashboard />}
               />
               <Route path="/itdashboard/history" element={<ITHistory />} />

@@ -1,5 +1,3 @@
-// This file defines the patient's dashboard UI.
-
 import React, { useEffect, useState } from "react";
 import DoctorSearchBar from "../../components/input/SearchBar";
 import LongTextArea from "../../components/input/LongTextArea";

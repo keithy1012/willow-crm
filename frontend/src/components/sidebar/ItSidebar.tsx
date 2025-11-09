@@ -31,7 +31,7 @@ const ItSidebar: React.FC<ItSidebarProps> = () => {
   }, []);
 
   const menuItems = [
-    { text: "Pending Tickets", icon: House, path: "/itdashboard/pending" },
+    { text: "Pending Tickets", icon: House, path: "/itdashboard" },
     { text: "Ticket History", icon: House, path: "/itdashboard/history" },
   ];
 
