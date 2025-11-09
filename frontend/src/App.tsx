@@ -40,7 +40,6 @@ import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "IT/PendingDashboard";
 import ITHistory from "IT/ITHistory";
 import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
-import Insurance from "Patients/Insurance";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">

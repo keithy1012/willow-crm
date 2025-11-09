@@ -9,12 +9,15 @@ import "@fontsource/dm-sans/700.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const root = createRoot(document.getElementById("root")!);
 console.log(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
