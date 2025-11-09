@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import PatientSidebar from "./components/sidebar/PatientSidebar";
-import Dashboard from "./Patients/Dashboard";
-import Messages from "./Patients/Messages";
-import Appointments from "./Patients/Appointments";
-import MedicalRecords from "./Patients/MedicalRecords";
-import Medications from "./Patients/Medications";
-import Insurance from "./Patients/Insurance";
-import BugReportPage from "./Bugs/BugReport";
-import HelpSupportPage from "./Patients/HelpSupport";
+import Dashboard from "./pages/Patients/Dashboard";
+import Messages from "./pages/Patients/Messages";
+import Appointments from "./pages/Patients/Appointments";
+import MedicalRecords from "./pages/Patients/MedicalRecords";
+import Medications from "./pages/Patients/Medications";
+import Insurance from "./pages/Patients/Insurance";
+import BugReportPage from "./pages/Bugs/BugReport";
+import HelpSupportPage from "./pages/Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
-import { SignupProvider } from "./context/SignUpContext";
+import { SignupProvider } from "./contexts/SignUpContext";
 import {
   BrowserRouter as Router,
   useSearchParams,
@@ -18,29 +18,29 @@ import {
   Route,
   Outlet,
 } from "react-router-dom";
-import Landing from "./Onboarding/Landing";
-import SignUp1 from "./Onboarding/SignUp1";
-import SignUp2 from "./Onboarding/SignUp2";
-import SignUp3 from "./Onboarding/SignUp3";
-import RollSelection from "./Onboarding/RollSelection";
-import PatientOnboarding1 from "./Onboarding/Patient/PatientOnboarding1";
-import PatientOnboarding2 from "./Onboarding/Patient/PatientOnboarding2";
-import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
-import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
-import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
-import Login from "./Login/LoginScreen";
-import ForgotPassword from "./Login/ForgotPassword";
-import Error from "./Error/ErrorPage";
-import OpsDoctorDashboard from "Operations/DoctorDashboard";
-import OpsPatientDashboard from "Operations/PatientDashboard";
-import OpsHistory from "Operations/HistoryDashboard";
+import Landing from "./pages/Onboarding/Landing";
+import SignUp1 from "./pages/Onboarding/SignUp1";
+import SignUp2 from "./pages/Onboarding/SignUp2";
+import SignUp3 from "./pages/Onboarding/SignUp3";
+import RollSelection from "./pages/Onboarding/RollSelection";
+import PatientOnboarding1 from "./pages/Onboarding/Patient/PatientOnboarding1";
+import PatientOnboarding2 from "./pages/Onboarding/Patient/PatientOnboarding2";
+import PatientOnboarding3 from "./pages/Onboarding/Patient/PatientOnboarding3";
+import StaffOnboarding from "./pages/Onboarding/Staff/StaffOnboarding";
+import DoctorOnboarding from "./pages/Onboarding/Staff/DoctorOnboarding";
+import Login from "./pages/Login/LoginScreen";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import Error from "./pages/Error/ErrorPage";
+import OpsDoctorDashboard from "pages/Operations/DoctorDashboard";
+import OpsPatientDashboard from "pages/Operations/PatientDashboard";
+import OpsHistory from "pages/Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 
 import ItSidebar from "components/sidebar/ItSidebar";
-import PendingDashboard from "IT/PendingDashboard";
-import ITHistory from "IT/ITHistory";
-import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
-import Insurance from "Patients/Insurance";
+import PendingDashboard from "pages/IT/PendingDashboard";
+import ITHistory from "pages/IT/ITHistory";
+import PatientOnboarding4 from "pages/Onboarding/Patient/PatientOnboarding4";
+import { AuthProvider } from "contexts/AuthContext";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -155,74 +155,91 @@ const AppContent: React.FC = () => {
       };
 
   return (
-    <WebSocketProvider token={token || ""} currentUser={formattedUser}>
-      <SignupProvider>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/signup1" element={<SignUp1 />} />
-          <Route path="/signup2" element={<SignUp2 />} />
-          <Route path="/signup3" element={<SignUp3 />} />
-          <Route path="/roleselection" element={<RollSelection />} />
-          <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
-          <Route path="/patientonboarding2" element={<PatientOnboarding2 />} />
-          <Route path="/patientonboarding3" element={<PatientOnboarding3 />} />
-          <Route path="/patientonboarding4" element={<PatientOnboarding4 />} />
-          <Route path="/staffonboarding" element={<StaffOnboarding />} />
-          <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-
-          <Route element={<PatientLayout />}>
-            <Route path="/patientdashboard" element={<Dashboard />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/medical-records" element={<MedicalRecords />} />
-            <Route path="/medications" element={<Medications />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-            <Route path="/help-support" element={<HelpSupportPage />} />
-            <Route path="/insurance" element={<Insurance />} />
-          </Route>
-
-          <Route element={<OpsLayout />}>
+    <AuthProvider>
+      <WebSocketProvider token={token || ""} currentUser={formattedUser}>
+        <SignupProvider>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/signup1" element={<SignUp1 />} />
+            <Route path="/signup2" element={<SignUp2 />} />
+            <Route path="/signup3" element={<SignUp3 />} />
+            <Route path="/roleselection" element={<RollSelection />} />
             <Route
-              path="/opsdashboard/doctors"
-              element={<OpsDoctorDashboard />}
+              path="/patientonboarding1"
+              element={<PatientOnboarding1 />}
             />
             <Route
-              path="/opsdashboard/patients"
-              element={<OpsPatientDashboard />}
-            />
-            <Route path="/opsdashboard/history" element={<OpsHistory />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-          </Route>
-
-          <Route element={<ItsLayout />}>
-            <Route path="/itdashboard/pending" element={<PendingDashboard />} />
-            <Route path="/itdashboard/history" element={<ITHistory />} />
-          </Route>
-
-          <Route
-            path="/financedashboard"
-            element={<div>Finance Dashboard</div>}
-          />
-
-          <Route element={<OpsLayout />}>
-            <Route
-              path="/opsdashboard/doctors"
-              element={<OpsDoctorDashboard />}
+              path="/patientonboarding2"
+              element={<PatientOnboarding2 />}
             />
             <Route
-              path="/opsdashboard/patients"
-              element={<OpsPatientDashboard />}
+              path="/patientonboarding3"
+              element={<PatientOnboarding3 />}
             />
-            <Route path="/opsdashboard/history" element={<OpsHistory />} />
-          </Route>
+            <Route
+              path="/patientonboarding4"
+              element={<PatientOnboarding4 />}
+            />
+            <Route path="/staffonboarding" element={<StaffOnboarding />} />
+            <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
 
-          <Route path="/error" element={<Error />} />
-        </Routes>
-      </SignupProvider>
-    </WebSocketProvider>
+            <Route element={<PatientLayout />}>
+              <Route path="/patientdashboard" element={<Dashboard />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/medical-records" element={<MedicalRecords />} />
+              <Route path="/medications" element={<Medications />} />
+              <Route path="/insurance" element={<Insurance />} />
+              <Route path="/bug-report" element={<BugReportPage />} />
+              <Route path="/help-support" element={<HelpSupportPage />} />
+              <Route path="/insurance" element={<Insurance />} />
+            </Route>
+
+            <Route element={<OpsLayout />}>
+              <Route
+                path="/opsdashboard/doctors"
+                element={<OpsDoctorDashboard />}
+              />
+              <Route
+                path="/opsdashboard/patients"
+                element={<OpsPatientDashboard />}
+              />
+              <Route path="/opsdashboard/history" element={<OpsHistory />} />
+              <Route path="/bug-report" element={<BugReportPage />} />
+            </Route>
+
+            <Route element={<ItsLayout />}>
+              <Route
+                path="/itdashboard/pending"
+                element={<PendingDashboard />}
+              />
+              <Route path="/itdashboard/history" element={<ITHistory />} />
+            </Route>
+
+            <Route
+              path="/financedashboard"
+              element={<div>Finance Dashboard</div>}
+            />
+
+            <Route element={<OpsLayout />}>
+              <Route
+                path="/opsdashboard/doctors"
+                element={<OpsDoctorDashboard />}
+              />
+              <Route
+                path="/opsdashboard/patients"
+                element={<OpsPatientDashboard />}
+              />
+              <Route path="/opsdashboard/history" element={<OpsHistory />} />
+            </Route>
+
+            <Route path="/error" element={<Error />} />
+          </Routes>
+        </SignupProvider>
+      </WebSocketProvider>
+    </AuthProvider>
   );
 };
 

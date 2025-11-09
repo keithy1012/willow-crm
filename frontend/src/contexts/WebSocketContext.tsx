@@ -40,7 +40,7 @@ interface WebSocketContextType {
   messages: Message[];
   onlineUsers: string[];
   typingUsers: { [conversationId: string]: User };
-  currentUser: User; // Added currentUser to context
+  currentUser: User;
   sendMessage: (
     conversationId: string,
     content: string,
@@ -94,19 +94,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     [conversationId: string]: User;
   }>({});
 
-  // Connect to WebSocket
-  // In WebSocketContext.tsx, update the connect function:
-
   const connect = useCallback(() => {
     try {
-      // Get token using the CORRECT key name
-      const authToken = token || localStorage.getItem("token"); // Changed from "authToken"
-
-      console.log(
-        "🔌 Connecting with token:",
-        authToken ? authToken.substring(0, 30) + "..." : "NO TOKEN"
-      );
-
+      const authToken = token || localStorage.getItem("token");
       const wsUrl = process.env.REACT_APP_WS_URL || "ws://localhost:5050/ws";
       ws.current = new WebSocket(wsUrl);
 
@@ -114,18 +104,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         console.log("WebSocket connected");
         setIsConnected(true);
 
-        // Check if we have a real JWT token (not test placeholders)
-        if (authToken && authToken !== "user1" && authToken !== "user2") {
-          console.log("🔐 Sending authentication");
+        if (authToken && authToken.length > 20) {
           ws.current?.send(
             JSON.stringify({
               type: "auth",
               token: authToken,
             })
-          );
-        } else {
-          console.warn(
-            "⚠️ No valid auth token - running without authentication"
           );
         }
       };
@@ -234,11 +218,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         break;
       case "auth-error":
         console.error("Authentication failed:", data.error);
-        // Clear invalid token and redirect to login
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("currentUser");
-        // Optionally redirect to login
-        // window.location.href = "/login";
+        // Don't immediately clear the token - let user try again
+        // Only clear if it's a specific error like "Invalid token" or "Token expired"
+        if (data.error === "Token expired" || data.error === "Invalid token") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
         break;
 
       default:
@@ -477,7 +462,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     messages,
     onlineUsers,
     typingUsers,
-    currentUser, // Add currentUser to the context value
+    currentUser,
     sendMessage,
     markAsRead,
     sendTypingIndicator,

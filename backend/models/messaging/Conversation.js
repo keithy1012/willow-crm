@@ -52,12 +52,4 @@ conversationSchema.index({ participants: 1 });
 conversationSchema.index({ updatedAt: -1 });
 conversationSchema.index({ participants: 1, isActive: 1 });
 
-conversationSchema.index(
-  { participants: 1, type: 1 },
-  {
-    unique: true,
-    partialFilterExpression: { type: "direct" },
-  }
-);
-
 export default mongoose.model("Conversation", conversationSchema);

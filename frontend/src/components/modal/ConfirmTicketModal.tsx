@@ -1,18 +1,22 @@
 import React from "react";
+import {
+  EnrichedTicket,
+  EnrichedBugTicket,
+  PatientTicket,
+  DoctorTicket,
+} from "../../api/types/ticket.types";
 
-interface Ticket {
-  _id: string;
-  title: string;
-  requestedBy: string;
-  description: string;
-  createdAt?: string;
-}
+type AcceptedTicketTypes =
+  | EnrichedTicket
+  | EnrichedBugTicket
+  | PatientTicket
+  | DoctorTicket;
 
 interface ConfirmTicketModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  ticket: Ticket | null;
+  ticket: AcceptedTicketTypes | null;
 }
 
 const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
@@ -23,10 +27,40 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
 }) => {
   if (!isOpen || !ticket) return null;
 
+  const getTitle = () => {
+    if ("title" in ticket) return ticket.title;
+    if ("ticketName" in ticket) return ticket.ticketName;
+    return "Untitled Ticket";
+  };
+
+  const getDescription = () => {
+    if ("description" in ticket && ticket.description)
+      return ticket.description;
+    if ("content" in ticket && ticket.content) return ticket.content;
+    return "No description available";
+  };
+
+  const getDate = (): string | null => {
+    const ticketAny = ticket as any;
+
+    if (ticketAny.dateCreated) return ticketAny.dateCreated;
+    if (ticketAny.createdAt) return ticketAny.createdAt;
+    return null;
+  };
+  const date = getDate();
+
+  const getRequestedBy = () => {
+    if ("requestedBy" in ticket && ticket.requestedBy)
+      return ticket.requestedBy;
+    if ("patientName" in ticket && ticket.patientName)
+      return ticket.patientName;
+    if ("doctorName" in ticket && ticket.doctorName) return ticket.doctorName;
+    return "Unknown";
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 relative">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
@@ -34,42 +68,39 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
           ✕
         </button>
 
-        {/* Header */}
         <div className="flex items-center mb-4">
           <div className="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600 rounded-full text-xl">
             ✓
           </div>
           <h2 className="ml-3 text-lg font-semibold text-gray-900">
-            Confirm Ticket Completion
+            Confirm Ticket Claim
           </h2>
         </div>
 
         <p className="text-sm text-gray-500 mb-4">
-          You’re about to mark this ticket as <strong>in progress</strong>.
+          You're about to mark this ticket as <strong>in progress</strong>.
         </p>
 
         <hr className="my-3" />
 
-        {/* Ticket Details */}
         <div className="space-y-2 text-sm text-gray-700">
           <p>
-            <strong>Requested By:</strong> {ticket.requestedBy}
+            <strong>Requested By:</strong> {getRequestedBy()}
           </p>
           <p>
-            <strong>Ticket Name:</strong> {ticket.title}
+            <strong>Ticket Name:</strong> {getTitle()}
           </p>
-          {ticket.createdAt && (
+          {date && (
             <p>
               <strong>Date Requested:</strong>{" "}
-              {new Date(ticket.createdAt).toLocaleDateString()}
+              {new Date(date).toLocaleDateString()}
             </p>
           )}
-          <p className="mt-2 text-gray-700">{ticket.description}</p>
+          <p className="mt-2 text-gray-700">{getDescription()}</p>
         </div>
 
         <hr className="my-4" />
 
-        {/* Action Buttons */}
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
