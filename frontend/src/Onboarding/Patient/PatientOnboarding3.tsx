@@ -3,6 +3,7 @@ import Field from "../../components/input/Field";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../context/SignUpContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
@@ -10,6 +11,7 @@ const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 const PatientOnboarding3: React.FC = () => {
   const navigate = useNavigate();
   const { signupData, setSignupData } = useSignup();
+  const { login } = useAuth();
 
   // Temporary state for comma-separated inputs
   const [allergiesInput, setAllergiesInput] = useState(
@@ -95,8 +97,15 @@ const PatientOnboarding3: React.FC = () => {
 
       if (!response.ok) {
         const error = await response.text();
-        alert("Failed to create user: " + error);
+        alert("Failed to create patient: " + error);
         return;
+      }
+
+      const data = await response.json();
+      
+      // Store the token and user data for authentication
+      if (data.token && data.user) {
+        login(data.token, data.user);
       }
 
       navigate("/patientdashboard");

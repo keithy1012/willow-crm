@@ -1,5 +1,6 @@
 import ITMember from "../../models/its/ITMember.js";
 import User from "../../models/users/User.js";
+import { generateToken } from "../../middleware/authentication.js";
 
 // Create new IT member
 export const createITMember = async (req, res) => {
@@ -21,9 +22,9 @@ export const createITMember = async (req, res) => {
       lastName,
       email,
       username,
-      gender,
+      gender: gender || req.body.sex,
       password,
-      phoneNumber,
+      phoneNumber: phoneNumber || req.body.phone,
       profilePic,
       role: "IT",
     });
@@ -32,10 +33,14 @@ export const createITMember = async (req, res) => {
 
     const itMember = await ITMember.create({ user: newUser._id });
 
+    // Generate JWT token for authentication
+    const token = generateToken(newUser._id);
+
     res.status(201).json({
       success: true,
       message: "IT member and linked user created successfully",
-      user: newUser,
+      token,
+      user: newUser.toJSON(),
       itMember,
     });
   } catch (error) {

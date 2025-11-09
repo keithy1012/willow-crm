@@ -9,7 +9,7 @@ export interface User {
   lastName: string;
   email: string;
   username?: string;
-  role: "Doctor" | "Patient" | "Ops" | "IT";
+  role: "Doctor" | "Patient" | "Ops" | "IT" | "Finance";
   gender?: string;
   phoneNumber?: string;
   profilePic?: string;

@@ -1,6 +1,7 @@
 import Patient from "../../models/patients/Patient.js";
 import User from "../../models/users/User.js";
 import EmergencyContact from "../../models/patients/EmergencyContact.js";
+import { generateToken } from "../../middleware/authentication.js";
 
 // Create new patient
 export const createPatient = async (req, res) => {
@@ -32,9 +33,9 @@ export const createPatient = async (req, res) => {
       lastName,
       email,
       username,
-      gender,
+      gender: gender || req.body.sex,
       password,
-      phoneNumber,
+      phoneNumber: phoneNumber || req.body.phone,
       profilePic,
       role: "Patient",
     });
@@ -65,11 +66,15 @@ export const createPatient = async (req, res) => {
       emergencyContact: emergencyContact._id,
     });
 
+    // Generate JWT token for authentication
+    const token = generateToken(newUser._id);
+
     res.status(201).json({
       success: true,
       message:
         "Patient, linked user, and emergency contact created successfully",
-      user: newUser,
+      token,
+      user: newUser.toJSON(),
       patient: newPatient,
       emergencyContact,
     });
