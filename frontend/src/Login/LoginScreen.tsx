@@ -57,13 +57,13 @@ const LoginScreen: React.FC = () => {
       // Store token and user data using AuthContext
       login(data.token, data.user);
 
-      // Navigate after successful login based on role
+      // Navigate after successful login
       if (data.user.role === "Ops") {
         navigate("/opsdashboard/doctors");
       } else if (data.user.role === "Finance") {
         navigate("/financedashboard");
       } else if (data.user.role === "IT") {
-        navigate("/itdashboard/pending");
+        navigate("/itdashboard");
       } else if (data.user.role === "Patient") {
         navigate("/patientdashboard");
       } else if (data.user.role === "Doctor") {
