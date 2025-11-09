@@ -4,6 +4,7 @@ import Field from "../../components/input/Field";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../context/SignUpContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
@@ -11,6 +12,7 @@ const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 const PatientOnboarding3: React.FC = () => {
   const navigate = useNavigate();
   const { signupData, setSignupData } = useSignup();
+  const { login } = useAuth();
 
   // Temporary state for comma-separated inputs
   const [allergiesInput, setAllergiesInput] = useState(

@@ -1,5 +1,6 @@
 import OpsMember from "../../models/ops/OpsMember.js";
 import User from "../../models/users/User.js";
+import { generateToken } from "../../middleware/authentication.js";
 
 export const createOpsMember = async (req, res) => {
   try {
@@ -9,9 +10,9 @@ export const createOpsMember = async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       username: req.body.username,
-      gender: req.body.gender,
+      gender: req.body.gender || req.body.sex,
       password: req.body.password, // hashed via pre-save hook
-      phoneNumber: req.body.phoneNumber,
+      phoneNumber: req.body.phoneNumber || req.body.phone,
       profilePic: req.body.profilePic,
       role: "Ops",
     });
@@ -22,10 +23,14 @@ export const createOpsMember = async (req, res) => {
     const opsMember = new OpsMember({ user: savedUser._id });
     const savedOpsMember = await opsMember.save();
 
+    // Generate JWT token for authentication
+    const token = generateToken(savedUser._id);
+
     res.status(201).json({
       success: true,
       message: "Ops member and user account created successfully",
-      user: savedUser,
+      token,
+      user: savedUser.toJSON(),
       opsMember: savedOpsMember,
     });
   } catch (error) {
