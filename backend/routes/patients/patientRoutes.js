@@ -29,4 +29,7 @@ router.put("/:id", updatePatient);
 // Deletes a patient by a delete ID
 router.delete("/:id", deletePatient);
 
+// Gets a patient's insurance cards
+router.get("/getInsurance/:id", getInsuranceCards);
+
 export default router;

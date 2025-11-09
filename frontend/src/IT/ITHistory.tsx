@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TicketHistoryTable from "components/table/ticketsHistoryTable";
+import { useRequireRole } from "hooks/useRequireRole";
 interface Ticket {
   _id: string;
   ticketName: string;
@@ -14,19 +15,9 @@ interface Ticket {
 const ITHistory: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userID = user?._id;
+  const user = useRequireRole("IT", true);
 
   useEffect(() => {
-    if (!user || user.role !== "IT") {
-      navigate("/error");
-      return;
-    }
-
-    if (!userID) return;
-
     const fetchTickets = async () => {
       try {
         const token = user?.token || localStorage.getItem("token") || "";
@@ -38,7 +29,7 @@ const ITHistory: React.FC = () => {
           : { "Content-Type": "application/json" };
 
         const [tickets] = await Promise.all([
-          fetch(`http://localhost:5050/api/tickets/bugTicket/${userID}/all`, {
+          fetch(`http://localhost:5050/api/tickets/bugTicket/${user._id}/all`, {
             method: "GET",
             headers,
           }),
@@ -72,7 +63,7 @@ const ITHistory: React.FC = () => {
     };
 
     fetchTickets();
-  }, [userID, navigate, user]);
+  }, [user]);
 
   if (loading) {
     return (

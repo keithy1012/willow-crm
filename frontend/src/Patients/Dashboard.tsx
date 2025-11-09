@@ -1,6 +1,6 @@
 // This file defines the patient's dashboard UI.
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DoctorSearchBar from "../components/input/SearchBar";
 import LongTextArea from "../components/input/LongTextArea";
 import MedicationCard from "../components/card/MedicationCard";
@@ -8,6 +8,7 @@ import UpcomingAppointmentCard from "../components/card/UpcomingAppointmentCard"
 import DoctorSearchResults from "../components/dashboard/DoctorSearchResults";
 import DoctorResultCard from "../components/card/DoctorResultCard";
 import AppointmentBookingModal from "../components/modal/BookingModal";
+import { useRequireRole } from "hooks/useRequireRole";
 
 const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -22,6 +23,8 @@ const Dashboard: React.FC = () => {
     time: string;
     date: string;
   } | null>(null);
+
+  useRequireRole("Patient");
 
   const handleSearch = async (
     doctorQuery: string,
