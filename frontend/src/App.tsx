@@ -6,6 +6,7 @@ import Messages from "./Patients/Messages";
 import Appointments from "./Patients/Appointments";
 import MedicalRecords from "./Patients/MedicalRecords";
 import Medications from "./Patients/Medications";
+import Insurance from "./Patients/Insurance";
 import BugReportPage from "./Bugs/BugReport";
 import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
@@ -38,6 +39,8 @@ import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "IT/PendingDashboard";
 import ITHistory from "IT/ITHistory";
+import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
+import Insurance from "Patients/Insurance";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -81,40 +84,56 @@ const AppContent: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  // In App.tsx, update the useEffect in AppContent:
+
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    const storedUser = localStorage.getItem("currentUser");
+    // Check for auth token using the CORRECT key names
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
+      // Real authentication token exists
+      console.log("Using real auth token");
       setToken(storedToken);
       setCurrentUser(JSON.parse(storedUser));
     } else {
+      // No real auth, check for test mode
       const urlUser = searchParams.get("user");
       const testUserToken = localStorage.getItem("testUser");
-      const testToken = urlUser || testUserToken || "user1";
 
-      if (urlUser && urlUser !== testUserToken) {
-        localStorage.setItem("testUser", urlUser);
+      if (urlUser || testUserToken) {
+        // Test mode - but DON'T pass these as auth tokens
+        console.log("Using test mode - no real auth");
+        const testMode = urlUser || testUserToken || "user1";
+
+        if (urlUser && urlUser !== testUserToken) {
+          localStorage.setItem("testUser", urlUser);
+        }
+
+        // Don't set a fake token - WebSocket needs real auth
+        setToken(null);
+        setCurrentUser(
+          testMode === "user1"
+            ? {
+                id: "507f1f77bcf86cd799439011",
+                firstName: "Dr",
+                lastName: "Smith",
+                username: "drsmith",
+                role: "Doctor" as const,
+              }
+            : {
+                id: "507f1f77bcf86cd799439012",
+                firstName: "John",
+                lastName: "Patient",
+                username: "johnpatient",
+                role: "Patient" as const,
+              }
+        );
+      } else {
+        // No auth and no test mode
+        setToken(null);
+        setCurrentUser(null);
       }
-
-      setToken(testToken);
-      setCurrentUser(
-        testToken === "user1"
-          ? {
-              id: "507f1f77bcf86cd799439011",
-              firstName: "Dr",
-              lastName: "Smith",
-              username: "drsmith",
-              role: "Doctor" as const,
-            }
-          : {
-              id: "507f1f77bcf86cd799439012",
-              firstName: "John",
-              lastName: "Patient",
-              username: "johnpatient",
-              role: "Patient" as const,
-            }
-      );
     }
   }, [searchParams]);
 
@@ -136,7 +155,7 @@ const AppContent: React.FC = () => {
       };
 
   return (
-    <WebSocketProvider token={token || "user2"} currentUser={formattedUser}>
+    <WebSocketProvider token={token || ""} currentUser={formattedUser}>
       <SignupProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -147,6 +166,7 @@ const AppContent: React.FC = () => {
           <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
           <Route path="/patientonboarding2" element={<PatientOnboarding2 />} />
           <Route path="/patientonboarding3" element={<PatientOnboarding3 />} />
+          <Route path="/patientonboarding4" element={<PatientOnboarding4 />} />
           <Route path="/staffonboarding" element={<StaffOnboarding />} />
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
@@ -158,8 +178,10 @@ const AppContent: React.FC = () => {
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/medical-records" element={<MedicalRecords />} />
             <Route path="/medications" element={<Medications />} />
+            <Route path="/insurance" element={<Insurance />} />
             <Route path="/bug-report" element={<BugReportPage />} />
             <Route path="/help-support" element={<HelpSupportPage />} />
+            <Route path="/insurance" element={<Insurance />} />
           </Route>
 
           <Route element={<OpsLayout />}>
@@ -184,6 +206,18 @@ const AppContent: React.FC = () => {
             path="/financedashboard"
             element={<div>Finance Dashboard</div>}
           />
+
+          <Route element={<OpsLayout />}>
+            <Route
+              path="/opsdashboard/doctors"
+              element={<OpsDoctorDashboard />}
+            />
+            <Route
+              path="/opsdashboard/patients"
+              element={<OpsPatientDashboard />}
+            />
+            <Route path="/opsdashboard/history" element={<OpsHistory />} />
+          </Route>
 
           <Route path="/error" element={<Error />} />
         </Routes>

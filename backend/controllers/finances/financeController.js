@@ -1,5 +1,6 @@
 import FinanceMember from "../../models/finance/FinanceMember.js";
 import User from "../../models/users/User.js";
+import { generateToken } from "../../middleware/authentication.js";
 
 // Create new Finance member
 export const createFinanceMember = async (req, res) => {
@@ -21,9 +22,9 @@ export const createFinanceMember = async (req, res) => {
       lastName,
       email,
       username,
-      gender,
+      gender: gender || req.body.sex,
       password,
-      phoneNumber,
+      phoneNumber: phoneNumber || req.body.phone,
       profilePic,
       role: "Finance",
     });
@@ -32,10 +33,14 @@ export const createFinanceMember = async (req, res) => {
 
     const financeMember = await FinanceMember.create({ user: newUser._id });
 
+    // Generate JWT token for authentication
+    const token = generateToken(newUser._id);
+
     res.status(201).json({
       success: true,
       message: "Finance member and linked user created successfully",
-      user: newUser,
+      token,
+      user: newUser.toJSON(),
       financeMember,
     });
   } catch (error) {

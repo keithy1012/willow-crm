@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Field from "../components/input/Field";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
 const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -52,20 +54,19 @@ const LoginScreen: React.FC = () => {
         return;
       }
 
-      // Save token + user info to localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // Store token and user data using AuthContext
+      login(data.token, data.user);
 
       // Navigate after successful login
-      if (data.user.role == "Ops") {
+      if (data.user.role === "Ops") {
         navigate("/opsdashboard/doctors");
-      } else if (data.user.role == "Finance") {
+      } else if (data.user.role === "Finance") {
         navigate("/financedashboard");
-      } else if (data.user.role == "IT") {
-        navigate("/itdashboard/pending");
-      } else if (data.user.role == "Patient") {
+      } else if (data.user.role === "IT") {
+        navigate("/itdashboard");
+      } else if (data.user.role === "Patient") {
         navigate("/patientdashboard");
-      } else if (data.user.role == "Doctor") {
+      } else if (data.user.role === "Doctor") {
         navigate("/doctordashboard");
       } else {
         navigate("/error");
