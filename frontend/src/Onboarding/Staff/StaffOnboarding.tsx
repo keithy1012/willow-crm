@@ -45,7 +45,7 @@ const StaffOnboarding: React.FC = () => {
       }
 
       const data = await res.json();
-      
+
       // Store the token and user data for authentication
       if (data.token && data.user) {
         login(data.token, data.user);
@@ -65,7 +65,7 @@ const StaffOnboarding: React.FC = () => {
 
   const directIT = () => createUser("itMembers", "/itdashboard");
   const directFinance = () => createUser("financeMembers", "/financedashboard");
-  const directOps = () => createUser("opsMembers", "/opsdashboard");
+  const directOps = () => createUser("opsMembers", "/opsdashboard/doctors");
 
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
