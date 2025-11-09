@@ -13,7 +13,9 @@ const patientSchema = new mongoose.Schema(
     },
     allergies: [String],
     medicalHistory: [String],
-    emergencyContact: [{ type: mongoose.Schema.Types.ObjectId, ref: "Emergencycontact" }],
+    emergencyContact: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Emergencycontact" },
+    ],
   },
   { timestamps: true }
 );
