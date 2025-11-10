@@ -64,7 +64,7 @@ const StaffOnboarding: React.FC = () => {
   };
 
   const directIT = () => createUser("itMembers", "/itdashboard");
-  const directFinance = () => createUser("financeMembers", "/financedashboard");
+  const directFinance = () => createUser("financeMembers", "/invoices");
   const directOps = () => createUser("opsMembers", "/opsdashboard");
 
   return (

@@ -61,7 +61,7 @@ const LoginScreen: React.FC = () => {
       if (data.user.role === "Ops") {
         navigate("/opsdashboard/doctors");
       } else if (data.user.role === "Finance") {
-        navigate("/financedashboard");
+        navigate("/invoices");
       } else if (data.user.role === "IT") {
         navigate("/itdashboard");
       } else if (data.user.role === "Patient") {

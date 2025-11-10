@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import PatientSidebar from "./components/sidebar/PatientSidebar";
+import FinanceSidebar from "./components/sidebar/FinanceSidebar";
 import Dashboard from "./Patients/Dashboard";
 import Messages from "./Patients/Messages";
 import Appointments from "./Patients/Appointments";
 import MedicalRecords from "./Patients/MedicalRecords";
 import Medications from "./Patients/Medications";
 import Insurance from "./Patients/Insurance";
+import Invoices from "./Finance/Invoices";
 import BugReportPage from "./Bugs/BugReport";
 import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
@@ -27,6 +29,7 @@ import RollSelection from "./Onboarding/RollSelection";
 import PatientOnboarding1 from "./Onboarding/Patient/PatientOnboarding1";
 import PatientOnboarding2 from "./Onboarding/Patient/PatientOnboarding2";
 import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
+import PatientOnboarding4 from "./Onboarding/Patient/PatientOnboarding4";
 import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
 import Login from "./Login/LoginScreen";
@@ -36,11 +39,12 @@ import OpsDoctorDashboard from "Operations/DoctorDashboard";
 import OpsPatientDashboard from "Operations/PatientDashboard";
 import OpsHistory from "Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
-
 import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "IT/PendingDashboard";
 import ITHistory from "IT/ITHistory";
-import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
+import Claims from "Finance/Claims";
+import Billing from "Finance/Billing";
+
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -53,6 +57,7 @@ const PatientLayout: React.FC = () => {
     </div>
   );
 };
+
 const OpsLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -79,12 +84,23 @@ const ItsLayout: React.FC = () => {
   );
 };
 
+const FinanceLayout: React.FC = () => {
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <FinanceSidebar />
+      </div>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
 const AppContent: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
-
-  // In App.tsx, update the useEffect in AppContent:
 
   useEffect(() => {
     // Check for auth token using the CORRECT key names
@@ -185,6 +201,7 @@ const AppContent: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
 
+            {/* Patient Routes */}
             <Route element={<PatientLayout />}>
               <Route path="/patientdashboard" element={<Dashboard />} />
               <Route path="/messages" element={<Messages />} />
@@ -194,9 +211,9 @@ const AppContent: React.FC = () => {
               <Route path="/insurance" element={<Insurance />} />
               <Route path="/bug-report" element={<BugReportPage />} />
               <Route path="/help-support" element={<HelpSupportPage />} />
-              <Route path="/insurance" element={<Insurance />} />
             </Route>
 
+            {/* Operations Routes */}
             <Route element={<OpsLayout />}>
               <Route
                 path="/opsdashboard/doctors"
@@ -210,6 +227,7 @@ const AppContent: React.FC = () => {
               <Route path="/bug-report" element={<BugReportPage />} />
             </Route>
 
+            {/* IT Routes */}
             <Route element={<ItsLayout />}>
               <Route
                 path="/itdashboard/pending"
@@ -218,21 +236,17 @@ const AppContent: React.FC = () => {
               <Route path="/itdashboard/history" element={<ITHistory />} />
             </Route>
 
-            <Route
-              path="/financedashboard"
-              element={<div>Finance Dashboard</div>}
-            />
-
-            <Route element={<OpsLayout />}>
+            {/* Finance Routes */}
+            <Route element={<FinanceLayout />}>
+              <Route path="/invoices" element={<Invoices />} />
               <Route
-                path="/opsdashboard/doctors"
-                element={<OpsDoctorDashboard />}
+                path="/claims"
+                element={<Claims />}
               />
               <Route
-                path="/opsdashboard/patients"
-                element={<OpsPatientDashboard />}
+                path="/billing"
+                element={<Billing />}
               />
-              <Route path="/opsdashboard/history" element={<OpsHistory />} />
             </Route>
 
             <Route path="/error" element={<Error />} />
