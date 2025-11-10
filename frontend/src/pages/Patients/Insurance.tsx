@@ -159,16 +159,6 @@ const Insurance: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Action Buttons */}
-          <div className="mt-8 flex justify-center gap-4">
-            <button className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
-              Update Insurance Cards
-            </button>
-            <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
-              Download Cards
-            </button>
-          </div>
         </div>
       </div>
     </div>

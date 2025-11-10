@@ -43,59 +43,61 @@ const BugReport: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-md border">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-        Submit a Bug Report
-      </h2>
+    <div className="flex w-full justify-center items-center min-h-screen bg-gray-50 align-middle">
+      <div className="w-1/2 mx-auto p-6 bg-white rounded-2xl shadow-md border">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+          Submit a Bug Report
+        </h2>
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Title
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Brief summary of the issue"
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Brief summary of the issue"
+              required
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <LongTextArea
+              placeholder="Describe the problem or request in detail..."
+              value={content}
+              onChange={setContent}
+              button={false}
+              minHeight={120}
+              maxHeight={300}
+            />
+          </div>
+
+          <PrimaryButton
+            text={loading ? "Submitting..." : "Submit Ticket"}
+            variant="primary"
+            size="medium"
+            type="submit"
+            disabled={loading}
+            className="w-full"
           />
-        </div>
+        </form>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
-          <LongTextArea
-            placeholder="Describe the problem or request in detail..."
-            value={content}
-            onChange={setContent}
-            button={false}
-            minHeight={120}
-            maxHeight={300}
-          />
-        </div>
-
-        <PrimaryButton
-          text={loading ? "Submitting..." : "Submit Ticket"}
-          variant="primary"
-          size="medium"
-          type="submit"
-          disabled={loading}
-          className="w-full"
-        />
-      </form>
-
-      {message && (
-        <p
-          className={`mt-4 text-center ${
-            message.startsWith("SUCCESS") ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
+        {message && (
+          <p
+            className={`mt-4 text-center ${
+              message.startsWith("SUCCESS") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

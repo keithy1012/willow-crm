@@ -6,31 +6,16 @@ import React, {
   useState,
   useCallback,
 } from "react";
+import { messageService } from "api/services/message.service";
+import { User } from "api/types/user.types";
+import {
+  Conversation,
+  Message as MessageType,
+  Participant,
+} from "api/types/message.types";
 
-interface User {
-  id: string;
-  name: string;
-  username: string;
-  avatar?: string;
-  role: string;
-}
-
-interface Message {
-  id: string;
-  conversationId: string;
-  sender: User;
-  content: string;
-  timestamp: string;
-  read: boolean;
-  delivered: boolean;
-}
-
-interface Conversation {
-  id: string;
-  participants: User[];
-  lastMessage?: Message;
-  unreadCount: number;
-  updatedAt: string;
+interface Message extends MessageType {
+  delivered?: boolean;
 }
 
 interface WebSocketContextType {
@@ -39,8 +24,8 @@ interface WebSocketContextType {
   activeConversation: Conversation | null;
   messages: Message[];
   onlineUsers: string[];
-  typingUsers: { [conversationId: string]: User };
-  currentUser: User;
+  typingUsers: { [conversationId: string]: Participant };
+  currentUser: Participant;
   sendMessage: (
     conversationId: string,
     content: string,
@@ -54,6 +39,7 @@ interface WebSocketContextType {
   ) => void;
   selectConversation: (conversationId: string) => void;
   createConversation: (recipientId: string) => Promise<Conversation | null>;
+  refreshConversations: () => Promise<void>;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -79,7 +65,7 @@ interface WebSocketProviderProps {
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   children,
   token,
-  currentUser,
+  currentUser: user,
 }) => {
   const ws = useRef<WebSocket | null>(null);
   const reconnectTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -91,8 +77,39 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [typingUsers, setTypingUsers] = useState<{
-    [conversationId: string]: User;
+    [conversationId: string]: Participant;
   }>({});
+
+  // Convert User to Participant format
+  const currentUser: Participant = {
+    id: user._id,
+    name: `${user.firstName} ${user.lastName}`,
+    username: user.username || user.email,
+    avatar: user.profilePic,
+    role: user.role,
+  };
+
+  // Load conversations using service (fallback when WS is down)
+  const refreshConversations = useCallback(async () => {
+    try {
+      const data = await messageService.conversations.getAll();
+      setConversations(data);
+    } catch (error) {
+      console.error("Failed to load conversations:", error);
+    }
+  }, []);
+
+  // Load messages using service (fallback when WS is down)
+  const loadMessages = useCallback(async (conversationId: string) => {
+    try {
+      const data = await messageService.messages.getByConversation(
+        conversationId
+      );
+      setMessages(data);
+    } catch (error) {
+      console.error("Failed to load messages:", error);
+    }
+  }, []);
 
   const connect = useCallback(() => {
     try {
@@ -122,6 +139,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       ws.current.onerror = (error) => {
         console.error("WebSocket error:", error);
         setIsConnected(false);
+        // Load data via HTTP as fallback
+        refreshConversations();
       };
 
       ws.current.onclose = () => {
@@ -136,10 +155,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     } catch (error) {
       console.error("Failed to connect:", error);
       setIsConnected(false);
+      // Load data via HTTP as fallback
+      refreshConversations();
     }
-  }, [token]);
+  }, [token, refreshConversations]);
 
-  // Handle incoming WebSocket messages
+  // Handle incoming WebSocket messages - keep as is
   const handleWebSocketMessage = useCallback((data: any) => {
     console.log("Received WebSocket message:", data.type, data);
 
@@ -157,17 +178,13 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         break;
 
       case "new-message":
-        console.log("New message received:", data.message);
-        // Handle new message inline to avoid stale closure
         setMessages((prev) => {
-          // Check if message already exists
           if (prev.some((m) => m.id === data.message.id)) {
             return prev;
           }
           return [...prev, data.message];
         });
 
-        // Update conversation list
         setConversations((prev) =>
           prev.map((conv) => {
             if (conv.id === data.message.conversationId) {
@@ -216,10 +233,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       case "error":
         console.error("Server error:", data.error);
         break;
+
       case "auth-error":
         console.error("Authentication failed:", data.error);
-        // Don't immediately clear the token - let user try again
-        // Only clear if it's a specific error like "Invalid token" or "Token expired"
         if (data.error === "Token expired" || data.error === "Invalid token") {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -231,14 +247,13 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     }
   }, []);
 
-  // Handle typing status
+  // Handle typing status - keep as is
   const handleTypingStatus = useCallback((data: any) => {
     const { conversationId, user, isTyping } = data;
 
     if (isTyping) {
       setTypingUsers((prev) => ({ ...prev, [conversationId]: user }));
 
-      // Clear typing after 3 seconds
       if (typingTimeouts.current[conversationId]) {
         clearTimeout(typingTimeouts.current[conversationId]);
       }
@@ -258,7 +273,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     }
   }, []);
 
-  // Handle messages read
+  // Handle messages read - keep as is
   const handleMessagesRead = useCallback(
     (data: any) => {
       const { messageIds, conversationId } = data;
@@ -268,7 +283,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         )
       );
 
-      // Reset unread count for conversation
       if (activeConversation?.id === conversationId) {
         setConversations((prev) =>
           prev.map((conv) =>
@@ -280,7 +294,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     [activeConversation]
   );
 
-  // Handle user status updates
+  // Handle user status updates - keep as is
   const handleUserStatus = useCallback((data: any) => {
     const { userId, status } = data;
     if (status === "online") {
@@ -290,14 +304,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     }
   }, []);
 
-  // Send a message
+  // Send a message with fallback to HTTP
   const sendMessage = useCallback(
-    (conversationId: string, content: string, recipientId: string) => {
-      if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
-        console.error("WebSocket not connected");
-        return;
-      }
-
+    async (conversationId: string, content: string, recipientId: string) => {
       const tempId = Date.now().toString();
       const optimisticMessage: Message = {
         id: tempId,
@@ -312,68 +321,105 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       // Add optimistic message
       setMessages((prev) => [...prev, optimisticMessage]);
 
-      // Send via WebSocket
-      ws.current.send(
-        JSON.stringify({
-          type: "send-message",
-          data: {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        // Send via WebSocket
+        ws.current.send(
+          JSON.stringify({
+            type: "send-message",
+            data: {
+              conversationId,
+              recipientId,
+              content,
+              tempId,
+            },
+          })
+        );
+      } else {
+        // Fallback to HTTP
+        try {
+          const response = await messageService.messages.send(
             conversationId,
-            recipientId,
             content,
-            tempId,
-          },
-        })
-      );
+            recipientId
+          );
+
+          // Replace optimistic message with real one
+          setMessages((prev) =>
+            prev.map((msg) => (msg.id === tempId ? response.message : msg))
+          );
+        } catch (error) {
+          console.error("Failed to send message:", error);
+          // Remove optimistic message on error
+          setMessages((prev) => prev.filter((msg) => msg.id !== tempId));
+        }
+      }
     },
     [currentUser]
   );
 
-  // Mark messages as read
+  // Mark messages as read with fallback
   const markAsRead = useCallback(
-    (conversationId: string, messageIds: string[]) => {
-      if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
-
-      ws.current.send(
-        JSON.stringify({
-          type: "mark-as-read",
-          data: {
-            conversationId,
-            messageIds,
-          },
-        })
-      );
+    async (conversationId: string, messageIds: string[]) => {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.send(
+          JSON.stringify({
+            type: "mark-as-read",
+            data: {
+              conversationId,
+              messageIds,
+            },
+          })
+        );
+      } else {
+        // Fallback to HTTP
+        try {
+          await messageService.conversations.markAsRead(conversationId);
+        } catch (error) {
+          console.error("Failed to mark as read:", error);
+        }
+      }
     },
     []
   );
 
-  // Send typing indicator
+  // Send typing indicator with fallback
   const sendTypingIndicator = useCallback(
-    (conversationId: string, recipientId: string, isTyping: boolean) => {
-      if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
-
-      ws.current.send(
-        JSON.stringify({
-          type: "typing",
-          data: {
-            conversationId,
-            recipientId,
-            isTyping,
-          },
-        })
-      );
+    async (conversationId: string, recipientId: string, isTyping: boolean) => {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.send(
+          JSON.stringify({
+            type: "typing",
+            data: {
+              conversationId,
+              recipientId,
+              isTyping,
+            },
+          })
+        );
+      } else {
+        // Fallback to HTTP
+        try {
+          if (isTyping) {
+            await messageService.typing.start(conversationId, recipientId);
+          } else {
+            await messageService.typing.stop(conversationId, recipientId);
+          }
+        } catch (error) {
+          console.error("Failed to send typing indicator:", error);
+        }
+      }
     },
     []
   );
 
-  // Select a conversation
+  // Select a conversation with fallback
   const selectConversation = useCallback(
-    (conversationId: string) => {
+    async (conversationId: string) => {
       const conversation = conversations.find((c) => c.id === conversationId);
       if (!conversation) return;
 
       setActiveConversation(conversation);
 
-      // Load messages for this conversation
       if (ws.current && ws.current.readyState === WebSocket.OPEN) {
         ws.current.send(
           JSON.stringify({
@@ -381,6 +427,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             data: { conversationId },
           })
         );
+      } else {
+        // Fallback to HTTP
+        await loadMessages(conversationId);
       }
 
       // Mark messages as read
@@ -397,43 +446,47 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         markAsRead(conversationId, unreadMessageIds);
       }
     },
-    [conversations, messages, currentUser, markAsRead]
+    [conversations, messages, currentUser, markAsRead, loadMessages]
   );
 
-  // Create a new conversation
+  // Create conversation with fallback
   const createConversation = useCallback(
     async (recipientId: string): Promise<Conversation | null> => {
-      if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
-        console.error("WebSocket not connected");
-        return null;
-      }
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        return new Promise((resolve) => {
+          const handleResponse = (event: MessageEvent) => {
+            const data = JSON.parse(event.data);
+            if (data.type === "conversation-created") {
+              ws.current?.removeEventListener("message", handleResponse);
+              resolve(data.conversation);
+            }
+          };
 
-      return new Promise((resolve) => {
-        // Listen for response
-        const handleResponse = (event: MessageEvent) => {
-          const data = JSON.parse(event.data);
-          if (data.type === "conversation-created") {
+          ws.current?.addEventListener("message", handleResponse);
+          ws.current?.send(
+            JSON.stringify({
+              type: "create-conversation",
+              data: { recipientId },
+            })
+          );
+
+          setTimeout(() => {
             ws.current?.removeEventListener("message", handleResponse);
-            resolve(data.conversation);
-          }
-        };
-
-        ws.current?.addEventListener("message", handleResponse);
-
-        // Send create conversation request
-        ws.current?.send(
-          JSON.stringify({
-            type: "create-conversation",
-            data: { recipientId },
-          })
-        );
-
-        // Timeout after 5 seconds
-        setTimeout(() => {
-          ws.current?.removeEventListener("message", handleResponse);
-          resolve(null);
-        }, 5000);
-      });
+            resolve(null);
+          }, 5000);
+        });
+      } else {
+        // Fallback to HTTP
+        try {
+          const response = await messageService.conversations.create(
+            recipientId
+          );
+          return response.conversation;
+        } catch (error) {
+          console.error("Failed to create conversation:", error);
+          return null;
+        }
+      }
     },
     []
   );
@@ -468,6 +521,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     sendTypingIndicator,
     selectConversation,
     createConversation,
+    refreshConversations,
   };
 
   return (
