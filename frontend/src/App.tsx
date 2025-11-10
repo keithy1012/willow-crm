@@ -10,15 +10,7 @@ import Insurance from "./pages/Patients/Insurance";
 import BugReportPage from "./pages/Bugs/BugReport";
 import HelpSupportPage from "./pages/Patients/HelpSupport";
 import FinanceSidebar from "./components/sidebar/FinanceSidebar";
-import Dashboard from "./Patients/Dashboard";
-import Messages from "./Patients/Messages";
-import Appointments from "./Patients/Appointments";
-import MedicalRecords from "./Patients/MedicalRecords";
-import Medications from "./Patients/Medications";
-import Insurance from "./Patients/Insurance";
 import Invoices from "./Finance/Invoices";
-import BugReportPage from "./Bugs/BugReport";
-import HelpSupportPage from "./Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./contexts/SignUpContext";
 import {
@@ -37,7 +29,6 @@ import PatientOnboarding1 from "./pages/Onboarding/Patient/PatientOnboarding1";
 import PatientOnboarding2 from "./pages/Onboarding/Patient/PatientOnboarding2";
 import PatientOnboarding3 from "./pages/Onboarding/Patient/PatientOnboarding3";
 import PatientOnboarding4 from "./pages/Onboarding/Patient/PatientOnboarding4";
-import PatientOnboarding4 from "./Onboarding/Patient/PatientOnboarding4";
 import StaffOnboarding from "./pages/Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./pages/Onboarding/Staff/DoctorOnboarding";
 import Login from "./pages/Login/LoginScreen";
@@ -48,13 +39,11 @@ import OpsPatientDashboard from "pages/Operations/PatientDashboard";
 import OpsHistory from "pages/Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
-import PendingDashboard from "pages/IT/PendingDashboard";
-import ITHistory from "pages/IT/ITHistory";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
 
 // Layout Components
-import PendingDashboard from "IT/PendingDashboard";
-import ITHistory from "IT/ITHistory";
+import PendingDashboard from "./pages/IT/PendingDashboard";
+import ITHistory from "./pages/IT/ITHistory";
 import Claims from "Finance/Claims";
 import Billing from "Finance/Billing";
 
@@ -191,57 +180,9 @@ const AppRoutes: React.FC = () => {
     );
   }
 
-  // Protected routes for authenticated users
-  return (
-    <WebSocketProvider token={token} currentUser={user}>
-      <SignupProvider>
-        <Routes>
-          {/* Root redirect based on role */}
-          <Route
-            path="/"
-            element={<Navigate to={getDefaultRoute(user.role)} replace />}
-          />
-
-          {/* Allow logout */}
-          <Route path="/logout" element={<Logout />} />
-
-          {/* Redirect login to dashboard if already logged in */}
-          <Route
-            path="/login"
-            element={<Navigate to={getDefaultRoute(user.role)} replace />}
-          />
-
-          {/* Patient routes */}
-          <Route element={<PatientLayout />}>
-            <Route path="/patientdashboard" element={<Dashboard />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/medical-records" element={<MedicalRecords />} />
-            <Route path="/medications" element={<Medications />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-            <Route path="/help-support" element={<HelpSupportPage />} />
-          </Route>
-  // Format user for WebSocketProvider
-  const formattedUser = currentUser
-    ? {
-        id: currentUser._id || currentUser.id,
-        name: `${currentUser.firstName} ${currentUser.lastName}`,
-        username: currentUser.username,
-        avatar: currentUser.profilePic,
-        role: currentUser.role,
-      }
-    : {
-        // Default user if nothing else is available
-        id: "507f1f77bcf86cd799439012",
-        name: "John Patient",
-        username: "johnpatient",
-        role: "Patient" as const,
-      };
-
   return (
     <AuthProvider>
-      <WebSocketProvider token={token || ""} currentUser={formattedUser}>
+      <WebSocketProvider token={token || ""} currentUser={user}>
         <SignupProvider>
           <Routes>
             <Route path="/" element={<Landing />} />
@@ -282,8 +223,7 @@ const AppRoutes: React.FC = () => {
               <Route path="/help-support" element={<HelpSupportPage />} />
             </Route>
 
-          {/* Operations routes */}
-            {/* Operations Routes */}
+\            {/* Operations Routes */}
           <Route element={<OpsLayout />}>
             <Route
               path="/opsdashboard/doctors"
@@ -298,7 +238,6 @@ const AppRoutes: React.FC = () => {
             <Route path="/ops-help-support" element={<HelpSupportPage />} />
           </Route>
 
-          {/* IT routes */}
             {/* IT Routes */}
           <Route element={<ItsLayout />}>
             <Route path="/itdashboard" element={<PendingDashboard />} />
