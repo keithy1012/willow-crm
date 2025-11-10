@@ -81,16 +81,14 @@ const ApproveCreationModal: React.FC<ApproveCreationModalProps> = ({
             <strong>Gender:</strong> {ticket.gender || "N/A"}
           </p>
           <p>
-            <strong>Bio:</strong> {ticket.bioContent || ticket.notes || "N/A"}
+            <strong>Bio:</strong> {ticket.bioContent || "N/A"}
           </p>
           <p>
             <strong>Education:</strong> {ticket.education || "N/A"}
           </p>
           <p>
             <strong>Graduation Date:</strong>{" "}
-            {formatDate(
-              ticket.graduationDate || ticket.graduation || getDate()
-            )}
+            {formatDate(ticket.graduationDate)}
           </p>
           <p>
             <strong>Speciality:</strong> {ticket.speciality || "N/A"}
