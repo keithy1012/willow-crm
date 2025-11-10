@@ -4,11 +4,10 @@ import {
   submitDoctorTicket,
   getPendingTickets,
   approveTicket,
-  getAllTicketsByID
-} from "../../controllers/tickets/doctorAccountCreationController.js"
+  getAllTicketsByID,
+} from "../../controllers/tickets/doctorAccountCreationController.js";
 import { requireRole } from "../../middleware/authMiddleware.js";
 import { authenticate } from "../../middleware/authentication.js";
-
 
 const router = express.Router();
 
@@ -19,8 +18,18 @@ router.post("/", submitDoctorTicket);
 router.get("/pending", authenticate, requireRole(["Ops"]), getPendingTickets);
 
 // Approve a doctor ticket (Ops team only)
-router.put("/:ticketId/approve", authenticate, requireRole(["Ops"]), approveTicket);
+router.patch(
+  "/:ticketId/approve",
+  authenticate,
+  requireRole(["Ops"]),
+  approveTicket
+);
 
 // Get all tickets completed by an Ops team member
-router.get("/completed/:userID", authenticate, requireRole(["Ops"]), getAllTicketsByID);
+router.get(
+  "/completed/:userID",
+  authenticate,
+  requireRole(["Ops"]),
+  getAllTicketsByID
+);
 export default router;

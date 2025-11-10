@@ -50,11 +50,11 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
   const date = getDate();
 
   const getRequestedBy = () => {
-    if ("requestedBy" in ticket && ticket.requestedBy)
-      return ticket.requestedBy;
     if ("patientName" in ticket && ticket.patientName)
       return ticket.patientName;
     if ("doctorName" in ticket && ticket.doctorName) return ticket.doctorName;
+    if ("requestedBy" in ticket && ticket.requestedBy)
+      return ticket.requestedBy;
     return "Unknown";
   };
 

@@ -106,7 +106,7 @@ const OpsPatientDashboard: React.FC = () => {
                 <TicketCard
                   key={ticket._id}
                   title={ticket.ticketName}
-                  requestedBy={ticket.requestedBy}
+                  requestedBy={ticket.patientName}
                   description={ticket.description}
                   buttonLabel="Assign"
                   onButtonClick={() => handleAssignClick(ticket)}
@@ -128,7 +128,7 @@ const OpsPatientDashboard: React.FC = () => {
                 <TicketCard
                   key={ticket._id}
                   title={ticket.ticketName}
-                  requestedBy={ticket.requestedBy}
+                  requestedBy={ticket.patientName}
                   description={ticket.description}
                   buttonLabel="Finish"
                   onButtonClick={() => handleFinishClick(ticket)}

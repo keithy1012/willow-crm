@@ -4,9 +4,10 @@ import LongTextArea from "../../components/input/LongTextArea";
 import MedicationCard from "../../components/card/MedicationCard";
 import UpcomingAppointmentCard from "../../components/card/UpcomingAppointmentCard";
 import DoctorSearchResults from "../../components/dashboard/DoctorSearchResults";
-import DoctorResultCard from "../../components/card/DoctorResultCard";
 import AppointmentBookingModal from "../../components/modal/BookingModal";
 import { useRequireRole } from "hooks/useRequireRole";
+import { availabilityService } from "api/services/availability.service";
+import { useAuth } from "contexts/AuthContext";
 
 const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -21,8 +22,13 @@ const Dashboard: React.FC = () => {
     time: string;
     date: string;
   } | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
-  useRequireRole("Patient");
+  const user = useRequireRole("Patient");
+  const { user: authUser } = useAuth();
+
+  // Get patient name from auth context or localStorage
+  const patientName = authUser?.firstName || user?.firstName || "Patient";
 
   const handleSearch = async (
     doctorQuery: string,
@@ -30,41 +36,42 @@ const Dashboard: React.FC = () => {
   ) => {
     try {
       setIsSearching(true);
-      let url = "/api/availability/search?";
-      const params: string[] = [];
+      setSearchError(null);
 
       // Store search parameters for display
       setSearchName(doctorQuery);
       setSearchDate(availabilityQuery);
+
+      // Build search params
+      const searchParams: { date?: string; name?: string } = {};
 
       // Format date from calendar picker
       if (availabilityQuery) {
         const formattedDate = new Date(availabilityQuery)
           .toISOString()
           .split("T")[0];
-        params.push(`date=${formattedDate}`);
+        searchParams.date = formattedDate;
       }
 
       // Add name search if provided
       if (doctorQuery) {
-        params.push(`name=${encodeURIComponent(doctorQuery)}`);
+        searchParams.name = doctorQuery;
       }
 
       // If no search params, don't search
-      if (params.length === 0) {
+      if (Object.keys(searchParams).length === 0) {
         setIsSearching(false);
         return;
       }
 
-      const response = await fetch(
-        `http://localhost:5050${url}${params.join("&")}`
-      );
-      const data = await response.json();
+      // Use the availability service
+      const response = await availabilityService.searchByDateTime(searchParams);
 
-      console.log("Search results:", data);
-      setSearchResults(data.doctors || []);
+      console.log("Search results:", response);
+      setSearchResults(response.doctors || []);
     } catch (error) {
       console.error("Search failed:", error);
+      setSearchError("Failed to search for doctors. Please try again.");
       setSearchResults([]);
     }
   };
@@ -75,29 +82,34 @@ const Dashboard: React.FC = () => {
     setSearchDate("");
     setSearchName("");
     setSpecialtyFilter("");
+    setSearchError(null);
   };
 
   const handleAskQuestion = (question: string) => {
     console.log("Question:", question);
+    // TODO: Implement AI chatbot integration
   };
 
-  // NEED TO HANDLE BOOKING
   const handleBookAppointment = (doctorId: string, timeSlot: any) => {
+    const doctor = searchResults.find((r) => r.doctor._id === doctorId)?.doctor;
+    const doctorName = doctor
+      ? `Dr. ${doctor.user.firstName} ${doctor.user.lastName}`
+      : "Doctor";
+
     setSelectedBooking({
       doctorId,
-      doctorName: "Dr. John Doe", // Get from your data
+      doctorName,
       time: timeSlot.startTime,
       date: searchDate,
     });
     setShowBookingModal(true);
   };
 
-  // NEED TO HANDLE MESSAGING
   const handleMessageDoctor = (doctorId: string) => {
     console.log("Messaging doctor:", doctorId);
+    // TODO: Navigate to messaging with doctor ID
   };
 
-  // HANDLE SPECILATY FILTER CHANGE
   const handleSpecialtyChange = (specialty: string) => {
     setSpecialtyFilter(specialty);
   };
@@ -138,6 +150,12 @@ const Dashboard: React.FC = () => {
               </button>
             </div>
 
+            {searchError && (
+              <div className="mx-12 mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {searchError}
+              </div>
+            )}
+
             <DoctorSearchResults
               searchDate={searchDate}
               searchName={searchName}
@@ -147,16 +165,18 @@ const Dashboard: React.FC = () => {
               onBookAppointment={handleBookAppointment}
               onMessageDoctor={handleMessageDoctor}
             />
+
             <AppointmentBookingModal
               isOpen={showBookingModal}
               onClose={() => setShowBookingModal(false)}
               doctorName={selectedBooking?.doctorName ?? ""}
               appointmentTime={selectedBooking?.time ?? ""}
               appointmentDate={selectedBooking?.date ?? ""}
-              onComplete={(data) => {
+              onComplete={async (data) => {
                 console.log("Booking completed:", data);
-                // Send to your backend
+                // TODO: Implement booking API call
                 setShowBookingModal(false);
+                // Show success message
               }}
             />
           </div>
@@ -164,7 +184,7 @@ const Dashboard: React.FC = () => {
           <div className="p-12">
             <div className="mb-4">
               <h1 className="flex justify-start text-2xl font-semibold text-primaryText mb-6">
-                Lok Ye's Dashboard
+                {patientName}'s Dashboard
               </h1>
             </div>
 

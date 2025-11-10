@@ -8,6 +8,8 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { NotePencil } from "phosphor-react";
 import { useWebSocket } from "../../contexts/WebSocketContext";
 import { useRequireRole } from "hooks/useRequireRole";
+import { messageService } from "api/services/message.service";
+import { UserSearchResult } from "api/types/user.types";
 
 interface ConversationGroup {
   label: string;
@@ -121,15 +123,27 @@ const Messages: React.FC = () => {
   };
 
   // Handle user selection from search modal
-  const handleUserSelected = async (userId: string, user: any) => {
-    console.log("Creating conversation with:", user.fullName || user.name);
+  const handleUserSelected = async (userId: string, user: UserSearchResult) => {
+    console.log(
+      "Creating conversation with:",
+      user.fullName || `${user.firstName} ${user.lastName}`
+    );
 
     try {
-      const newConversation = await createConversation(userId);
-
-      if (newConversation) {
-        selectConversation(newConversation.id);
-        setShowUserSearch(false);
+      // If WebSocket is connected, use it
+      if (isConnected && createConversation) {
+        const newConversation = await createConversation(userId);
+        if (newConversation) {
+          selectConversation(newConversation.id);
+          setShowUserSearch(false);
+        }
+      } else {
+        // Fallback to HTTP API using service
+        const response = await messageService.conversations.create(userId);
+        if (response.conversation) {
+          selectConversation(response.conversation.id);
+          setShowUserSearch(false);
+        }
       }
     } catch (error) {
       console.error("Error creating conversation:", error);
@@ -209,7 +223,6 @@ const Messages: React.FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-row bg-foreground">
-      {/* Sidebar */}
       <div className="w-1/3 p-6 space-y-3 h-screen border-r bg-background border-stroke flex flex-col">
         <div className="flex flex-row justify-between items-center">
           <div className="flex items-center gap-2">
@@ -268,7 +281,6 @@ const Messages: React.FC = () => {
         </div>
       </div>
 
-      {/* Chat Area */}
       <div className="flex w-2/3 flex-col">
         {activeConversation && activeRecipient ? (
           <>
@@ -344,7 +356,6 @@ const Messages: React.FC = () => {
         )}
       </div>
 
-      {/* User Search Modal */}
       <UserSearchModal
         isOpen={showUserSearch}
         onClose={() => setShowUserSearch(false)}

@@ -41,7 +41,10 @@ export const getTicketByID = async (req, res) => {
 export const getInProgressTicketsByOpsId = async (req, res) => {
   try {
     const opsId = new mongoose.Types.ObjectId(req.params.opsId);
-    const tickets = await DoctorRequestTicket.find({ responsibleMember: opsId, status:"In Progress" });
+    const tickets = await DoctorRequestTicket.find({
+      responsibleMember: opsId,
+      status: "In Progress",
+    });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
@@ -49,11 +52,13 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
   }
 };
 
-// Get all tickets (disregard status) by a Ops member by id 
+// Get all tickets (disregard status) by a Ops member by id
 export const getAllTicketsByOpsId = async (req, res) => {
   try {
     const opsId = new mongoose.Types.ObjectId(req.params.opsId);
-    const tickets = await DoctorRequestTicket.find({ responsibleMember: opsId });
+    const tickets = await DoctorRequestTicket.find({
+      responsibleMember: opsId,
+    });
     if (!tickets) return res.status(404).json({ error: "Tickets not found" });
     return res.json(tickets);
   } catch (err) {
@@ -62,18 +67,23 @@ export const getAllTicketsByOpsId = async (req, res) => {
 };
 
 // Move a pending ticket into In Progress
-    // Update status in ticket
-    // Changes responsibleMember to the Ops User's id
+// Update status in ticket
+// Changes responsibleMember to the Ops User's id
 export const startTicketProgress = async (req, res) => {
   try {
     const ticketId = req.params.ticketId;
-    const ticket = await DoctorRequestTicket.findOne({ _id: ticketId, status: "Pending" });
+    const ticket = await DoctorRequestTicket.findOne({
+      _id: ticketId,
+      status: "Pending",
+    });
     if (!ticket) {
-      return res.status(404).json({ error: "Pending ticket not found or already in progress." });
+      return res
+        .status(404)
+        .json({ error: "Pending ticket not found or already in progress." });
     }
     // Update status and assign Ops member
     ticket.status = "In Progress";
-    ticket.responsibleMember = req.user._id; 
+    ticket.responsibleMember = req.user._id;
     await ticket.save();
     res.json({
       message: "Ticket moved to In Progress",
@@ -85,18 +95,23 @@ export const startTicketProgress = async (req, res) => {
 };
 
 // Move a In Progress ticket to Completed
-    // Update status in ticket
-    // Update approved by the Ops User's id
-    // Update date completed
+// Update status in ticket
+// Update approved by the Ops User's id
+// Update date completed
 export const completeTicket = async (req, res) => {
   try {
     const ticketId = req.params.ticketId;
-    const ticket = await DoctorRequestTicket.findOne({ _id: ticketId, status: "In Progress" });
+    const ticket = await DoctorRequestTicket.findOne({
+      _id: ticketId,
+      status: "In Progress",
+    });
     if (!ticket) {
-      return res.status(404).json({ error: "Ticket not found or not in progress." });
+      return res
+        .status(404)
+        .json({ error: "Ticket not found or not in progress." });
     }
     ticket.status = "Completed";
-    ticket.approvedBy = req.user._id; 
+    ticket.approvedBy = req.user._id;
     ticket.dateCompleted = new Date();
     await ticket.save();
     res.json({

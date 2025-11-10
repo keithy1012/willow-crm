@@ -3,9 +3,7 @@ import Field from "../../components/input/Field";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../contexts/SignUpContext";
-
-const TopRightBlob = "/onboarding_blob_top_right.svg";
-const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
+import OnboardingLayout from "components/layouts/OnboardingLayout";
 
 const SignUp1: React.FC = () => {
   const navigate = useNavigate();
@@ -19,17 +17,18 @@ const SignUp1: React.FC = () => {
 
   const handleChange =
     (field: keyof typeof signupData) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement>) =>
       setSignupData({ ...signupData, [field]: e.target.value });
-    };
 
   const validate = async () => {
-    const errs: { firstName?: string; lastName?: string; email?: string } = {};
-    if (!signupData.firstName || !signupData.firstName.trim())
+    const errs: typeof errors = {};
+
+    if (!signupData.firstName?.trim())
       errs.firstName = "Please enter a first name";
-    if (!signupData.lastName || !signupData.lastName.trim())
+    if (!signupData.lastName?.trim())
       errs.lastName = "Please enter a last name";
-    if (!signupData.email || !signupData.email.trim()) {
+
+    if (!signupData.email?.trim()) {
       errs.email = "Please enter an email";
     } else {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,11 +43,8 @@ const SignUp1: React.FC = () => {
             )}`
           );
           const data = await res.json();
-          if (data.exists) {
-            errs.email = "This email is already in use";
-          }
-        } catch (error) {
-          console.error("Email check failed", error);
+          if (data.exists) errs.email = "This email is already in use";
+        } catch {
           errs.email = "Error checking email. Please try again.";
         } finally {
           setCheckingEmail(false);
@@ -61,80 +57,47 @@ const SignUp1: React.FC = () => {
   };
 
   const nextPage = async () => {
-    if (!(await validate())) return; // Await async validate
-    navigate("/signup2");
+    if (await validate()) navigate("/signup2");
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
-      {" "}
-      <img
-        src={TopRightBlob}
-        alt="Top Right Blob"
-        className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96"
-      />{" "}
-      <img
-        src={BottomLeftBlob}
-        alt="Bottom Left Blob"
-        className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
-      />{" "}
-      <h1 className="text-4xl md:text-6xl font-bold text-gray-900 z-10 absolute top-8 left-8">
-        Willow CRM{" "}
-      </h1>
-      <div className="z-10 w-full max-w-lg mx-auto mt-32 flex flex-col gap-6">
-        <p className="text-xl md:text-2xl font-semibold text-gray-700">
-          Welcome! Please fill in your details:
-        </p>
+    <OnboardingLayout title="Welcome! Please fill in your details:">
+      <div className="flex flex-col gap-6">
+        {/* First Name */}
+        <label className="text-gray-600 mb-2">First Name</label>
+        <Field
+          placeholder="Ved"
+          value={signupData.firstName}
+          onChange={handleChange("firstName")}
+        />
 
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">First Name</label>
-          <Field
-            placeholder="Ved"
-            value={signupData.firstName}
-            onChange={handleChange("firstName")}
-          />
-          {errors.firstName && (
-            <span className="text-sm text-red-500 mt-1">
-              {errors.firstName}
-            </span>
-          )}
-        </div>
+        {/* Last Name */}
+        <label className="text-gray-600 mb-2">Last Name</label>
+        <Field
+          placeholder="Naykude"
+          value={signupData.lastName}
+          onChange={handleChange("lastName")}
+        />
 
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">Last Name</label>
-          <Field
-            placeholder="Naykude"
-            value={signupData.lastName}
-            onChange={handleChange("lastName")}
-          />
-          {errors.lastName && (
-            <span className="text-sm text-red-500 mt-1">{errors.lastName}</span>
-          )}
-        </div>
-
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">Email</label>
-          <Field
-            placeholder="ved.naykude@palantir.com"
-            value={signupData.email}
-            onChange={handleChange("email")}
-          />
-          {errors.email && (
-            <span className="text-sm text-red-500 mt-1">{errors.email}</span>
-          )}
-        </div>
+        {/* Email */}
+        <label className="text-gray-600 mb-2">Email</label>
+        <Field
+          placeholder="ved.naykude@palantir.com"
+          value={signupData.email}
+          onChange={handleChange("email")}
+        />
 
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton
             text={checkingEmail ? "Checking..." : "Next"}
-            variant={"primary"}
-            size={"small"}
+            variant="primary"
+            size="small"
             onClick={nextPage}
             disabled={checkingEmail}
           />
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 

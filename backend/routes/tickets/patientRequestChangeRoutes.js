@@ -30,9 +30,9 @@ router.get("/:opsId/inprogress", authenticate, requireRole(["Ops"]), getInProgre
 router.get("/:opsId/all", authenticate, requireRole(["Ops"]), getAllTicketsByOpsId);
 
 // Moves a ticket from Pending to In Progress
-router.put("/:ticketId/start", authenticate, requireRole(["Ops"]), startTicketProgress);
+router.patch("/:ticketId/start", authenticate, requireRole(["Ops"]), startTicketProgress);
 
 // Moves a ticket from In Progress to Complete
-router.put("/:ticketId/complete", authenticate, requireRole(["Ops"]), completeTicket);
+router.patch("/:ticketId/complete", authenticate, requireRole(["Ops"]), completeTicket);
 
 export default router;

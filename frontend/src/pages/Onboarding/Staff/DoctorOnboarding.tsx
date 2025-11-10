@@ -1,21 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Field from "../../../components/input/Field";
 import PrimaryButton from "../../../components/buttons/PrimaryButton";
-import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../../contexts/SignUpContext";
-
-const TopRightBlob = "/onboarding_blob_top_right.svg";
-const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
+import { DoctorAccountCreationTicket, ticketService } from "api";
+import OnboardingLayout from "components/layouts/OnboardingLayout";
 
 const DoctorOnboarding: React.FC = () => {
   const navigate = useNavigate();
   const { signupData, setSignupData } = useSignup();
-  const [errors, setErrors] = React.useState<{
-    bioContent?: String;
-    education?: String;
-    graduationDate?: String;
-    speciality?: String;
-  }>({});
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+  const [loading, setLoading] = React.useState(false);
 
   const handleChange =
     (field: keyof typeof signupData) =>
@@ -24,25 +19,17 @@ const DoctorOnboarding: React.FC = () => {
     };
 
   const validate = () => {
-    const errs: typeof errors = {};
+    const errs: Record<string, string> = {};
+    const { bioContent, education, speciality, graduationDate } = signupData;
 
-    if (!signupData.bioContent?.trim()) {
-      errs.bioContent = "Enter your biography!";
-    }
-    if (!signupData.education?.trim()) {
-      errs.education = "Enter your education!";
-    }
-    if (!signupData.speciality?.trim()) {
-      errs.speciality = "Enter a speciality!";
-    }
-    if (!signupData.graduationDate?.trim()) {
-      errs.graduationDate = "Enter your graduation date!";
-    }
+    if (!bioContent?.trim()) errs.bioContent = "Enter your biography!";
+    if (!education?.trim()) errs.education = "Enter your education!";
+    if (!speciality?.trim()) errs.speciality = "Enter a speciality!";
 
     const gradDateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;
-    if (!signupData.graduationDate?.trim()) {
-      errs.graduationDate = "Please enter a birthdate";
-    } else if (!gradDateRegex.test(signupData.graduationDate)) {
+    if (!graduationDate?.trim()) {
+      errs.graduationDate = "Enter your graduation date!";
+    } else if (!gradDateRegex.test(graduationDate)) {
       errs.graduationDate = "Use MM/DD/YYYY format";
     }
 
@@ -53,7 +40,7 @@ const DoctorOnboarding: React.FC = () => {
   const handleSubmit = async () => {
     if (!validate()) return;
 
-    const finalPayload = {
+    const finalPayload: Partial<DoctorAccountCreationTicket> = {
       firstName: signupData.firstName,
       lastName: signupData.lastName,
       email: signupData.email,
@@ -63,135 +50,95 @@ const DoctorOnboarding: React.FC = () => {
       gender: signupData.sex,
       bioContent: signupData.bioContent,
       education: signupData.education,
-      graduationDate: signupData.graduationDate,
+      graduationDate: new Date(signupData.graduationDate),
       speciality: signupData.speciality,
       status: "Pending",
-      reviewedBy: null,
       notes: "Submitted initial credentials for review.",
-      profilePic: null,
     };
 
-    console.log("Doctor Ticket Request Payload:", finalPayload);
-
     try {
-      const response = await fetch(
-        "http://localhost:5050/api/tickets/doctorCreate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(finalPayload),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        alert("Failed to submit doctor request: " + errorText);
-        return;
-      }
-
-      alert("Doctor request submitted! Awaiting approval.");
+      setLoading(true);
+      await ticketService.doctorCreation.submit(finalPayload);
+      alert("Doctor account creation request submitted! Awaiting approval.");
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting doctor request:", error);
-      alert("Unexpected error — please try again later.");
+      alert(
+        error?.response?.data?.message ||
+          "Unexpected error — please try again later."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-white flex flex-col items-start p-8 overflow-hidden">
-      <img
-        src={TopRightBlob}
-        alt="Top Right Blob"
-        className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96"
-      />
-      <img
-        src={BottomLeftBlob}
-        alt="Bottom Left Blob"
-        className="absolute bottom-0 left-[-15px] w-64 h-64 md:w-96 md:h-96"
-      />
-
-      <h1 className="text-4xl md:text-6xl font-bold text-gray-900 z-10 absolute top-8 left-8">
-        Willow CRM
-      </h1>
-
-      <div className="z-10 w-full max-w-lg mx-auto mt-32 flex flex-col gap-6">
-        <p className="text-xl md:text-2xl font-semibold text-gray-700">
-          Almost there!
-        </p>
-
+    <OnboardingLayout title="Almost there!">
+      <div className="w-full max-w-lg mx-auto flex flex-col gap-6">
         {/* Bio Content */}
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">Bio Content</label>
+        <div>
+          <label className="text-gray-600 mb-2 block">Bio Content</label>
           <Field
-            placeholder="Bio Content"
+            placeholder="Tell us about yourself"
             value={signupData.bioContent || ""}
             onChange={handleChange("bioContent")}
           />
           {errors.bioContent && (
-            <span className="text-sm text-red-500 mt-1">
-              {errors.bioContent}
-            </span>
+            <p className="text-sm text-red-500 mt-1">{errors.bioContent}</p>
           )}
         </div>
 
         {/* Education */}
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">Education</label>
+        <div>
+          <label className="text-gray-600 mb-2 block">Education</label>
           <Field
             placeholder="Ex: Harvard Medical School"
             value={signupData.education || ""}
             onChange={handleChange("education")}
           />
           {errors.education && (
-            <span className="text-sm text-red-500 mt-1">
-              {errors.education}
-            </span>
+            <p className="text-sm text-red-500 mt-1">{errors.education}</p>
           )}
         </div>
 
         {/* Graduation Date */}
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">Graduation Date</label>
+        <div>
+          <label className="text-gray-600 mb-2 block">Graduation Date</label>
           <Field
-            placeholder="Ex: 1990"
+            placeholder="MM/DD/YYYY"
             value={signupData.graduationDate || ""}
             onChange={handleChange("graduationDate")}
           />
           {errors.graduationDate && (
-            <span className="text-sm text-red-500 mt-1">
-              {errors.graduationDate}
-            </span>
+            <p className="text-sm text-red-500 mt-1">{errors.graduationDate}</p>
           )}
         </div>
 
         {/* Speciality */}
-        <div className="flex flex-col">
-          <label className="text-gray-600 mb-2">Speciality</label>
+        <div>
+          <label className="text-gray-600 mb-2 block">Speciality</label>
           <Field
             placeholder="Ex: Cardiology"
             value={signupData.speciality || ""}
             onChange={handleChange("speciality")}
           />
           {errors.speciality && (
-            <span className="text-sm text-red-500 mt-1">
-              {errors.speciality}
-            </span>
+            <p className="text-sm text-red-500 mt-1">{errors.speciality}</p>
           )}
         </div>
 
-        {/* Finish */}
+        {/* Submit */}
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton
-            text="Done"
+            text={loading ? "Submitting..." : "Done"}
             variant="primary"
             size="small"
+            disabled={loading}
             onClick={handleSubmit}
           />
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 

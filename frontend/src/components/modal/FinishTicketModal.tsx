@@ -49,8 +49,6 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
   };
 
   const getRequestedBy = () => {
-    if ("requestedBy" in ticket && ticket.requestedBy)
-      return ticket.requestedBy;
     if ("patientName" in ticket && ticket.patientName)
       return ticket.patientName;
     if ("doctorName" in ticket && ticket.doctorName) return ticket.doctorName;
