@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { House, Bug, Question } from "phosphor-react";
+import { House, Bug, Question, SignOut } from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
@@ -31,13 +31,13 @@ const ItSidebar: React.FC<ItSidebarProps> = () => {
   }, []);
 
   const menuItems = [
-    { text: "Pending Tickets", icon: House, path: "/itdashboard/pending" },
+    { text: "Pending Tickets", icon: House, path: "/itdashboard" },
     { text: "Ticket History", icon: House, path: "/itdashboard/history" },
   ];
 
   const bottomItems = [
-    { text: "Bug Report", icon: Bug, path: "/bug-report" },
-    { text: "Help / Support", icon: Question, path: "/help-support" },
+    { text: "Bug Report", icon: Bug, path: "/it-bug-report" },
+    { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 
   const handleItemClick = (text: string, path: string) => {

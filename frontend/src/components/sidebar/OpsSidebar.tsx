@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { House, Bug, Question } from "phosphor-react";
+import { House, Bug, Question, SignOut } from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
@@ -22,8 +22,7 @@ const OpsSidebar: React.FC<OpsSidebarProps> = () => {
       const user = JSON.parse(storedUser);
 
       const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
-      const initials =
-        (user.firstName?.[0] || "") + (user.lastName?.[0] || "");
+      const initials = (user.firstName?.[0] || "") + (user.lastName?.[0] || "");
 
       setUserName(fullName || "Unknown User");
       setUsername(user.username || user.email || "unknown");
@@ -32,14 +31,23 @@ const OpsSidebar: React.FC<OpsSidebarProps> = () => {
   }, []);
 
   const menuItems = [
-    { text: "Doctor Request Tickets", icon: House, path: "/opsdashboard/doctors" },
-    { text: "Patient Request Tickets", icon: House, path: "/opsdashboard/patients" },
+    {
+      text: "Doctor Request Tickets",
+      icon: House,
+      path: "/opsdashboard/doctors",
+    },
+    {
+      text: "Patient Request Tickets",
+      icon: House,
+      path: "/opsdashboard/patients",
+    },
     { text: "History", icon: House, path: "/opsdashboard/history" },
   ];
 
   const bottomItems = [
-    { text: "Bug Report", icon: Bug, path: "/bug-report" },
-    { text: "Help / Support", icon: Question, path: "/help-support" },
+    { text: "Bug Report", icon: Bug, path: "/ops-bug-report" },
+    { text: "Help / Support", icon: Question, path: "/ops-help-support" },
+    { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 
   const handleItemClick = (text: string, path: string) => {

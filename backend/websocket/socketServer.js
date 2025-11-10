@@ -1,8 +1,9 @@
 import { WebSocketServer } from "ws";
 import Conversation from "../models/messaging/Conversation.js";
 import Message from "../models/messaging/Message.js";
-import jwt from "jsonwebtoken";
 import User from "../models/users/User.js";
+// Import your existing auth verification
+import { verifyToken } from "../middleware/authentication.js";
 
 class SocketServer {
   constructor() {
@@ -18,8 +19,6 @@ class SocketServer {
     });
 
     this.wss.on("connection", (ws, req) => {
-      console.log("New WebSocket connection");
-
       ws.isAlive = true;
       ws.on("pong", () => {
         ws.isAlive = true;
@@ -84,10 +83,7 @@ class SocketServer {
 
   async handleAuth(ws, token) {
     try {
-      console.log("🔐 Auth attempt");
-
       if (!token || token.trim() === "") {
-        console.log("❌ No token provided");
         ws.send(
           JSON.stringify({
             type: "auth-error",
@@ -98,16 +94,38 @@ class SocketServer {
         return;
       }
 
-      const JWT_SECRET = process.env.JWT_SECRET || "dev_jwt_secret_change_me";
-      const decoded = jwt.verify(token, JWT_SECRET);
+      // Use your existing verifyToken function instead of duplicating JWT logic
+      let decoded;
+      try {
+        decoded = verifyToken(token);
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
+          ws.send(
+            JSON.stringify({
+              type: "auth-error",
+              error: "Token expired",
+            })
+          );
+        } else {
+          ws.send(
+            JSON.stringify({
+              type: "auth-error",
+              error: "Invalid token",
+            })
+          );
+        }
+        ws.close(1008, "Authentication failed");
+        return;
+      }
+
+      const userId = decoded.id;
 
       // Get user from database
-      const user = await User.findById(decoded.id).select(
+      const user = await User.findById(userId).select(
         "firstName lastName email username profilePic role isOnline"
       );
 
       if (!user) {
-        console.log("❌ User not found");
         ws.send(
           JSON.stringify({
             type: "auth-error",
@@ -128,8 +146,6 @@ class SocketServer {
         role: user.role,
       };
 
-      console.log("✅ User authenticated:", ws.user.name, "| ID:", ws.userId);
-
       // Store in clients map
       this.clients.set(ws.userId, ws);
 
@@ -138,7 +154,7 @@ class SocketServer {
       }
       this.userSockets.get(ws.userId).add(ws);
 
-      // Update user online status in database
+      // Update user online status
       await User.findByIdAndUpdate(user._id, {
         isOnline: true,
         lastActive: new Date(),
@@ -158,34 +174,16 @@ class SocketServer {
       // Send online users
       this.sendOnlineUsers(ws);
 
-      // Broadcast that this user is online
+      // Broadcast user status
       this.broadcastUserStatus(ws.userId, "online");
     } catch (error) {
-      console.error("❌ Auth error:", error.message);
-
-      if (error.name === "JsonWebTokenError") {
-        ws.send(
-          JSON.stringify({
-            type: "auth-error",
-            error: "Invalid token",
-          })
-        );
-      } else if (error.name === "TokenExpiredError") {
-        ws.send(
-          JSON.stringify({
-            type: "auth-error",
-            error: "Token expired",
-          })
-        );
-      } else {
-        ws.send(
-          JSON.stringify({
-            type: "auth-error",
-            error: "Authentication failed",
-          })
-        );
-      }
-
+      console.error("WebSocket auth error:", error);
+      ws.send(
+        JSON.stringify({
+          type: "auth-error",
+          error: "Authentication failed",
+        })
+      );
       ws.close(1008, "Authentication failed");
     }
   }
@@ -206,16 +204,12 @@ class SocketServer {
 
       const transformedConversations = await Promise.all(
         conversations.map(async (conv) => {
-          // Get the OTHER participant
           const otherParticipant = conv.participants.find(
             (p) => p && p._id && p._id.toString() !== ws.userId
           );
 
           // Skip this conversation if other participant doesn't exist
           if (!otherParticipant) {
-            console.log(
-              `⚠️ Skipping conversation ${conv._id} - participant not found`
-            );
             return null;
           }
 
@@ -246,10 +240,6 @@ class SocketServer {
       // Filter out null conversations
       const validConversations = transformedConversations.filter(
         (c) => c !== null
-      );
-
-      console.log(
-        `📋 Sent ${validConversations.length} conversations to ${ws.user.name}`
       );
 
       ws.send(
@@ -284,7 +274,6 @@ class SocketServer {
       });
 
       if (!conversation) {
-        console.log("Conversation not found or user not participant");
         ws.send(
           JSON.stringify({
             type: "messages-history",
@@ -294,43 +283,33 @@ class SocketServer {
         return;
       }
 
+      // Get messages with populated sender information
       const messages = await Message.find({
         conversation: conversationId,
       })
+        .populate("sender", "firstName lastName username profilePic role")
         .sort("createdAt")
         .limit(50);
 
       const transformedMessages = messages.map((msg) => {
-        const senderId = msg.sender.toString();
-        const senderInfo =
-          senderId === "507f1f77bcf86cd799439011"
-            ? {
-                id: "507f1f77bcf86cd799439011",
-                name: "Dr. Smith",
-                username: "drsmith",
-                avatar: null,
-              }
-            : {
-                id: "507f1f77bcf86cd799439012",
-                name: "John Patient",
-                username: "johnpatient",
-                avatar: null,
-              };
+        const sender = msg.sender;
 
         return {
           id: msg._id.toString(),
           conversationId: msg.conversation.toString(),
-          sender: senderInfo,
+          sender: {
+            id: sender._id.toString(),
+            name: `${sender.firstName} ${sender.lastName}`,
+            username: sender.username,
+            avatar: sender.profilePic,
+            role: sender.role,
+          },
           content: msg.content,
           timestamp: msg.createdAt,
           read: msg.read || false,
           delivered: msg.delivered || true,
         };
       });
-
-      console.log(
-        `💬 Sent ${transformedMessages.length} messages to ${ws.user.name}`
-      );
 
       ws.send(
         JSON.stringify({
@@ -358,10 +337,6 @@ class SocketServer {
     const { conversationId, content, tempId } = data;
 
     try {
-      console.log(
-        `📤 ${ws.user.name} sending message: "${content}" to conversation ${conversationId}`
-      );
-
       // Save to database
       const message = new Message({
         conversation: conversationId,
@@ -382,20 +357,13 @@ class SocketServer {
       const messagePayload = {
         id: message._id.toString(),
         conversationId: conversationId,
-        sender: {
-          id: ws.userId,
-          name: ws.user.name,
-          username: ws.user.username,
-          avatar: ws.user.avatar,
-        },
+        sender: ws.user,
         content: content,
         timestamp: message.createdAt.toISOString(),
         read: false,
         delivered: true,
         tempId: tempId,
       };
-
-      console.log(`✅ Message saved with ID: ${message._id}`);
 
       // Send confirmation to sender
       ws.send(
@@ -414,16 +382,12 @@ class SocketServer {
       if (recipientId) {
         const recipientWs = this.clients.get(recipientId.toString());
         if (recipientWs && recipientWs.readyState === 1) {
-          // WebSocket.OPEN = 1
-          console.log(`📨 Forwarding message to ${recipientWs.user.name}`);
           recipientWs.send(
             JSON.stringify({
               type: "new-message",
               message: messagePayload,
             })
           );
-        } else {
-          console.log(`⚠️ Recipient ${recipientId} is not online`);
         }
       }
     } catch (error) {
@@ -464,11 +428,17 @@ class SocketServer {
     }
 
     try {
-      console.log(
-        `🔍 Creating conversation between ${ws.userId} and ${recipientId}`
+      // Check if recipient exists first
+      const otherUser = await User.findById(recipientId).select(
+        "firstName lastName username profilePic role"
       );
 
-      // Find existing conversation
+      if (!otherUser) {
+        this.sendError(ws, "Recipient not found");
+        return;
+      }
+
+      // Find or create conversation
       let conversation = await Conversation.findOne({
         participants: { $all: [ws.userId, recipientId] },
         type: "direct",
@@ -483,26 +453,9 @@ class SocketServer {
           isActive: true,
         });
         await conversation.save();
-        console.log("✅ New conversation created:", conversation._id);
-      } else {
-        console.log("📋 Conversation already exists:", conversation._id);
       }
 
-      // Get the other user's info from database
-      const otherUser = await User.findById(recipientId).select(
-        "firstName lastName username profilePic role"
-      );
-
-      if (!otherUser) {
-        console.error(`❌ Recipient user ${recipientId} not found in database`);
-        this.sendError(ws, "Recipient not found");
-        return;
-      }
-
-      console.log(
-        `✅ Found other user: ${otherUser.firstName} ${otherUser.lastName}`
-      );
-
+      // Send response with conversation data
       const responsePayload = {
         type: "conversation-created",
         conversation: {
@@ -524,17 +477,17 @@ class SocketServer {
       };
 
       ws.send(JSON.stringify(responsePayload));
-      console.log(`📤 Sent conversation to ${ws.user.name}`);
+
+      // Also update the conversation list
+      await this.handleGetConversations(ws);
     } catch (error) {
-      console.error("❌ Error creating conversation:", error);
-      this.sendError(ws, "Failed to create conversation");
+      console.error("Error handling conversation:", error);
+      this.sendError(ws, "Failed to handle conversation");
     }
   }
 
   handleDisconnect(ws) {
     if (!ws.userId) return;
-
-    console.log(`❌ User ${ws.user?.name || ws.userId} disconnected`);
 
     this.clients.delete(ws.userId);
 
@@ -544,7 +497,7 @@ class SocketServer {
       if (userSockets.size === 0) {
         this.userSockets.delete(ws.userId);
 
-        // Update user offline status in database
+        // Update user offline status
         User.findByIdAndUpdate(ws.userId, {
           isOnline: false,
           lastActive: new Date(),
@@ -565,6 +518,7 @@ class SocketServer {
       })
     );
   }
+
   broadcastUserStatus(userId, status) {
     const message = JSON.stringify({
       type: "user-status",

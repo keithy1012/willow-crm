@@ -1,19 +1,12 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { jwtDecode } from "jwt-decode";
-
-// Full user data structure from backend
-export interface User {
-  _id: string;
-  userID: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  username?: string;
-  role: "Doctor" | "Patient" | "Ops" | "IT" | "Finance";
-  gender?: string;
-  phoneNumber?: string;
-  profilePic?: string;
-}
+import { User } from "api/types/user.types";
 
 interface JwtPayload {
   id: string;
@@ -40,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
-      
+
       if (storedToken && storedUser) {
         try {
           // Check if token is expired

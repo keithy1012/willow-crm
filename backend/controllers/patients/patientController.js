@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import Patient from "../../models/patients/Patient.js";
 import User from "../../models/users/User.js";
 import EmergencyContact from "../../models/patients/EmergencyContact.js";

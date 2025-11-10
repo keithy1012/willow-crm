@@ -10,6 +10,7 @@ import {
   Question,
   Calendar,
   Cards,
+  SignOut,
 } from "phosphor-react";
 
 import UserProfileCard from "../card/UserProfileCard";
@@ -55,6 +56,7 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
   const bottomItems = [
     { text: "Bug Report", icon: Bug, path: "/bug-report" },
     { text: "Help / Support", icon: Question, path: "/help-support" },
+    { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 
   const navigate = useNavigate();
