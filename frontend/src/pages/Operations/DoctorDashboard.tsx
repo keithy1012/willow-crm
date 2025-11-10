@@ -2,20 +2,27 @@ import React, { useEffect, useState } from "react";
 import TicketCard from "../../components/card/TicketCard";
 import ConfirmTicketModal from "../../components/modal/ConfirmTicketModal";
 import FinishTicketModal from "../../components/modal/FinishTicketModal";
+import ApproveCreationModal from "../../components/modal/ApproveCreationModal";
 import { useRequireRole } from "../../hooks/useRequireRole";
 import { ticketService } from "../../api";
-import { DoctorTicket } from "../../api/types/ticket.types";
+import {
+  DoctorTicket,
+  DoctorAccountCreationTicket,
+} from "../../api/types/ticket.types";
 
 const OpsDoctorDashboard: React.FC = () => {
   const [pendingTickets, setPendingTickets] = useState<DoctorTicket[]>([]);
+  const [pendingDoctorCreationTickets, setPendingDoctorCreationTickets] =
+    useState<DoctorAccountCreationTicket[]>([]);
   const [inProgressTickets, setInProgressTickets] = useState<DoctorTicket[]>(
     []
   );
   const [loading, setLoading] = useState(true);
-  const [selectedTicket, setSelectedTicket] = useState<DoctorTicket | null>(
-    null
-  );
+  const [selectedTicket, setSelectedTicket] = useState<
+    DoctorTicket | DoctorAccountCreationTicket | null
+  >(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
 
   const user = useRequireRole("Ops", true);
@@ -24,13 +31,15 @@ const OpsDoctorDashboard: React.FC = () => {
     if (!user?._id) return;
 
     try {
-      const [pending, inProgress] = await Promise.all([
+      const [pending, inProgress, doctorCreationPending] = await Promise.all([
         ticketService.doctor.getPending(),
         ticketService.doctor.getInProgressByOpsId(user._id),
+        ticketService.doctorCreation.getPending(),
       ]);
 
       setPendingTickets(pending);
       setInProgressTickets(inProgress);
+      setPendingDoctorCreationTickets(doctorCreationPending);
     } catch (error) {
       console.error("Error fetching tickets:", error);
     } finally {
@@ -47,9 +56,27 @@ const OpsDoctorDashboard: React.FC = () => {
     setIsConfirmModalOpen(true);
   };
 
+  const handleApproveClick = (ticket: DoctorAccountCreationTicket) => {
+    setSelectedTicket(ticket);
+    setIsApproveModalOpen(true);
+  };
+
   const handleFinishClick = (ticket: DoctorTicket) => {
     setSelectedTicket(ticket);
     setIsFinishModalOpen(true);
+  };
+
+  const handleApproveConfirm = async () => {
+    if (!selectedTicket) return;
+
+    try {
+      await ticketService.doctorCreation.approve((selectedTicket as any)._id);
+      setIsApproveModalOpen(false);
+      setSelectedTicket(null);
+      fetchTickets();
+    } catch (error) {
+      console.error("Error approving doctor account ticket:", error);
+    }
   };
 
   const handleConfirmClaim = async () => {
@@ -115,6 +142,27 @@ const OpsDoctorDashboard: React.FC = () => {
             ) : (
               <p className="text-gray-500 text-sm">No pending tickets found.</p>
             )}
+
+            {/* Doctor Account Creation Tickets */}
+            {pendingDoctorCreationTickets.length > 0 && (
+              <>
+                <h3 className="text-md font-medium text-primaryText mt-6">
+                  Doctor Account Requests
+                </h3>
+                {pendingDoctorCreationTickets.map((ticket) => (
+                  <TicketCard
+                    key={(ticket as any)._id}
+                    title={"Account Request"}
+                    requestedBy={
+                      (ticket as any).firstName + " " + (ticket as any).lastName
+                    }
+                    description={(ticket as any).description}
+                    buttonLabel="Approve"
+                    onButtonClick={() => handleApproveClick(ticket)}
+                  />
+                ))}
+              </>
+            )}
           </div>
         </div>
 
@@ -147,14 +195,22 @@ const OpsDoctorDashboard: React.FC = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmClaim}
-        ticket={selectedTicket}
+        ticket={selectedTicket as any}
+      />
+
+      {/* Approve modal for doctor account creation tickets */}
+      <ApproveCreationModal
+        isOpen={isApproveModalOpen}
+        onClose={() => setIsApproveModalOpen(false)}
+        onApprove={handleApproveConfirm}
+        ticket={selectedTicket as any}
       />
 
       <FinishTicketModal
         isOpen={isFinishModalOpen}
         onClose={() => setIsFinishModalOpen(false)}
         onConfirm={handleFinishTicket}
-        ticket={selectedTicket}
+        ticket={selectedTicket as any}
       />
     </div>
   );
