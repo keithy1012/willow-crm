@@ -1,46 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./App.css";
 import PatientSidebar from "./components/sidebar/PatientSidebar";
-import Dashboard from "./Patients/Dashboard";
-import Messages from "./Patients/Messages";
-import Appointments from "./Patients/Appointments";
-import MedicalRecords from "./Patients/MedicalRecords";
-import Medications from "./Patients/Medications";
-import Insurance from "./Patients/Insurance";
-import BugReportPage from "./Bugs/BugReport";
-import HelpSupportPage from "./Help/HelpSupport";
+import Dashboard from "./pages/Patients/Dashboard";
+import Messages from "./pages/Patients/Messages";
+import Appointments from "./pages/Patients/Appointments";
+import MedicalRecords from "./pages/Patients/MedicalRecords";
+import Medications from "./pages/Patients/Medications";
+import Insurance from "./pages/Patients/Insurance";
+import BugReportPage from "./pages/Bugs/BugReport";
+import HelpSupportPage from "./pages/Patients/HelpSupport";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
-import { SignupProvider } from "./context/SignUpContext";
-import { AuthProvider } from "./contexts/AuthContext";
+import { SignupProvider } from "./contexts/SignUpContext";
 import {
   BrowserRouter as Router,
-  useSearchParams,
   Routes,
   Route,
   Outlet,
+  Navigate,
 } from "react-router-dom";
-import Landing from "./Onboarding/Landing";
-import SignUp1 from "./Onboarding/SignUp1";
-import SignUp2 from "./Onboarding/SignUp2";
-import SignUp3 from "./Onboarding/SignUp3";
-import RollSelection from "./Onboarding/RollSelection";
-import PatientOnboarding1 from "./Onboarding/Patient/PatientOnboarding1";
-import PatientOnboarding2 from "./Onboarding/Patient/PatientOnboarding2";
-import PatientOnboarding3 from "./Onboarding/Patient/PatientOnboarding3";
-import StaffOnboarding from "./Onboarding/Staff/StaffOnboarding";
-import DoctorOnboarding from "./Onboarding/Staff/DoctorOnboarding";
-import Login from "./Login/LoginScreen";
-import ForgotPassword from "./Login/ForgotPassword";
-import Error from "./Error/ErrorPage";
-import OpsDoctorDashboard from "Operations/DoctorDashboard";
-import OpsPatientDashboard from "Operations/PatientDashboard";
-import OpsHistory from "Operations/HistoryDashboard";
+import Landing from "./pages/Onboarding/Landing";
+import SignUp1 from "./pages/Onboarding/SignUp1";
+import SignUp2 from "./pages/Onboarding/SignUp2";
+import SignUp3 from "./pages/Onboarding/SignUp3";
+import RollSelection from "./pages/Onboarding/RollSelection";
+import PatientOnboarding1 from "./pages/Onboarding/Patient/PatientOnboarding1";
+import PatientOnboarding2 from "./pages/Onboarding/Patient/PatientOnboarding2";
+import PatientOnboarding3 from "./pages/Onboarding/Patient/PatientOnboarding3";
+import PatientOnboarding4 from "./pages/Onboarding/Patient/PatientOnboarding4";
+import StaffOnboarding from "./pages/Onboarding/Staff/StaffOnboarding";
+import DoctorOnboarding from "./pages/Onboarding/Staff/DoctorOnboarding";
+import Login from "./pages/Login/LoginScreen";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import Error from "./pages/Error/ErrorPage";
+import OpsDoctorDashboard from "pages/Operations/DoctorDashboard";
+import OpsPatientDashboard from "pages/Operations/PatientDashboard";
+import OpsHistory from "pages/Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
-import PendingDashboard from "IT/PendingDashboard";
-import ITHistory from "IT/ITHistory";
-import PatientOnboarding4 from "Onboarding/Patient/PatientOnboarding4";
+import PendingDashboard from "pages/IT/PendingDashboard";
+import ITHistory from "pages/IT/ITHistory";
+import { AuthProvider, useAuth } from "contexts/AuthContext";
 
+// Layout Components
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -53,6 +54,7 @@ const PatientLayout: React.FC = () => {
     </div>
   );
 };
+
 const OpsLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -79,228 +81,188 @@ const ItsLayout: React.FC = () => {
   );
 };
 
-// Role-aware page wrapper that renders the requested page inside the correct sidebar/layout
-const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const storedUser =
-    typeof window !== "undefined" ? localStorage.getItem("user") : null;
-  const user = storedUser ? JSON.parse(storedUser) : null;
-  const role = user?.role;
+// Logout Component
+const Logout: React.FC = () => {
+  const { logout } = useAuth();
 
-  if (role === "Ops") {
-    return (
-      <div className="flex">
-        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
-          <OpsSidebar />
-        </div>
-        <div className="flex-1">{children}</div>
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    logout();
+    window.location.href = "/login";
+  }, [logout]);
 
-  if (role === "IT") {
-    return (
-      <div className="flex">
-        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
-          <ItSidebar />
-        </div>
-        <div className="flex-1">{children}</div>
-      </div>
-    );
-  }
-
-  // Default to Patient layout
   return (
-    <div className="flex">
-      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
-        <PatientSidebar />
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-gray-500">Logging out...</p>
       </div>
-      <div className="flex-1">{children}</div>
     </div>
   );
 };
 
-const AppContent: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [token, setToken] = useState<string | null>(null);
+// Helper function to get default route based on user role
+const getDefaultRoute = (role: string): string => {
+  switch (role) {
+    case "Patient":
+      return "/patientdashboard";
+    case "Doctor":
+      return "/doctordashboard";
+    case "Ops":
+      return "/opsdashboard/doctors";
+    case "IT":
+      return "/itdashboard";
+    case "Finance":
+      return "/financedashboard";
+    default:
+      return "/login";
+  }
+};
 
-  // In App.tsx, update the useEffect in AppContent:
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+// Main App Routes Component that uses Auth Context
+const AppRoutes: React.FC = () => {
+  const { user, token, isLoading } = useAuth();
 
-    if (storedToken && storedUser) {
-      console.log("Using real auth token");
-      setToken(storedToken);
-      setCurrentUser(JSON.parse(storedUser));
-    } else {
-      // No real auth, check for test mode
-      const urlUser = searchParams.get("user");
-      const testUserToken = localStorage.getItem("testUser");
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-      if (urlUser || testUserToken) {
-        // Test mode - but DON'T pass these as auth tokens
-        console.log("Using test mode - no real auth");
-        const testMode = urlUser || testUserToken || "user1";
+  // If not authenticated, show public routes
+  if (!user || !token) {
+    return (
+      <SignupProvider>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/signup1" element={<SignUp1 />} />
+          <Route path="/signup2" element={<SignUp2 />} />
+          <Route path="/signup3" element={<SignUp3 />} />
+          <Route path="/roleselection" element={<RollSelection />} />
+          <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
+          <Route path="/patientonboarding2" element={<PatientOnboarding2 />} />
+          <Route path="/patientonboarding3" element={<PatientOnboarding3 />} />
+          <Route path="/patientonboarding4" element={<PatientOnboarding4 />} />
+          <Route path="/staffonboarding" element={<StaffOnboarding />} />
+          <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/error" element={<Error />} />
 
-        if (urlUser && urlUser !== testUserToken) {
-          localStorage.setItem("testUser", urlUser);
-        }
+          {/* Redirect everything else to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </SignupProvider>
+    );
+  }
 
-        // Don't set a fake token - WebSocket needs real auth
-        setToken(null);
-        setCurrentUser(
-          testMode === "user1"
-            ? {
-                id: "507f1f77bcf86cd799439011",
-                firstName: "Dr",
-                lastName: "Smith",
-                username: "drsmith",
-                role: "Doctor" as const,
-              }
-            : {
-                id: "507f1f77bcf86cd799439012",
-                firstName: "John",
-                lastName: "Patient",
-                username: "johnpatient",
-                role: "Patient" as const,
-              }
-        );
-      } else {
-        // No auth and no test mode
-        setToken(null);
-        setCurrentUser(null);
-      }
-    }
-  }, [searchParams]);
-
-  // Format user for WebSocketProvider
-  const formattedUser = currentUser
-    ? {
-        id: currentUser._id || currentUser.id,
-        name: `${currentUser.firstName} ${currentUser.lastName}`,
-        username: currentUser.username,
-        avatar: currentUser.profilePic,
-        role: currentUser.role,
-      }
-    : {
-        // Default user if nothing else is available
-        id: "507f1f77bcf86cd799439012",
-        name: "John Patient",
-        username: "johnpatient",
-        role: "Patient" as const,
-      };
-
+  // Protected routes for authenticated users
   return (
-    <AuthProvider>
-      <WebSocketProvider token={token || ""} currentUser={formattedUser}>
-        <SignupProvider>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/signup1" element={<SignUp1 />} />
-            <Route path="/signup2" element={<SignUp2 />} />
-            <Route path="/signup3" element={<SignUp3 />} />
-            <Route path="/roleselection" element={<RollSelection />} />
+    <WebSocketProvider token={token} currentUser={user}>
+      <SignupProvider>
+        <Routes>
+          {/* Root redirect based on role */}
+          <Route
+            path="/"
+            element={<Navigate to={getDefaultRoute(user.role)} replace />}
+          />
+
+          {/* Allow logout */}
+          <Route path="/logout" element={<Logout />} />
+
+          {/* Redirect login to dashboard if already logged in */}
+          <Route
+            path="/login"
+            element={<Navigate to={getDefaultRoute(user.role)} replace />}
+          />
+
+          {/* Patient routes */}
+          <Route element={<PatientLayout />}>
+            <Route path="/patientdashboard" element={<Dashboard />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/medical-records" element={<MedicalRecords />} />
+            <Route path="/medications" element={<Medications />} />
+            <Route path="/insurance" element={<Insurance />} />
+            <Route path="/bug-report" element={<BugReportPage />} />
+            <Route path="/help-support" element={<HelpSupportPage />} />
+          </Route>
+
+          {/* Operations routes */}
+          <Route element={<OpsLayout />}>
             <Route
-              path="/patientonboarding1"
-              element={<PatientOnboarding1 />}
+              path="/opsdashboard/doctors"
+              element={<OpsDoctorDashboard />}
             />
             <Route
-              path="/patientonboarding2"
-              element={<PatientOnboarding2 />}
+              path="/opsdashboard/patients"
+              element={<OpsPatientDashboard />}
             />
-            <Route
-              path="/patientonboarding3"
-              element={<PatientOnboarding3 />}
-            />
-            <Route
-              path="/patientonboarding4"
-              element={<PatientOnboarding4 />}
-            />
-            <Route path="/staffonboarding" element={<StaffOnboarding />} />
-            <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/opsdashboard/history" element={<OpsHistory />} />
+            <Route path="/ops-bug-report" element={<BugReportPage />} />
+            <Route path="/ops-help-support" element={<HelpSupportPage />} />
+          </Route>
 
-            <Route element={<PatientLayout />}>
-              <Route path="/patientdashboard" element={<Dashboard />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/appointments" element={<Appointments />} />
-              <Route path="/medical-records" element={<MedicalRecords />} />
-              <Route path="/medications" element={<Medications />} />
-              <Route path="/insurance" element={<Insurance />} />
-            </Route>
+          {/* IT routes */}
+          <Route element={<ItsLayout />}>
+            <Route path="/itdashboard" element={<PendingDashboard />} />
+            <Route path="/itdashboard/history" element={<ITHistory />} />
+            <Route path="/it-bug-report" element={<BugReportPage />} />
+          </Route>
 
-            <Route element={<OpsLayout />}>
-              <Route
-                path="/opsdashboard/doctors"
-                element={<OpsDoctorDashboard />}
-              />
-              <Route
-                path="/opsdashboard/patients"
-                element={<OpsPatientDashboard />}
-              />
-              <Route path="/opsdashboard/history" element={<OpsHistory />} />
-              {/* bug-report is handled globally */}
-            </Route>
+          {/* Finance routes - placeholder for now */}
+          <Route
+            path="/financedashboard"
+            element={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                  <h1 className="text-2xl font-bold mb-2">Finance Dashboard</h1>
+                  <p className="text-gray-500">Coming Soon</p>
+                </div>
+              </div>
+            }
+          />
 
-            <Route element={<ItsLayout />}>
-              <Route
-                path="/itdashboard/pending"
-                element={<PendingDashboard />}
-              />
-              <Route path="/itdashboard/history" element={<ITHistory />} />
-            </Route>
+          {/* Doctor routes - placeholder for now */}
+          <Route
+            path="/doctordashboard"
+            element={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                  <h1 className="text-2xl font-bold mb-2">Doctor Dashboard</h1>
+                  <p className="text-gray-500">Coming Soon</p>
+                </div>
+              </div>
+            }
+          />
 
-            <Route
-              path="/financedashboard"
-              element={<div>Finance Dashboard</div>}
-            />
+          {/* Error route */}
+          <Route path="/error" element={<Error />} />
 
-            <Route element={<OpsLayout />}>
-              <Route
-                path="/opsdashboard/doctors"
-                element={<OpsDoctorDashboard />}
-              />
-              <Route
-                path="/opsdashboard/patients"
-                element={<OpsPatientDashboard />}
-              />
-              <Route path="/opsdashboard/history" element={<OpsHistory />} />
-            </Route>
-
-            {/* Global routes that should render under the correct layout based on user role */}
-            <Route
-              path="/bug-report"
-              element={
-                <RoleLayoutWrapper>
-                  <BugReportPage />
-                </RoleLayoutWrapper>
-              }
-            />
-            <Route
-              path="/help-support"
-              element={
-                <RoleLayoutWrapper>
-                  <HelpSupportPage />
-                </RoleLayoutWrapper>
-              }
-            />
-
-            <Route path="/error" element={<Error />} />
-          </Routes>
-        </SignupProvider>
-      </WebSocketProvider>
-    </AuthProvider>
+          {/* Catch all - redirect to appropriate dashboard */}
+          <Route
+            path="*"
+            element={<Navigate to={getDefaultRoute(user.role)} replace />}
+          />
+        </Routes>
+      </SignupProvider>
+    </WebSocketProvider>
   );
 };
 
+// Main App Component
 const App: React.FC = () => {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </Router>
   );
 };

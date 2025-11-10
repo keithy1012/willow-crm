@@ -39,7 +39,7 @@ router.get(
 );
 
 // Move a ticket from Pending → In Progress
-router.put(
+router.patch(
   "/:ticketId/start",
   authenticate,
   requireRole(["IT"]),
@@ -47,7 +47,7 @@ router.put(
 );
 
 // Move a ticket from In Progress → Completed
-router.put(
+router.patch(
   "/:ticketId/complete",
   authenticate,
   requireRole(["IT"]),

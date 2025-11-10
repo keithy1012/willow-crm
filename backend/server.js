@@ -1,24 +1,21 @@
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+dotenv.config();
 
-// Setup __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Verify critical env vars are loaded
+if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
+  console.error("❌ Missing JWT_SECRET or MONGO_URI in .env file");
+  process.exit(1);
+}
 
-// Load .env FIRST, before ANY other imports!
-dotenv.config({ path: path.join(__dirname, ".env") });
+console.log("✅ Environment variables loaded");
 
-// Log environment variables for debugging
-console.log("🔍 Checking environment variables:");
-console.log("MONGO_URI:", process.env.MONGO_URI ? "✅" : "❌");
-console.log("PORT:", process.env.PORT || 5000);
-
-// Now import everything else
 import express from "express";
 import cors from "cors";
 import http from "http";
 import connectDB from "./config/db.js";
+import socketServer from "./websocket/socketServer.js";
+
+// Import routes
 import userRoutes from "./routes/userRoutes.js";
 import patientRoutes from "./routes/patients/patientRoutes.js";
 import doctorRoutes from "./routes/doctors/doctorRoutes.js";
@@ -30,18 +27,12 @@ import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRou
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
 import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
-import socketServer from "./websocket/socketServer.js";
 
-// Connect to MongoDB
-connectDB();
-
-// Initialize Express app
+// Setup Express
 const app = express();
 
 // Middleware
 app.use(cors());
-// Increase payload size limits so large base64 image payloads are accepted.
-// Default express.json limit is ~100kb which is too small for base64 images.
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
@@ -58,17 +49,16 @@ app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
 app.use("/api/tickets/bugTicket", bugTicketRoutes);
 app.use("/api/availability", availabilityRoutes);
 
-// Create HTTP server
+// Start server
 const server = http.createServer(app);
-
-// Initialize WebSocket
 socketServer.initialize(server);
 
-// Define PORT
 const PORT = process.env.PORT || 5050;
 
-// Start server (only use server.listen, not app.listen)
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`WebSocket ready on ws://localhost:${PORT}/ws`);
+// Connect to DB and start server
+connectDB().then(() => {
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`WebSocket ready on ws://localhost:${PORT}/ws`);
+  });
 });

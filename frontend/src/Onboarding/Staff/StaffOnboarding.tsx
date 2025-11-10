@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import RoleSelectionButton from "../../components/buttons/RoleSelectionButton";
-import { useSignup } from "../../context/SignUpContext";
+import { useSignup } from "../../contexts/SignUpContext";
 import { useAuth } from "../../contexts/AuthContext";
 
 const TopRightBlob = "/onboarding_blob_top_right.svg";
