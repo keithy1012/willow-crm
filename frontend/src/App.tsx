@@ -40,7 +40,8 @@ import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "pages/IT/PendingDashboard";
 import ITHistory from "pages/IT/ITHistory";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
-
+import DoctorSidebar from "components/sidebar/DoctorSidebar";
+import DoctorDashboard from "pages/Doctor/DoctorDashboard";
 // Layout Components
 const PatientLayout: React.FC = () => {
   return (
@@ -73,6 +74,19 @@ const ItsLayout: React.FC = () => {
     <div className="flex">
       <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
         <ItSidebar />
+      </div>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
+const DoctorLayout: React.FC = () => {
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <DoctorSidebar />
       </div>
       <div className="flex-1">
         <Outlet />
@@ -230,17 +244,9 @@ const AppRoutes: React.FC = () => {
           />
 
           {/* Doctor routes - placeholder for now */}
-          <Route
-            path="/doctordashboard"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-2xl font-bold mb-2">Doctor Dashboard</h1>
-                  <p className="text-gray-500">Coming Soon</p>
-                </div>
-              </div>
-            }
-          />
+          <Route element={<DoctorLayout />}>
+            <Route path="/doctordashboard" element={<DoctorDashboard />} />
+          </Route>
 
           {/* Error route */}
           <Route path="/error" element={<Error />} />
