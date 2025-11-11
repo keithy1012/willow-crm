@@ -21,7 +21,7 @@ import PatientAllergiesTable from "components/table/patientAllergiesTable";
 const Profile: React.FC = () => {
   useRequireRole("Patient");
   const { user: authUser } = useAuth();
-  const navigate = useNavigate(); // ✅ initialize navigate
+  const navigate = useNavigate();
 
   const [patient, setPatient] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,7 +60,7 @@ const Profile: React.FC = () => {
   return (
     <div className="flex flex-col w-full bg-[#f9f9f9] min-h-screen">
       {/* Header Banner */}
-      <div className="h-40 bg-gradient-to-r from-gray-400 to-gray-600" />
+      <div className="h-40 bg-gradient-to-r from-primary to-[#6886AC]" />
 
       {/* Profile Content */}
       <div className="relative -mt-20 mx-auto w-[90%] max-w-6xl bg-white rounded-xl shadow-md p-6">
@@ -86,27 +86,25 @@ const Profile: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div>
             <h2 className="text-lg font-semibold mb-2">Patient Information</h2>
-            <div className="p-4 rounded-xl border border-gray-200 bg-white">
-              <ProfileInfo
-                items={[
-                  {
-                    icon: User,
-                    text: `${authUser?.firstName || ""} ${
-                      authUser?.lastName || ""
-                    }`,
-                  },
-                  {
-                    icon: Calendar,
-                    text: formatDate(patient?.birthday),
-                  },
-                  {
-                    icon: GenderIntersex,
-                    text: authUser?.gender || "Not specified",
-                  },
-                  { icon: Drop, text: patient?.bloodtype || "Not specified" },
-                ]}
-              />
-            </div>
+            <ProfileInfo
+              items={[
+                {
+                  icon: User,
+                  text: `${authUser?.firstName || ""} ${
+                    authUser?.lastName || ""
+                  }`,
+                },
+                {
+                  icon: Calendar,
+                  text: formatDate(patient?.birthday),
+                },
+                {
+                  icon: GenderIntersex,
+                  text: authUser?.gender || "Not specified",
+                },
+                { icon: Drop, text: patient?.bloodtype || "Not specified" },
+              ]}
+            />
           </div>
 
           <PatientConditionsTable conditions={patient?.medicalHistory} />

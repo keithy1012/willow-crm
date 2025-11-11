@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "contexts/AuthContext";
 import { patientService } from "api/services/patient.service";
 import { ticketService } from "api/services/ticket.service";
@@ -11,6 +11,7 @@ interface Patient {
     email: string;
     phoneNumber: string;
     gender: string;
+    profilePic?: string;
   };
   address: string;
   bloodtype: string;
@@ -25,6 +26,13 @@ const PatientEditRequest: React.FC = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [formData, setFormData] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error" | null;
+    text: string;
+  }>({ type: null, text: "" });
+  const [newProfilePic, setNewProfilePic] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -39,27 +47,20 @@ const PatientEditRequest: React.FC = () => {
         let emergencyPhone = "";
         const ec0 = d?.emergencyContact && d.emergencyContact[0];
         if (ec0) {
-          if (typeof ec0 === "string") {
-            emergencyPhone = ""; // id only
-          } else if (typeof ec0 === "object") {
-            emergencyPhone = ec0.phoneNumber || "";
-          }
+          if (typeof ec0 === "object") emergencyPhone = ec0.phoneNumber || "";
         }
 
-        // Normalize arrays and fields
         const allergies = Array.isArray(d.allergies) ? d.allergies : [];
         const medicalHistory = Array.isArray(d.medicalHistory)
           ? d.medicalHistory
           : [];
 
-        // Handle birthday as Date or string
         let birthdayIso = "";
-        if (d && d.birthday) {
-          if (typeof d.birthday === "string")
-            birthdayIso = d.birthday.split("T")[0];
-          else if (d.birthday instanceof Date)
-            birthdayIso = d.birthday.toISOString().split("T")[0];
-          else birthdayIso = new Date(d.birthday).toISOString().split("T")[0];
+        if (d?.birthday) {
+          birthdayIso =
+            typeof d.birthday === "string"
+              ? d.birthday.split("T")[0]
+              : new Date(d.birthday).toISOString().split("T")[0];
         }
 
         setFormData({
@@ -85,17 +86,36 @@ const PatientEditRequest: React.FC = () => {
     fetchPatient();
   }, [authUser]);
 
-  const handleChange = (
+  const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    if (!formData) return;
+    const { name, value } = e.target as HTMLInputElement;
     setFormData((prev: any) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewProfilePic(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleArrayChange = (name: string, values: string[]) => {
     setFormData((prev: any) => ({ ...prev, [name]: values }));
   };
+
+  const convertToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
 
   const handleSubmit = async () => {
     if (!patient) return;
@@ -104,14 +124,12 @@ const PatientEditRequest: React.FC = () => {
       if (!val) return "";
       try {
         if (typeof val === "string") return val.split("T")[0];
-        if (val instanceof Date) return val.toISOString().split("T")[0];
         return new Date(val).toISOString().split("T")[0];
-      } catch (e) {
+      } catch {
         return String(val);
       }
     };
 
-    // Generate the change summary
     const changes: string[] = [];
     const fields = [
       {
@@ -134,7 +152,7 @@ const PatientEditRequest: React.FC = () => {
       {
         key: "birthday",
         label: "Birthday",
-        old: formatDateIso((patient as any)?.birthday),
+        old: formatDateIso(patient?.birthday),
       },
       {
         key: "phoneNumber",
@@ -154,36 +172,37 @@ const PatientEditRequest: React.FC = () => {
       {
         key: "emergencyContact",
         label: "Emergency Contact",
-        old:
-          ((patient as any)?.emergencyContact &&
-            (patient as any).emergencyContact[0] &&
-            ((patient as any).emergencyContact[0].phoneNumber || "")) ||
-          "",
+        old: patient?.emergencyContact?.[0]?.phoneNumber || "",
       },
       {
         key: "allergies",
         label: "Allergies",
-        old: ((patient as any)?.allergies || []).join(", "),
+        old: (patient?.allergies || []).join(", "),
       },
       {
         key: "conditions",
         label: "Conditions",
-        old: ((patient as any)?.medicalHistory || []).join(", "),
+        old: (patient?.medicalHistory || []).join(", "),
       },
     ];
 
     fields.forEach(({ key, label, old }) => {
       const current = formData ? formData[key] : undefined;
       const newVal = Array.isArray(current) ? current.join(", ") : current;
-      const oldSafe = old === undefined || old === null ? "" : String(old);
-      if ((newVal || "") !== oldSafe)
+      const oldVal = old ?? "";
+      if ((newVal || "") !== oldVal)
         changes.push(
-          `Change ${label} from "${oldSafe || "N/A"}" to "${newVal || "N/A"}"`
+          `Change ${label} from "${oldVal || "N/A"}" to "${newVal || "N/A"}"`
         );
     });
-    console.log(changes);
+
+    if (newProfilePic) {
+      const base64 = await convertToBase64(newProfilePic);
+      changes.push(`Change profile picture to: ${base64}`);
+    }
+
     if (changes.length === 0) {
-      console.log("No changes detected.");
+      setStatusMessage({ type: "error", text: "No changes detected." });
       return;
     }
 
@@ -197,9 +216,17 @@ const PatientEditRequest: React.FC = () => {
         description: content,
         ticketName: "Patient Request Change",
       } as any);
-      console.log("Edit request submitted successfully.");
+
+      setStatusMessage({
+        type: "success",
+        text: "Edit request submitted successfully!",
+      });
     } catch (err) {
       console.error("Error submitting edit request:", err);
+      setStatusMessage({
+        type: "error",
+        text: "Failed to submit edit request. Please try again.",
+      });
     }
   };
 
@@ -212,75 +239,89 @@ const PatientEditRequest: React.FC = () => {
         <h1 className="text-2xl font-semibold mb-6">User Editing Settings</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Column */}
           <div className="flex flex-col space-y-4">
-            <img
-              src={authUser?.profilePic || "https://placehold.co/120x120"}
-              alt="Profile"
-              className="w-28 h-28 rounded-lg object-cover mx-auto border"
-            />
+            <div className="flex flex-col items-center">
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <img
+                src={
+                  previewUrl ||
+                  (patient?.user as any)?.profilePic ||
+                  authUser?.profilePic ||
+                  "https://placehold.co/120x120"
+                }
+                alt="Profile"
+                className="w-28 h-28 rounded-lg object-cover border cursor-pointer hover:opacity-80 transition"
+                onClick={handleImageClick}
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Click image to change
+              </p>
+            </div>
             <input
               name="fullName"
               value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Full Name"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Full Name"
             />
             <input
               name="gender"
               value={formData.gender}
-              onChange={handleChange}
-              placeholder="Gender"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Gender"
             />
             <input
               name="bloodtype"
               value={formData.bloodtype}
-              onChange={handleChange}
-              placeholder="Blood Type"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Blood Type"
             />
             <input
               name="birthday"
               type="date"
               value={formData.birthday}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="border rounded-md p-2"
             />
             <input
               name="phoneNumber"
               value={formData.phoneNumber}
-              onChange={handleChange}
-              placeholder="Phone Number"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Phone Number"
             />
           </div>
 
-          {/* Right Column */}
           <div className="flex flex-col space-y-4">
             <input
               name="email"
               value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Email"
             />
             <input
               name="address"
               value={formData.address}
-              onChange={handleChange}
-              placeholder="Address"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Address"
             />
             <input
               name="emergencyContact"
               value={formData.emergencyContact}
-              onChange={handleChange}
-              placeholder="Emergency Contact"
+              onChange={handleInputChange}
               className="border rounded-md p-2"
+              placeholder="Emergency Contact"
             />
-
-            {/* Allergies */}
             <textarea
               name="allergies"
               value={(formData.allergies || []).join(", ")}
@@ -290,11 +331,9 @@ const PatientEditRequest: React.FC = () => {
                   e.target.value.split(",").map((v) => v.trim())
                 )
               }
-              placeholder="Add allergies (comma separated)"
               className="border rounded-md p-2 h-20"
+              placeholder="Allergies (comma separated)"
             />
-
-            {/* Conditions */}
             <textarea
               name="conditions"
               value={(formData.conditions || []).join(", ")}
@@ -304,8 +343,8 @@ const PatientEditRequest: React.FC = () => {
                   e.target.value.split(",").map((v) => v.trim())
                 )
               }
-              placeholder="Add conditions (comma separated)"
               className="border rounded-md p-2 h-20"
+              placeholder="Conditions (comma separated)"
             />
 
             <button
@@ -314,6 +353,18 @@ const PatientEditRequest: React.FC = () => {
             >
               Send Edit Request
             </button>
+
+            {statusMessage.type && (
+              <p
+                className={`text-sm mt-2 ${
+                  statusMessage.type === "success"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {statusMessage.text}
+              </p>
+            )}
           </div>
         </div>
       </div>
