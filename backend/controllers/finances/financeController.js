@@ -1,6 +1,9 @@
+// controllers/finance/financeController.js
 import FinanceMember from "../../models/finance/FinanceMember.js";
 import User from "../../models/users/User.js";
 import { generateToken } from "../../middleware/authentication.js";
+
+// ===== Finance Member Management =====
 
 // Create new Finance member
 export const createFinanceMember = async (req, res) => {
@@ -117,7 +120,7 @@ export const deleteFinanceMember = async (req, res) => {
     }
 
     await User.findByIdAndDelete(financeMember.user);
-    await financeMember.remove();
+    await financeMember.deleteOne();
     res.status(200).json({ message: "Finance member deleted successfully" });
   } catch (error) {
     console.error("Error deleting Finance member:", error);

@@ -40,7 +40,7 @@ const LoginScreen: React.FC = () => {
 
       const roleRoutes: Record<string, string> = {
         Ops: "/opsdashboard/doctors",
-        Finance: "/financedashboard",
+        Finance: "/invoices",
         IT: "/itdashboard",
         Patient: "/patientdashboard",
         Doctor: "/doctordashboard",
