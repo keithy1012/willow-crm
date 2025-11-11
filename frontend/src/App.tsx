@@ -40,7 +40,8 @@ import ItSidebar from "components/sidebar/ItSidebar";
 import PendingDashboard from "pages/IT/PendingDashboard";
 import ITHistory from "pages/IT/ITHistory";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
-
+import Profile from "pages/Patients/Profile";
+import PatientEditRequest from "pages/Patients/PatientEditRequest";
 // Layout Components
 const PatientLayout: React.FC = () => {
   return (
@@ -192,6 +193,8 @@ const AppRoutes: React.FC = () => {
             <Route path="/insurance" element={<Insurance />} />
             <Route path="/bug-report" element={<BugReportPage />} />
             <Route path="/help-support" element={<HelpSupportPage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile-edit" element={<PatientEditRequest />} />
           </Route>
 
           {/* Operations routes */}
