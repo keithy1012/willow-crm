@@ -1,12 +1,18 @@
 import dotenv from "dotenv";
-dotenv.config();
-
+import path from "path";
+import { fileURLToPath } from "url";
+ 
+// Setup __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, ".env") });
+ 
 // Verify critical env vars are loaded
 if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
   console.error("❌ Missing JWT_SECRET or MONGO_URI in .env file");
   process.exit(1);
 }
-
+ 
 console.log("✅ Environment variables loaded");
 
 import express from "express";

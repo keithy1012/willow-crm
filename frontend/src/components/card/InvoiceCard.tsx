@@ -2,57 +2,63 @@ import React from "react";
 
 interface InvoiceCardProps {
   doctorName: string;
-  doctorUsername: string;
-  appointmentType: string;
+  status: string;
   appointmentDate: string;
+  patientName?: string;
 }
 
 const InvoiceCard: React.FC<InvoiceCardProps> = ({
   doctorName,
-  doctorUsername,
-  appointmentType,
+  status,
   appointmentDate,
+  patientName,
 }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
+  // Status styling based on status type
+  const getStatusStyles = (status: string) => {
+    const statusLower = status.toLowerCase();
+    switch (statusLower) {
+      case "paid":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "sent":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "overdue":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          {/* Doctor Info */}
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm text-gray-600">👨‍⚕️</span>
-            <h3 className="font-semibold text-gray-800">{doctorName}</h3>
-            <span className="text-sm text-gray-500">
-              - {formatDate(appointmentDate)}
-            </span>
-          </div>
-
-          {/* Details */}
-          <div className="space-y-1">
-            <p className="text-sm text-gray-600">
-              <span className="font-medium">Doctor:</span> Dr.{" "}
-              {doctorUsername.split("@")[1] || doctorUsername}
-            </p>
-            <p className="text-sm text-gray-600">
-              <span className="font-medium">Appointment Type:</span>{" "}
-              {appointmentType}
-            </p>
-          </div>
+    <div className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+      {/* Status Badge at top */}
+      <div className="mb-3">
+        <div
+          className={`inline-block px-4 py-1.5 rounded-full text-xs font-semibold border ${getStatusStyles(
+            status
+          )}`}
+        >
+          {status.toUpperCase()}
         </div>
-
-        {/* Action Button */}
-        <button className="px-4 py-2 bg-primary hover:bg-[#6886AC] text-white text-sm font-medium rounded-lg transition-colors">
-          Message Doctor
-        </button>
       </div>
+
+      {/* Patient Name */}
+      {patientName && (
+        <h3 className="font-semibold text-gray-800 text-lg mb-2">
+          {patientName}
+        </h3>
+      )}
+
+      {/* Doctor Info */}
+      <p className="text-sm text-gray-600 mb-1">
+        <span className="font-medium">Doctor:</span> {doctorName}
+      </p>
+
+      {/* Appointment Date */}
+      <p className="text-sm text-gray-600">
+        <span className="font-medium">Date:</span> {appointmentDate}
+      </p>
     </div>
   );
 };

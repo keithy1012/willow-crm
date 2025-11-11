@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FileText, CurrencyDollar, ChartBar } from "phosphor-react";
+import {
+  FileText,
+  ChartBar,
+  Bug,
+  Question,
+  SignOut,
+} from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
@@ -33,15 +39,16 @@ const FinanceSidebar: React.FC<FinanceSidebarProps> = () => {
   const menuItems = [
     { text: "Patient Invoices", icon: FileText, path: "/invoices" },
     {
-      text: "Claims & Reimbursement",
-      icon: CurrencyDollar,
-      path: "/claims",
-    },
-    {
       text: "Billing and Reports",
       icon: ChartBar,
       path: "/billing",
     },
+  ];
+
+  const bottomItems = [
+    { text: "Bug Report", icon: Bug, path: "/finance-bug-report" },
+    { text: "Help / Support", icon: Question, path: "/finance-help-support" },
+    { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 
   const handleItemClick = (text: string, path: string) => {
@@ -68,7 +75,17 @@ const FinanceSidebar: React.FC<FinanceSidebarProps> = () => {
         ))}
       </div>
 
-      <div className="p-4 border-t border-stroke">
+      <div className="p-4 space-y-3 border-t border-stroke">
+        {bottomItems.map((item) => (
+          <SidebarItem
+            key={item.text}
+            text={item.text}
+            icon={item.icon}
+            isActive={activeItem === item.text}
+            onClick={() => handleItemClick(item.text, item.path)}
+          />
+        ))}
+
         <UserProfileCard
           name={userName}
           username={username}

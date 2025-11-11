@@ -10,7 +10,7 @@ import Insurance from "./pages/Patients/Insurance";
 import BugReportPage from "./pages/Bugs/BugReport";
 import HelpSupportPage from "./pages/Patients/HelpSupport";
 import FinanceSidebar from "./components/sidebar/FinanceSidebar";
-import Invoices from "./Finance/Invoices";
+import Invoices from "./pages/Finance/Invoices";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./contexts/SignUpContext";
 import {
@@ -44,8 +44,7 @@ import { AuthProvider, useAuth } from "contexts/AuthContext";
 // Layout Components
 import PendingDashboard from "./pages/IT/PendingDashboard";
 import ITHistory from "./pages/IT/ITHistory";
-import Claims from "Finance/Claims";
-import Billing from "Finance/Billing";
+import Billing from "pages/Finance/Billing";
 
 const PatientLayout: React.FC = () => {
   return (
@@ -248,10 +247,6 @@ const AppRoutes: React.FC = () => {
             {/* Finance Routes */}
             <Route element={<FinanceLayout />}>
               <Route path="/invoices" element={<Invoices />} />
-              <Route
-                path="/claims"
-                element={<Claims />}
-              />
               <Route
                 path="/billing"
                 element={<Billing />}
