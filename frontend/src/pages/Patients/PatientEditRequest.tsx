@@ -100,6 +100,17 @@ const PatientEditRequest: React.FC = () => {
   const handleSubmit = async () => {
     if (!patient) return;
 
+    const formatDateIso = (val: any) => {
+      if (!val) return "";
+      try {
+        if (typeof val === "string") return val.split("T")[0];
+        if (val instanceof Date) return val.toISOString().split("T")[0];
+        return new Date(val).toISOString().split("T")[0];
+      } catch (e) {
+        return String(val);
+      }
+    };
+
     // Generate the change summary
     const changes: string[] = [];
     const fields = [
@@ -123,7 +134,7 @@ const PatientEditRequest: React.FC = () => {
       {
         key: "birthday",
         label: "Birthday",
-        old: (patient as any)?.birthday || "",
+        old: formatDateIso((patient as any)?.birthday),
       },
       {
         key: "phoneNumber",
@@ -170,7 +181,7 @@ const PatientEditRequest: React.FC = () => {
           `Change ${label} from "${oldSafe || "N/A"}" to "${newVal || "N/A"}"`
         );
     });
-
+    console.log(changes);
     if (changes.length === 0) {
       console.log("No changes detected.");
       return;
@@ -180,8 +191,11 @@ const PatientEditRequest: React.FC = () => {
 
     try {
       await ticketService.patient.create({
-        patientId: patient._id,
-        content,
+        patientName: `${(patient.user as any)?.firstName || ""} ${
+          (patient.user as any)?.lastName || ""
+        }`.trim(),
+        description: content,
+        ticketName: "Patient Request Change",
       } as any);
       console.log("Edit request submitted successfully.");
     } catch (err) {
