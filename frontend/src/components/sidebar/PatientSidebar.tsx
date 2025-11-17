@@ -20,6 +20,7 @@ interface PatientSidebarProps {
   userName?: string;
   username?: string;
   userInitials?: string;
+  userProfilePicture?: string;
 }
 
 const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {

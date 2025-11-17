@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "contexts/AuthContext";
 import { patientService } from "api/services/patient.service";
 import { ticketService } from "api/services/ticket.service";
+import { useNavigate } from "react-router-dom";
+import SuccessModal from "../../components/modal/SuccessModal";
 
 interface Patient {
   _id: string;
@@ -32,8 +34,10 @@ const PatientEditRequest: React.FC = () => {
   }>({ type: null, text: "" });
   const [newProfilePic, setNewProfilePic] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchPatient = async () => {
       if (!authUser?._id) return;
@@ -43,7 +47,6 @@ const PatientEditRequest: React.FC = () => {
         const d: any = data;
         setPatient(d);
 
-        // Resolve emergency contact phone whether populated or an ObjectId
         let emergencyPhone = "";
         const ec0 = d?.emergencyContact && d.emergencyContact[0];
         if (ec0) {
@@ -215,17 +218,18 @@ const PatientEditRequest: React.FC = () => {
         }`.trim(),
         description: content,
         ticketName: "Patient Request Change",
-      } as any);
-
-      setStatusMessage({
-        type: "success",
-        text: "Edit request submitted successfully!",
       });
+
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        navigate("/profile");
+      }, 2000);
     } catch (err) {
-      console.error("Error submitting edit request:", err);
+      console.error(err);
       setStatusMessage({
         type: "error",
-        text: "Failed to submit edit request. Please try again.",
+        text: "Failed to submit edit request.",
       });
     }
   };
@@ -368,6 +372,15 @@ const PatientEditRequest: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        message="Your edit request has been submitted successfully!"
+        onClose={() => {
+          setShowSuccessModal(false);
+          navigate("/profile");
+        }}
+      />
     </div>
   );
 };

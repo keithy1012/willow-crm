@@ -10,14 +10,13 @@ import {
   House,
   Asterisk,
 } from "phosphor-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ProfileInfo from "components/card/ProfileInfoCard";
 import { useRequireRole } from "hooks/useRequireRole";
 import { useAuth } from "contexts/AuthContext";
 import { patientService } from "api/services/patient.service";
-import PatientConditionsTable from "components/table/patientConditionsTable";
-import PatientAllergiesTable from "components/table/patientAllergiesTable";
-
+import PatientListTable from "components/table/PatientListTable";
+import SuccessModal from "components/modal/SuccessModal";
 const Profile: React.FC = () => {
   useRequireRole("Patient");
   const { user: authUser } = useAuth();
@@ -25,6 +24,7 @@ const Profile: React.FC = () => {
 
   const [patient, setPatient] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -32,7 +32,6 @@ const Profile: React.FC = () => {
       setLoading(true);
       try {
         const data = await patientService.getById(authUser._id);
-        console.log(data.allergies);
         setPatient(data);
       } catch (err) {
         console.error("Error fetching patient:", err);
@@ -56,9 +55,20 @@ const Profile: React.FC = () => {
       year: "numeric",
     });
   };
-
+  const location = useLocation();
+  const [showModal, setShowModal] = useState(
+    location.state?.showSuccess || false
+  );
   return (
     <div className="flex flex-col w-full bg-[#f9f9f9] min-h-screen">
+      {showModal && (
+        <SuccessModal
+          isOpen={isSuccessModalOpen}
+          message="Your edit request was submitted!"
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
       {/* Header Banner */}
       <div className="h-40 bg-gradient-to-r from-primary to-[#6886AC]" />
 
@@ -107,7 +117,11 @@ const Profile: React.FC = () => {
             />
           </div>
 
-          <PatientConditionsTable conditions={patient?.medicalHistory} />
+          <PatientListTable
+            title="Patient Medical History"
+            data={patient?.medicalHistory}
+            field="conditionName"
+          />
         </div>
 
         {/* Contact Information + Allergies */}
@@ -135,30 +149,11 @@ const Profile: React.FC = () => {
             />
           </div>
 
-          <PatientAllergiesTable allergies={patient?.allergies} />
-        </div>
-
-        {/* Primary Care Physician */}
-        <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-2">
-            My Primary Care Physician
-          </h2>
-          <div className="p-4 rounded-xl border border-gray-200 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <img
-                src="https://placehold.co/40x40"
-                alt="Doctor"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div>
-                <p className="font-medium text-gray-900">Lok Ye Young</p>
-                <p className="text-sm text-gray-500">@lokyeyoung</p>
-              </div>
-            </div>
-            <button className="px-4 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700">
-              Message Doctor
-            </button>
-          </div>
+          <PatientListTable
+            title="Patient Allergies"
+            data={patient?.allergies}
+            field="allergen"
+          />
         </div>
       </div>
     </div>
