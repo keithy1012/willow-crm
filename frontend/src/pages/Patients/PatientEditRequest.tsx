@@ -238,7 +238,7 @@ const PatientEditRequest: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full bg-[#f9f9f9] min-h-screen">
-      <div className="h-40 bg-gradient-to-r from-gray-400 to-gray-600" />
+      <div className="h-40 bg-gradient-to-r from-primary to-[#6886AC]" />
       <div className="relative -mt-20 mx-auto w-[90%] max-w-6xl bg-white rounded-xl shadow-md p-6">
         <h1 className="text-2xl font-semibold mb-6">User Editing Settings</h1>
 
