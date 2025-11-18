@@ -4,24 +4,7 @@ import { patientService } from "api/services/patient.service";
 import { ticketService } from "api/services/ticket.service";
 import { useNavigate } from "react-router-dom";
 import SuccessModal from "../../components/modal/SuccessModal";
-
-interface Patient {
-  _id: string;
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    gender: string;
-    profilePic?: string;
-  };
-  address: string;
-  bloodtype: string;
-  birthday: string;
-  allergies: string[];
-  medicalHistory: string[];
-  emergencyContact?: { phoneNumber: string }[];
-}
+import { Patient } from "api/services/patient_expanded.service";
 
 const PatientEditRequest: React.FC = () => {
   const { user: authUser } = useAuth();
