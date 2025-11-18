@@ -86,7 +86,7 @@ const Profile: React.FC = () => {
               <PencilSimple
                 size={18}
                 className="text-gray-500 cursor-pointer hover:text-gray-700"
-                onClick={() => navigate("/profile-edit")}
+                onClick={() => navigate("/patient-profile-edit")}
               />
             </h1>
           </div>

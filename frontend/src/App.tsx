@@ -284,8 +284,11 @@ const AppRoutes: React.FC = () => {
               <Route path="/insurance" element={<Insurance />} />
               <Route path="/bug-report" element={<BugReportPage />} />
               <Route path="/help-support" element={<HelpSupportPage />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile-edit" element={<PatientEditRequest />} />
+              <Route path="/patient-profile" element={<Profile />} />
+              <Route
+                path="/patient-profile-edit"
+                element={<PatientEditRequest />}
+              />
             </Route>
 
             {/* Operations Routes */}
