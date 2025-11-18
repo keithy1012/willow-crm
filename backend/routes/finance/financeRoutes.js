@@ -1,29 +1,53 @@
 // routes/financeRoutes.js
 
 import express from "express";
+
+// Finance Member routes
 import {
   createFinanceMember,
   getAllFinanceMembers,
   getFinanceMemberById, 
   updateFinanceMember,
   deleteFinanceMember
-} from "../../controllers/finances/financeController.js"
+} from "../../controllers/finances/financeController.js";
+
+// Invoice routes
+import {
+  getAllInvoices,
+  createInvoice,
+  getPatientInvoices,
+  updateInvoiceStatus,
+  sendInvoiceToExternal
+} from "../../controllers/finances/invoiceController.js";
+
+// Report routes
+import {
+  getRecentReports,
+  getReportById,
+  generateReport,
+  exportReport,
+} from "../../controllers/finances/reportController.js";
 
 const router = express.Router();
 
-// Creates an Finance Member
+// ===== Invoice Routes (must be before /:id) =====
+router.get("/invoices", getAllInvoices);
+router.post("/invoices/create", createInvoice);
+router.post("/invoices/:id/send", sendInvoiceToExternal);
+router.patch("/invoices/:id/status", updateInvoiceStatus);
+router.get("/patients/:patientId/invoices", getPatientInvoices);
+
+// ===== Report Routes (must be before /:id) =====
+router.get("/reports/recent", getRecentReports);
+router.get("/reports/:id", getReportById);
+router.get("/reports/:id/export", exportReport);
+router.post("/reports/generate", generateReport);
+
+// ===== Finance Member Routes (parameterized routes go last) =====
 router.post("/", createFinanceMember);
-
-// Get all Finance members
 router.get("/", getAllFinanceMembers);
-
-// Get Finance member by ID
 router.get("/:id", getFinanceMemberById);
-
-// Update Finance member by ID
 router.put("/:id", updateFinanceMember);
-
-// Delete Finance member by ID
 router.delete("/:id", deleteFinanceMember);
 
 export default router;
