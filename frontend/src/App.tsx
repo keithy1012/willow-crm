@@ -7,8 +7,8 @@ import Appointments from "./pages/Patients/Appointments";
 import MedicalRecords from "./pages/Patients/MedicalRecords";
 import Medications from "./pages/Patients/Medications";
 import Insurance from "./pages/Patients/Insurance";
-import BugReportPage from "./pages/Bugs/BugReport";
-import HelpSupportPage from "./pages/Patients/HelpSupport";
+import BugReportPage from "./pages/General/BugReport";
+import HelpSupportPage from "./pages/General/HelpSupport";
 import FinanceSidebar from "./components/sidebar/FinanceSidebar";
 import Invoices from "./pages/Finance/Invoices";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
@@ -46,6 +46,7 @@ import PatientEditRequest from "pages/Patients/PatientEditRequest";
 import PendingDashboard from "./pages/IT/PendingDashboard";
 import ITHistory from "./pages/IT/ITHistory";
 import Billing from "pages/Finance/Billing";
+import DoctorSidebar from "components/sidebar/DoctorSidebar";
 
 const PatientLayout: React.FC = () => {
   return (
@@ -136,6 +137,68 @@ const getDefaultRoute = (role: string): string => {
   }
 };
 
+const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const storedUser =
+    typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const role = user?.role;
+
+  if (role === "Ops") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <OpsSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "Finance") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <FinanceSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "IT") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <ItSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "Doctor") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <DoctorSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+  // Default to Patient layout
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <PatientSidebar />
+      </div>
+      <div className="flex-1">{children}</div>
+    </div>
+  );
+};
+
 // Main App Routes Component that uses Auth Context
 const AppRoutes: React.FC = () => {
   const { user, token, isLoading } = useAuth();
@@ -211,50 +274,61 @@ const AppRoutes: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
 
-          {/* Patient routes */}
-          <Route element={<PatientLayout />}>
-            <Route path="/patientdashboard" element={<Dashboard />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/medical-records" element={<MedicalRecords />} />
-            <Route path="/medications" element={<Medications />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-            <Route path="/help-support" element={<HelpSupportPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile-edit" element={<PatientEditRequest />} />
-          </Route>
+            {/* Patient routes */}
+            <Route element={<PatientLayout />}>
+              <Route path="/patientdashboard" element={<Dashboard />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/medical-records" element={<MedicalRecords />} />
+              <Route path="/medications" element={<Medications />} />
+              <Route path="/insurance" element={<Insurance />} />
+              <Route path="/bug-report" element={<BugReportPage />} />
+              <Route path="/help-support" element={<HelpSupportPage />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile-edit" element={<PatientEditRequest />} />
+            </Route>
 
-\            {/* Operations Routes */}
-          <Route element={<OpsLayout />}>
-            <Route
-              path="/opsdashboard/doctors"
-              element={<OpsDoctorDashboard />}
-            />
-            <Route
-              path="/opsdashboard/patients"
-              element={<OpsPatientDashboard />}
-            />
-            <Route path="/opsdashboard/history" element={<OpsHistory />} />
-            <Route path="/ops-bug-report" element={<BugReportPage />} />
-            <Route path="/ops-help-support" element={<HelpSupportPage />} />
-          </Route>
+            {/* Operations Routes */}
+            <Route element={<OpsLayout />}>
+              <Route
+                path="/opsdashboard/doctors"
+                element={<OpsDoctorDashboard />}
+              />
+              <Route
+                path="/opsdashboard/patients"
+                element={<OpsPatientDashboard />}
+              />
+              <Route path="/opsdashboard/history" element={<OpsHistory />} />
+            </Route>
 
             {/* IT Routes */}
-          <Route element={<ItsLayout />}>
-            <Route path="/itdashboard" element={<PendingDashboard />} />
-            <Route path="/itdashboard/history" element={<ITHistory />} />
-            <Route path="/it-bug-report" element={<BugReportPage />} />
-          </Route>
+            <Route element={<ItsLayout />}>
+              <Route path="/itdashboard" element={<PendingDashboard />} />
+              <Route path="/itdashboard/history" element={<ITHistory />} />
+            </Route>
 
             {/* Finance Routes */}
             <Route element={<FinanceLayout />}>
               <Route path="/invoices" element={<Invoices />} />
-              <Route
-                path="/billing"
-                element={<Billing />}
-              />
+              <Route path="/billing" element={<Billing />} />
             </Route>
+
+            <Route
+              path="/bug-report"
+              element={
+                <RoleLayoutWrapper>
+                  <BugReportPage />
+                </RoleLayoutWrapper>
+              }
+            />
+            <Route
+              path="/help-support"
+              element={
+                <RoleLayoutWrapper>
+                  <HelpSupportPage />
+                </RoleLayoutWrapper>
+              }
+            />
 
             <Route path="/error" element={<Error />} />
           </Routes>
