@@ -40,14 +40,14 @@ import OpsHistory from "pages/Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
-import Profile from "pages/Patients/Profile";
+import PatientProfile from "pages/Patients/Profile";
 import PatientEditRequest from "pages/Patients/PatientEditRequest";
 // Layout Components
 import PendingDashboard from "./pages/IT/PendingDashboard";
 import ITHistory from "./pages/IT/ITHistory";
 import Billing from "pages/Finance/Billing";
 import DoctorSidebar from "components/sidebar/DoctorSidebar";
-
+import OpsProfile from "pages/Operations/Profile";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -284,7 +284,7 @@ const AppRoutes: React.FC = () => {
               <Route path="/insurance" element={<Insurance />} />
               <Route path="/bug-report" element={<BugReportPage />} />
               <Route path="/help-support" element={<HelpSupportPage />} />
-              <Route path="/patient-profile" element={<Profile />} />
+              <Route path="/patient-profile" element={<PatientProfile />} />
               <Route
                 path="/patient-profile-edit"
                 element={<PatientEditRequest />}
@@ -302,6 +302,7 @@ const AppRoutes: React.FC = () => {
                 element={<OpsPatientDashboard />}
               />
               <Route path="/opsdashboard/history" element={<OpsHistory />} />
+              <Route path="/ops-profile" element={<OpsProfile />} />
             </Route>
 
             {/* IT Routes */}

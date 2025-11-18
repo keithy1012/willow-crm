@@ -17,19 +17,19 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
   const navigate = useNavigate();
   const handleClick = () => {
     switch (role) {
-      case "patient":
+      case "Patient":
         navigate("/patient-profile");
         break;
-      case "ops":
+      case "Ops":
         navigate("/ops-profile");
         break;
-      case "it":
+      case "IT":
         navigate("/it-profile");
         break;
-      case "finance":
+      case "Finance":
         navigate("/finance-profile");
         break;
-      case "doctor":
+      case "Doctor":
         navigate("/doctor-profile");
         break;
       default:

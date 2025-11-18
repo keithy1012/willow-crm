@@ -17,7 +17,7 @@ import { useAuth } from "contexts/AuthContext";
 import { patientService } from "api/services/patient.service";
 import PatientListTable from "components/table/PatientListTable";
 import SuccessModal from "components/modal/SuccessModal";
-const Profile: React.FC = () => {
+const PatientProfile: React.FC = () => {
   useRequireRole("Patient");
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
@@ -160,4 +160,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
+export default PatientProfile;
