@@ -36,7 +36,7 @@ const ItSidebar: React.FC<ItSidebarProps> = () => {
   ];
 
   const bottomItems = [
-    { text: "Bug Report", icon: Bug, path: "/it-bug-report" },
+    { text: "Bug Report", icon: Bug, path: "/bug-report" },
     { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 

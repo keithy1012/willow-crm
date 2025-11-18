@@ -4,9 +4,9 @@ import { House, Bug, Question, SignOut } from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
-interface OpsSidebarProps {}
+interface DoctorSidebarProps {}
 
-const OpsSidebar: React.FC<OpsSidebarProps> = () => {
+const DoctorSidebar: React.FC<DoctorSidebarProps> = () => {
   const [activeItem, setActiveItem] = useState("Messages");
   const [isNavigating, setIsNavigating] = useState(false);
   const [userName, setUserName] = useState<string>("");
@@ -31,22 +31,12 @@ const OpsSidebar: React.FC<OpsSidebarProps> = () => {
   }, []);
 
   const menuItems = [
-    {
-      text: "Doctor Request Tickets",
-      icon: House,
-      path: "/opsdashboard/doctors",
-    },
-    {
-      text: "Patient Request Tickets",
-      icon: House,
-      path: "/opsdashboard/patients",
-    },
-    { text: "History", icon: House, path: "/opsdashboard/history" },
+    { text: "Pending Tickets", icon: House, path: "/itdashboard" },
+    { text: "Ticket History", icon: House, path: "/itdashboard/history" },
   ];
 
   const bottomItems = [
     { text: "Bug Report", icon: Bug, path: "/bug-report" },
-    { text: "Help / Support", icon: Question, path: "/help-support" },
     { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 
@@ -95,4 +85,4 @@ const OpsSidebar: React.FC<OpsSidebarProps> = () => {
   );
 };
 
-export default OpsSidebar;
+export default DoctorSidebar;
