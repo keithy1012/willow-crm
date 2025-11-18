@@ -40,7 +40,8 @@ import OpsHistory from "pages/Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
-
+import Profile from "pages/Patients/Profile";
+import PatientEditRequest from "pages/Patients/PatientEditRequest";
 // Layout Components
 import PendingDashboard from "./pages/IT/PendingDashboard";
 import ITHistory from "./pages/IT/ITHistory";
@@ -210,17 +211,19 @@ const AppRoutes: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
 
-            {/* Patient Routes */}
-            <Route element={<PatientLayout />}>
-              <Route path="/patientdashboard" element={<Dashboard />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/appointments" element={<Appointments />} />
-              <Route path="/medical-records" element={<MedicalRecords />} />
-              <Route path="/medications" element={<Medications />} />
-              <Route path="/insurance" element={<Insurance />} />
-              <Route path="/bug-report" element={<BugReportPage />} />
-              <Route path="/help-support" element={<HelpSupportPage />} />
-            </Route>
+          {/* Patient routes */}
+          <Route element={<PatientLayout />}>
+            <Route path="/patientdashboard" element={<Dashboard />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/medical-records" element={<MedicalRecords />} />
+            <Route path="/medications" element={<Medications />} />
+            <Route path="/insurance" element={<Insurance />} />
+            <Route path="/bug-report" element={<BugReportPage />} />
+            <Route path="/help-support" element={<HelpSupportPage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile-edit" element={<PatientEditRequest />} />
+          </Route>
 
 \            {/* Operations Routes */}
           <Route element={<OpsLayout />}>
