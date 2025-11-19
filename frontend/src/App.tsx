@@ -49,6 +49,7 @@ import Billing from "pages/Finance/Billing";
 import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import OpsProfile from "pages/Operations/Profile";
 import FinanceProfile from "pages/Finance/Profile";
+import ITProfile from "pages/IT/Profile";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -310,6 +311,7 @@ const AppRoutes: React.FC = () => {
             <Route element={<ItsLayout />}>
               <Route path="/itdashboard" element={<PendingDashboard />} />
               <Route path="/itdashboard/history" element={<ITHistory />} />
+              <Route path="it-profile" element={<ITProfile/>} />
             </Route>
 
             {/* Finance Routes */}
