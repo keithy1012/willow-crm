@@ -17,7 +17,7 @@ import { useAuth } from "contexts/AuthContext";
 import { patientService } from "api/services/patient.service";
 import PatientListTable from "components/table/PatientListTable";
 import SuccessModal from "components/modal/SuccessModal";
-const Profile: React.FC = () => {
+const PatientProfile: React.FC = () => {
   useRequireRole("Patient");
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const Profile: React.FC = () => {
               <PencilSimple
                 size={18}
                 className="text-gray-500 cursor-pointer hover:text-gray-700"
-                onClick={() => navigate("/profile-edit")}
+                onClick={() => navigate("/patient-profile-edit")}
               />
             </h1>
           </div>
@@ -160,4 +160,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
+export default PatientProfile;

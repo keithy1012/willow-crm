@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FileText,
-  ChartBar,
-  Bug,
-  Question,
-  SignOut,
-} from "phosphor-react";
+import { FileText, ChartBar, Bug, Question, SignOut } from "phosphor-react";
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
@@ -17,6 +11,7 @@ const FinanceSidebar: React.FC<FinanceSidebarProps> = () => {
   const [isNavigating, setIsNavigating] = useState(false);
   const [userName, setUserName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("");
   const [userInitials, setUserInitials] = useState<string>("");
 
   const navigate = useNavigate();
@@ -32,6 +27,7 @@ const FinanceSidebar: React.FC<FinanceSidebarProps> = () => {
 
       setUserName(fullName || "Unknown User");
       setUsername(user.username || user.email || "unknown");
+      setUserRole(user.role || "N/A");
       setUserInitials(initials.toUpperCase());
     }
   }, []);
@@ -90,6 +86,7 @@ const FinanceSidebar: React.FC<FinanceSidebarProps> = () => {
           name={userName}
           username={username}
           initials={userInitials}
+          role={userRole}
         />
       </div>
     </div>

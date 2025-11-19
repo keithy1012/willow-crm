@@ -28,6 +28,7 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
   const [isNavigating, setIsNavigating] = useState(false);
   const [userName, setUserName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("");
   const [userInitials, setUserInitials] = useState<string>("");
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
 
       setUserName(fullName || "Unknown User");
       setUsername(user.username || user.email || "unknown");
+      setUserRole(user.role || "N/A");
       setUserInitials(initials.toUpperCase());
     }
   }, []);
@@ -101,6 +103,7 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
           name={userName}
           username={username}
           initials={userInitials}
+          role={userRole}
         />
       </div>
     </div>
