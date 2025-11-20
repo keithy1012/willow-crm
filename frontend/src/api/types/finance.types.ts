@@ -19,8 +19,11 @@ export interface CreateFinanceMemberData {
 }
 
 // Invoice types
+// api/types/finance.types.ts
+
 export interface Invoice {
   _id: string;
+  patient: string;
   patientName: string;
   doctorName: string;
   doctorUsername: string;
@@ -32,7 +35,7 @@ export interface Invoice {
 }
 
 export interface CreateInvoiceData {
-  patientName: string;
+  patientId: string;
   doctorName: string;
   appointmentDate: string;
   amount: string;

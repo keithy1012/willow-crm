@@ -50,6 +50,7 @@ import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import OpsProfile from "pages/Operations/Profile";
 import FinanceProfile from "pages/Finance/Profile";
 import ITProfile from "pages/IT/Profile";
+import ViewInvoices from "pages/Patients/ViewInvoices";
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -291,6 +292,7 @@ const AppRoutes: React.FC = () => {
                 path="/patient-profile-edit"
                 element={<PatientEditRequest />}
               />
+              <Route path="/view-invoices" element={<ViewInvoices />} />
             </Route>
 
             {/* Operations Routes */}

@@ -35,4 +35,11 @@ export const patientService = {
   
   getInsuranceCards: (userId: string) => 
     apiClient.get<InsuranceCards>(`/patients/${userId}/insuranceCards`),
+
+  searchByName: (name: string) =>
+    apiClient.get<{ 
+      searchTerm: string; 
+      count: number; 
+      patients: any[] 
+    }>(`/patients/search?name=${encodeURIComponent(name)}`),
 };

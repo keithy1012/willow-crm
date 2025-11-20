@@ -1,37 +1,59 @@
 import React, { useEffect, useState } from "react";
 import InvoiceCard from "components/card/InvoiceCard";
-import FinanceHeader from "components/headers/FinanceHeader";
 import { useRequireRole } from "hooks/useRequireRole";
+import { useAuth } from "contexts/AuthContext";
 import PrimaryButton from "components/buttons/PrimaryButton";
 import SmallSearchBar from "components/input/SmallSearchBar";
-import CreateInvoiceModal from "components/modal/CreateInvoiceModal";
-import InvoiceDetailsModal from "components/modal/InvoiceDetailsModal";
-import { Funnel } from "phosphor-react";
+import { FileText, Funnel } from "phosphor-react";
 import { financeService } from "api/services/finance.service";
-import { Invoice, CreateInvoiceData } from "api/types/finance.types";
+import { patientService } from "api/services/patient.service";
+import { Invoice } from "api/types/finance.types";
 
-const Invoices: React.FC = () => {
+const ViewInvoices: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [invoiceData, setInvoiceData] = useState<CreateInvoiceData>({
-    patientId: "",
-    doctorName: "",
-    appointmentDate: "",
-    amount: "",
-    description: "",
-  });
-  const user = useRequireRole("Finance", true);
+  const [patientId, setPatientId] = useState<string | null>(null);
+  const user = useRequireRole("Patient", true);
+  const { user: authUser } = useAuth();
 
+  // First, get the patient document to get the patient ID
+  useEffect(() => {
+    const fetchPatient = async () => {
+      if (!authUser?._id) {
+        console.log("No authUser ID found");
+        return;
+      }
+      
+      try {
+        const patientData = await patientService.getById(authUser._id);
+        console.log("Patient data:", patientData);
+        console.log("Patient ID:", patientData._id);
+        setPatientId(patientData._id);
+      } catch (error) {
+        console.error("Error fetching patient:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchPatient();
+  }, [authUser]);
+
+  // Then fetch invoices using the patient ID
   useEffect(() => {
     const fetchInvoices = async () => {
+      if (!patientId) return;
+      
+      console.log("Fetching invoices for patient ID:", patientId);
+      
       try {
-        const data = await financeService.getAllInvoices();
+        const data = await financeService.getPatientInvoices(patientId);
+        console.log("Invoices received:", data);
+        console.log("Number of invoices:", data.length);
         setInvoices(data);
         setFilteredInvoices(data);
       } catch (error) {
@@ -42,7 +64,7 @@ const Invoices: React.FC = () => {
     };
 
     fetchInvoices();
-  }, []);
+  }, [patientId]);
 
   // Filter invoices based on search and status
   useEffect(() => {
@@ -52,7 +74,6 @@ const Invoices: React.FC = () => {
     if (searchQuery) {
       filtered = filtered.filter(
         (invoice) =>
-          invoice.patientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           invoice.doctorName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
@@ -65,45 +86,6 @@ const Invoices: React.FC = () => {
     setFilteredInvoices(filtered);
   }, [searchQuery, statusFilter, invoices]);
 
-  const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setInvoiceData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleDescriptionChange = (text: string) => {
-    setInvoiceData((prev) => ({ ...prev, description: text }));
-  };
-
-  const handlePatientSelect = (patientId: string, patientName: string) => {
-    setInvoiceData((prev) => ({ 
-      ...prev, 
-      patientId,
-    }));
-  };
-
-  const handleCreateInvoice = async () => {
-    try {
-      await financeService.createInvoice(invoiceData);
-
-      // Reset form and close modal
-      setInvoiceData({
-        patientId: "",
-        doctorName: "",
-        appointmentDate: "",
-        amount: "",
-        description: "",
-      });
-      setIsCreateModalOpen(false);
-
-      // Refresh invoices list
-      const data = await financeService.getAllInvoices();
-      setInvoices(data);
-      setFilteredInvoices(data);
-    } catch (error) {
-      console.error("Error creating invoice:", error);
-    }
-  };
-
   const handleViewDetails = (invoice: Invoice) => {
     setSelectedInvoice(invoice);
     setIsDetailsModalOpen(true);
@@ -112,18 +94,6 @@ const Invoices: React.FC = () => {
   const handleCloseDetailsModal = () => {
     setIsDetailsModalOpen(false);
     setSelectedInvoice(null);
-  };
-
-  const handleSendToExternalSystem = async (invoiceId: string) => {
-    try {
-      await financeService.sendInvoiceToExternal(invoiceId);
-      // Refresh invoices list
-      const data = await financeService.getAllInvoices();
-      setInvoices(data);
-      setFilteredInvoices(data);
-    } catch (error) {
-      console.error("Error sending invoice:", error);
-    }
   };
 
   const handleClearSearch = () => {
@@ -140,26 +110,15 @@ const Invoices: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <FinanceHeader userName={user.firstName} />
-
       {/* Content Area */}
       <div className="p-8">
-        <div className="mb-6 flex justify-between items-start">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-              Patient Invoices
-            </h1>
-            <p className="text-sm text-gray-500">
-              Look at recently viewed patient invoices below.
-            </p>
-          </div>
-          <PrimaryButton
-            text="Create Invoice"
-            onClick={() => setIsCreateModalOpen(true)}
-            variant="primary"
-            size="medium"
-            toggleable={false}
-          />
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+            My Invoices
+          </h1>
+          <p className="text-sm text-gray-500">
+            View your medical invoices and billing statements
+          </p>
         </div>
 
         {/* Search and Filter Section */}
@@ -168,7 +127,7 @@ const Invoices: React.FC = () => {
             <SmallSearchBar
               value={searchQuery}
               onChange={setSearchQuery}
-              placeholder="Search by patient or doctor name..."
+              placeholder="Search by doctor name..."
               onClear={handleClearSearch}
             />
           </div>
@@ -202,23 +161,14 @@ const Invoices: React.FC = () => {
                   appointmentDate={invoice.appointmentDate}
                   patientName={invoice.patientName}
                 />
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-2">
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <PrimaryButton
                     text="View Details"
                     onClick={() => handleViewDetails(invoice)}
-                    variant="outline"
+                    variant="primary"
                     size="small"
                     toggleable={false}
                   />
-                  {invoice.status !== "sent" && invoice.status !== "paid" && (
-                    <PrimaryButton
-                      text="Send"
-                      onClick={() => handleSendToExternalSystem(invoice._id)}
-                      variant="primary"
-                      size="small"
-                      toggleable={false}
-                    />
-                  )}
                 </div>
               </div>
             ))
@@ -261,37 +211,90 @@ const Invoices: React.FC = () => {
               <p className="text-gray-800 font-medium text-lg">
                 {searchQuery || statusFilter !== "all"
                   ? "No invoices found"
-                  : "Nothing to do!"}
+                  : "No invoices yet!"}
               </p>
               <p className="text-gray-500 text-sm mt-2">
                 {searchQuery || statusFilter !== "all"
                   ? "Try adjusting your search or filters"
-                  : "You have no invoices at the moment"}
+                  : "You don't have any invoices at the moment"}
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Modals */}
-      <CreateInvoiceModal
-        isOpen={isCreateModalOpen}
-        invoiceData={invoiceData}
-        onClose={() => setIsCreateModalOpen(false)}
-        onFieldChange={handleFieldChange}
-        onDescriptionChange={handleDescriptionChange}
-        onCreate={handleCreateInvoice}
-        onPatientSelect={handlePatientSelect}
-      />
+      {/* Invoice Details Modal - Read-only for patients */}
+      {isDetailsModalOpen && selectedInvoice && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
+            <button
+              onClick={handleCloseDetailsModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
 
-      <InvoiceDetailsModal
-        isOpen={isDetailsModalOpen}
-        invoice={selectedInvoice}
-        onClose={handleCloseDetailsModal}
-        onSend={handleSendToExternalSystem}
-      />
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-primary bg-opacity-10 p-2 rounded-full">
+                  <FileText size={20} weight="regular" className="text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Invoice Details
+                </h3>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <p className="text-sm font-medium text-gray-500">Doctor</p>
+                <p className="text-base text-gray-800">
+                  {selectedInvoice.doctorName}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Appointment Date</p>
+                <p className="text-base text-gray-800">
+                  {selectedInvoice.appointmentDate}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Amount</p>
+                <p className="text-base text-gray-800">
+                  ${selectedInvoice.amount?.toFixed(2) || "0.00"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Status</p>
+                <p className="text-base text-gray-800 capitalize">
+                  {selectedInvoice.status || "pending"}
+                </p>
+              </div>
+              {selectedInvoice.description && (
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Description</p>
+                  <p className="text-base text-gray-800">
+                    {selectedInvoice.description}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <PrimaryButton
+                text="Close"
+                onClick={handleCloseDetailsModal}
+                variant="primary"
+                size="medium"
+                toggleable={false}
+                className="flex-1"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Invoices;
+export default ViewInvoices;

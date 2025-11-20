@@ -1,12 +1,15 @@
 // controllers/finances/invoiceController.js
 import Invoice from "../../models/finance/Invoice.js";
+import Patient from "../../models/patients/Patient.js";
 
 // Get invoices for a specific patient
 export const getPatientInvoices = async (req, res) => {
   try {
     const { patientId } = req.params;
     
-    const invoices = await Invoice.find().sort({ createdAt: -1 });
+    const invoices = await Invoice.find({ patient: patientId })
+      .sort({ createdAt: -1 })
+      .populate("patient");
     
     res.status(200).json(invoices);
   } catch (error) {
@@ -18,7 +21,9 @@ export const getPatientInvoices = async (req, res) => {
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
   try {
-    const invoices = await Invoice.find().sort({ createdAt: -1 });
+    const invoices = await Invoice.find()
+      .sort({ createdAt: -1 })
+      .populate("patient");
     res.status(200).json(invoices);
   } catch (error) {
     console.error("Error fetching invoices:", error);
@@ -30,12 +35,20 @@ export const getAllInvoices = async (req, res) => {
 export const createInvoice = async (req, res) => {
   try {
     const {
-      patientName,
+      patientId,
       doctorName,
       appointmentDate,
       amount,
       description,
     } = req.body;
+
+    // Verify patient exists and get patient name
+    const patient = await Patient.findById(patientId).populate("user");
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    const patientName = `${patient.user.firstName} ${patient.user.lastName}`;
 
     // Generate unique invoice ID
     const invoiceCount = await Invoice.countDocuments();
@@ -43,9 +56,10 @@ export const createInvoice = async (req, res) => {
       invoiceCount + 1
     ).padStart(4, "0")}`;
 
-    // Create new invoice using Invoice model
+    // Create new invoice with patient reference
     const invoice = new Invoice({
       invoiceId,
+      patient: patientId,
       patientName,
       doctorName,
       doctorUsername: req.body.doctorUsername || "",
@@ -79,7 +93,6 @@ export const sendInvoiceToExternal = async (req, res) => {
       return res.status(404).json({ message: "Invoice not found" });
     }
 
-    // TODO: Implement actual integration with external billing system
     invoice.status = "sent";
     await invoice.save();
 

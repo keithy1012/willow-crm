@@ -205,3 +205,42 @@ export const getInsuranceCards = async (req, res) => {
       .json({ error: "Internal server error", details: err.message });
   }
 };
+
+// Search patients by name
+export const searchPatientsByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ error: "Name parameter is required" });
+    }
+
+    // Find all patients and populate user info
+    const patients = await Patient.find()
+      .populate("user", "firstName lastName email phoneNumber profilePic")
+      .lean();
+
+    // Filter by name
+    const filteredPatients = patients.filter((patient) => {
+      const fullName =
+        `${patient.user.firstName} ${patient.user.lastName}`.toLowerCase();
+      const firstName = patient.user.firstName.toLowerCase();
+      const lastName = patient.user.lastName.toLowerCase();
+      const searchTerm = name.toLowerCase();
+      
+      return (
+        fullName.includes(searchTerm) ||
+        firstName.includes(searchTerm) ||
+        lastName.includes(searchTerm)
+      );
+    });
+
+    return res.json({
+      searchTerm: name,
+      count: filteredPatients.length,
+      patients: filteredPatients,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};

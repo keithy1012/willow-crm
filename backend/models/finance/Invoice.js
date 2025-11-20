@@ -8,6 +8,11 @@ const invoiceSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Patient",
+      required: true,
+    },
     patientName: {
       type: String,
       required: true,
