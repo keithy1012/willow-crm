@@ -11,6 +11,7 @@ import {
   Calendar,
   Cards,
   SignOut,
+  Receipt,
 } from "phosphor-react";
 
 import UserProfileCard from "../card/UserProfileCard";
@@ -54,6 +55,7 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({}) => {
     { text: "Medical Records", icon: FileText, path: "/medical-records" },
     { text: "Medications", icon: Pill, path: "/medications" },
     { text: "Insurance Card", icon: Cards, path: "/insurance" },
+    { text: "Invoices", icon: Receipt, path: "/view-invoices" },
   ];
 
   const bottomItems = [
