@@ -6,7 +6,8 @@ import {
   getPatientById,
   updatePatient,
   deletePatient,
-  getInsuranceCards
+  getInsuranceCards,
+  searchPatientsByName, // Add this import
 } from "../../controllers/patients/patientController.js"
 
 const router = express.Router();
@@ -16,6 +17,9 @@ router.post("/", createPatient);
 
 // Gets all patients in the system
 router.get("/", getAllPatients);
+
+// IMPORTANT: Search route must come BEFORE /:id route
+router.get("/search", searchPatientsByName);
 
 // Gets insurance card images by ID
 router.get("/:id/insuranceCards", getInsuranceCards);

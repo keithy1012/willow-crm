@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FileText } from "phosphor-react";
 import Field from "components/input/Field";
 import LongTextArea from "components/input/LongTextArea";
 import PrimaryButton from "components/buttons/PrimaryButton";
+import SmallSearchBar from "components/input/SmallSearchBar";
 import { CreateInvoiceData } from "api/types/finance.types";
+import { patientService } from "api/services/patient.service";
 
 interface CreateInvoiceModalProps {
   isOpen: boolean;
@@ -12,6 +14,7 @@ interface CreateInvoiceModalProps {
   onFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onDescriptionChange: (text: string) => void;
   onCreate: () => void;
+  onPatientSelect: (patientId: string, patientName: string) => void;
 }
 
 const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
@@ -21,7 +24,40 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
   onFieldChange,
   onDescriptionChange,
   onCreate,
+  onPatientSelect,
 }) => {
+  const [patientSearch, setPatientSearch] = useState("");
+  const [patients, setPatients] = useState<any[]>([]);
+  const [showPatientDropdown, setShowPatientDropdown] = useState(false);
+  const [selectedPatientName, setSelectedPatientName] = useState("");
+
+  useEffect(() => {
+    if (patientSearch.length > 0) {
+      searchPatients();
+    } else {
+      setPatients([]);
+      setShowPatientDropdown(false);
+    }
+  }, [patientSearch]);
+
+  const searchPatients = async () => {
+    try {
+      const results = await patientService.searchByName(patientSearch);
+      setPatients(results.patients || []);
+      setShowPatientDropdown(true);
+    } catch (error) {
+      console.error("Error searching patients:", error);
+    }
+  };
+
+  const handlePatientSelect = (patient: any) => {
+    const fullName = `${patient.user.firstName} ${patient.user.lastName}`;
+    setSelectedPatientName(fullName);
+    setPatientSearch(fullName);
+    setShowPatientDropdown(false);
+    onPatientSelect(patient._id, fullName);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -52,22 +88,40 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
 
         {/* Form Fields */}
         <div className="space-y-4 mb-6">
-          <div>
+          {/* Patient Search */}
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Patient Name
             </label>
-            <Field
-              placeholder="John Doe"
-              type="text"
-              value={invoiceData.patientName}
-              onChange={(e) => {
-                const event = {
-                  ...e,
-                  target: { ...e.target, name: "patientName" },
-                } as React.ChangeEvent<HTMLInputElement>;
-                onFieldChange(event);
+            <SmallSearchBar
+              value={patientSearch}
+              onChange={setPatientSearch}
+              placeholder="Search for a patient..."
+              onClear={() => {
+                setPatientSearch("");
+                setSelectedPatientName("");
+                onPatientSelect("", "");
               }}
             />
+
+            {/* Patient Dropdown */}
+            {showPatientDropdown && patients.length > 0 && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                {patients.map((patient) => (
+                  <button
+                    key={patient._id}
+                    type="button"
+                    onClick={() => handlePatientSelect(patient)}
+                    className="w-full text-left px-4 py-2 hover:bg-primary hover:text-white transition-colors text-sm"
+                  >
+                    {patient.user.firstName} {patient.user.lastName}
+                    <span className="text-xs text-gray-500 ml-2">
+                      ({patient.user.email})
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
@@ -154,6 +208,7 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
             size="medium"
             toggleable={false}
             className="flex-1"
+            disabled={!invoiceData.patientId}
           />
         </div>
       </div>
