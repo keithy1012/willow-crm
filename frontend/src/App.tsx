@@ -108,8 +108,22 @@ const Logout: React.FC = () => {
   const { logout } = useAuth();
 
   React.useEffect(() => {
-    logout();
-    window.location.href = "/login";
+    const performLogout = async () => {
+      try {
+        await logout();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // Redirect to login
+        window.location.href = "/login";
+      } catch (error) {
+        console.error("Logout error:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+    };
+
+    performLogout();
   }, [logout]);
 
   return (
@@ -120,24 +134,6 @@ const Logout: React.FC = () => {
       </div>
     </div>
   );
-};
-
-// Helper function to get default route based on user role
-const getDefaultRoute = (role: string): string => {
-  switch (role) {
-    case "Patient":
-      return "/patientdashboard";
-    case "Doctor":
-      return "/doctordashboard";
-    case "Ops":
-      return "/opsdashboard/doctors";
-    case "IT":
-      return "/itdashboard";
-    case "Finance":
-      return "/financedashboard";
-    default:
-      return "/login";
-  }
 };
 
 const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -237,6 +233,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/error" element={<Error />} />
 
           {/* Redirect everything else to login */}
@@ -276,6 +273,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/logout" element={<Logout />} />
 
             {/* Patient routes */}
             <Route element={<PatientLayout />}>
@@ -313,14 +311,14 @@ const AppRoutes: React.FC = () => {
             <Route element={<ItsLayout />}>
               <Route path="/itdashboard" element={<PendingDashboard />} />
               <Route path="/itdashboard/history" element={<ITHistory />} />
-              <Route path="it-profile" element={<ITProfile/>} />
+              <Route path="it-profile" element={<ITProfile />} />
             </Route>
 
             {/* Finance Routes */}
             <Route element={<FinanceLayout />}>
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/billing" element={<Billing />} />
-              <Route path="/finance-profile" element={<FinanceProfile/>}/>
+              <Route path="/finance-profile" element={<FinanceProfile />} />
             </Route>
 
             <Route
