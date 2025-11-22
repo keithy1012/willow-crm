@@ -8,6 +8,7 @@ import AppointmentBookingModal from "../../components/modal/BookingModal";
 import { useRequireRole } from "hooks/useRequireRole";
 import { availabilityService } from "api/services/availability.service";
 import { useAuth } from "contexts/AuthContext";
+import ChatBox from "components/chats/chatBox";
 
 const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -23,6 +24,11 @@ const Dashboard: React.FC = () => {
     date: string;
   } | null>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<
+    { sender: "user" | "bot"; text: string }[]
+  >([]);
+
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   const user = useRequireRole("Patient");
   const { user: authUser } = useAuth();
@@ -85,9 +91,31 @@ const Dashboard: React.FC = () => {
     setSearchError(null);
   };
 
-  const handleAskQuestion = (question: string) => {
-    console.log("Question:", question);
-    // TODO: Implement AI chatbot integration
+  const handleAskQuestion = async (newMessage: string) => {
+    const updatedMessages: { sender: "user" | "bot"; text: string }[] = [
+      ...chatMessages,
+      { sender: "user", text: newMessage },
+    ];
+
+    setIsBotTyping(true);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updatedMessages }), // send full context
+      });
+
+      const data = await res.json();
+      setChatMessages([
+        ...updatedMessages,
+        { sender: "bot", text: data.answer },
+      ]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsBotTyping(false);
+    }
   };
 
   const handleBookAppointment = (doctorId: string, timeSlot: any) => {
@@ -198,11 +226,10 @@ const Dashboard: React.FC = () => {
                     This is your AI chatbot to help answer questions on your
                     appointments.
                   </p>
-                  <LongTextArea
-                    placeholder="Ask a question here..."
-                    buttonText="Send"
+                  <ChatBox
+                    messages={chatMessages}
                     onSubmit={handleAskQuestion}
-                    button={true}
+                    isBotTyping={isBotTyping}
                   />
                 </div>
 
