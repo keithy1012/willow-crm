@@ -33,6 +33,7 @@ import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRou
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
 import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
+import authRoutes from "./routes/auth/authRoutes.js";
 
 // Setup Express
 const app = express();
@@ -44,6 +45,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/opsMembers", opsMemberRoutes);
