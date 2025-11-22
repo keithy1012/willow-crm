@@ -108,8 +108,22 @@ const Logout: React.FC = () => {
   const { logout } = useAuth();
 
   React.useEffect(() => {
-    logout();
-    window.location.href = "/login";
+    const performLogout = async () => {
+      try {
+        await logout();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // Redirect to login
+        window.location.href = "/login";
+      } catch (error) {
+        console.error("Logout error:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+    };
+
+    performLogout();
   }, [logout]);
 
   return (
@@ -237,6 +251,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/error" element={<Error />} />
 
           {/* Redirect everything else to login */}
@@ -276,6 +291,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/logout" element={<Logout />} />
 
             {/* Patient routes */}
             <Route element={<PatientLayout />}>
@@ -313,14 +329,14 @@ const AppRoutes: React.FC = () => {
             <Route element={<ItsLayout />}>
               <Route path="/itdashboard" element={<PendingDashboard />} />
               <Route path="/itdashboard/history" element={<ITHistory />} />
-              <Route path="it-profile" element={<ITProfile/>} />
+              <Route path="it-profile" element={<ITProfile />} />
             </Route>
 
             {/* Finance Routes */}
             <Route element={<FinanceLayout />}>
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/billing" element={<Billing />} />
-              <Route path="/finance-profile" element={<FinanceProfile/>}/>
+              <Route path="/finance-profile" element={<FinanceProfile />} />
             </Route>
 
             <Route
