@@ -136,24 +136,6 @@ const Logout: React.FC = () => {
   );
 };
 
-// Helper function to get default route based on user role
-const getDefaultRoute = (role: string): string => {
-  switch (role) {
-    case "Patient":
-      return "/patientdashboard";
-    case "Doctor":
-      return "/doctordashboard";
-    case "Ops":
-      return "/opsdashboard/doctors";
-    case "IT":
-      return "/itdashboard";
-    case "Finance":
-      return "/financedashboard";
-    default:
-      return "/login";
-  }
-};
-
 const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
