@@ -5,6 +5,7 @@ import { useRequireRole } from "hooks/useRequireRole";
 import SmallInfoCard from "components/card/SmallInfoCard";
 import Calendar from "components/calendar/Calendar";
 import { Heartbeat } from "phosphor-react";
+import PrimaryButton from "components/buttons/PrimaryButton";
 
 const DoctorDashboard: React.FC = () => {
   const [sortBy, setSortBy] = useState("upcoming");
@@ -250,6 +251,11 @@ const DoctorDashboard: React.FC = () => {
             onDateSelect={handleDateSelect}
             className="w-full"
           />
+          <PrimaryButton
+            text={"Add Availability"}
+            variant={"primary"}
+            size={"small"}
+          ></PrimaryButton>
         </div>
       </div>
     </div>

@@ -43,7 +43,7 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = ({}) => {
 
   const menuItems = [
     { text: "Dashboard", icon: House, path: "/doctordashboard" },
-    { text: "Messages", icon: ChatCircle, path: "/doctor-messages" },
+    { text: "Messages", icon: ChatCircle, path: "/doctormessages" },
     {
       text: "My Patients",
       icon: ChatCircle,

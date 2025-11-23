@@ -42,6 +42,7 @@ import ITHistory from "pages/IT/ITHistory";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
 import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import DoctorDashboard from "pages/Doctor/DoctorDashboard";
+import DoctorMessages from "pages/Doctor/DoctorMessages";
 // Layout Components
 const PatientLayout: React.FC = () => {
   return (
@@ -246,6 +247,7 @@ const AppRoutes: React.FC = () => {
           {/* Doctor routes - placeholder for now */}
           <Route element={<DoctorLayout />}>
             <Route path="/doctordashboard" element={<DoctorDashboard />} />
+            <Route path="/doctormessages" element={<DoctorMessages />} />
           </Route>
 
           {/* Error route */}

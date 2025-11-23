@@ -174,7 +174,15 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         break;
 
       case "conversation-created":
-        setConversations((prev) => [...prev, data.conversation]);
+        setConversations((prev) => {
+          // Check if conversation already exists with proper typing
+          if (prev.some((c: Conversation) => c.id === data.conversation.id)) {
+            console.log("Conversation already exists, not adding duplicate");
+            return prev;
+          }
+          console.log("Adding new conversation:", data.conversation.id);
+          return [...prev, data.conversation];
+        });
         break;
 
       case "new-message":
@@ -452,13 +460,41 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   // Create conversation with fallback
   const createConversation = useCallback(
     async (recipientId: string): Promise<Conversation | null> => {
+      // Check if conversation already exists with proper typing
+      const existingConversation = conversations.find(
+        (conv) =>
+          conv.participants.some((p: Participant) => p.id === recipientId) &&
+          conv.participants.some((p: Participant) => p.id === currentUser.id)
+      );
+
+      if (existingConversation) {
+        console.log("Conversation already exists, returning existing");
+        return existingConversation;
+      }
+
       if (ws.current && ws.current.readyState === WebSocket.OPEN) {
         return new Promise((resolve) => {
+          let resolved = false;
+          let timeoutId: NodeJS.Timeout;
+
           const handleResponse = (event: MessageEvent) => {
-            const data = JSON.parse(event.data);
-            if (data.type === "conversation-created") {
-              ws.current?.removeEventListener("message", handleResponse);
-              resolve(data.conversation);
+            if (resolved) return; // Prevent multiple resolutions
+
+            try {
+              const data = JSON.parse(event.data);
+              if (
+                data.type === "conversation-created" &&
+                data.conversation?.participants?.some(
+                  (p: Participant) => p.id === recipientId
+                )
+              ) {
+                resolved = true;
+                clearTimeout(timeoutId);
+                ws.current?.removeEventListener("message", handleResponse);
+                resolve(data.conversation);
+              }
+            } catch (error) {
+              console.error("Error parsing WebSocket message:", error);
             }
           };
 
@@ -470,9 +506,13 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             })
           );
 
-          setTimeout(() => {
-            ws.current?.removeEventListener("message", handleResponse);
-            resolve(null);
+          // Timeout after 5 seconds
+          timeoutId = setTimeout(() => {
+            if (!resolved) {
+              resolved = true;
+              ws.current?.removeEventListener("message", handleResponse);
+              resolve(null);
+            }
           }, 5000);
         });
       } else {
@@ -481,14 +521,28 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           const response = await messageService.conversations.create(
             recipientId
           );
-          return response.conversation;
+          if (response.conversation) {
+            // Add to conversations if not already there
+            setConversations((prev) => {
+              if (
+                !prev.some(
+                  (c: Conversation) => c.id === response.conversation.id
+                )
+              ) {
+                return [...prev, response.conversation];
+              }
+              return prev;
+            });
+            return response.conversation;
+          }
+          return null;
         } catch (error) {
           console.error("Failed to create conversation:", error);
           return null;
         }
       }
     },
-    []
+    [conversations, currentUser]
   );
 
   // Connect on mount
