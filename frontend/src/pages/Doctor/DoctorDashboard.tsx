@@ -6,6 +6,7 @@ import SmallInfoCard from "components/card/SmallInfoCard";
 import Calendar from "components/calendar/Calendar";
 import { Heartbeat } from "phosphor-react";
 import PrimaryButton from "components/buttons/PrimaryButton";
+import AvailabilityModal from "./AvailabilityModal";
 
 // Patient data map for quick lookup
 const patientDataMap = {
@@ -354,6 +355,10 @@ const DoctorDashboard: React.FC = () => {
       // You can show these appointments in a modal or sidebar
     }
   };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleAvailability = () => {
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="w-full min-h-screen bg-background">
@@ -440,9 +445,18 @@ const DoctorDashboard: React.FC = () => {
             text="Add Availability"
             variant="primary"
             size="small"
+            onClick={handleAvailability}
           />
         </div>
       </div>
+      <AvailabilityModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onComplete={(data) => {
+          console.log("Availability data:", data);
+          // Handle the availability data here
+        }}
+      />
     </div>
   );
 };
