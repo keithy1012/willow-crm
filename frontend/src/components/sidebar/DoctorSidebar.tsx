@@ -8,6 +8,7 @@ import {
   Question,
   Calendar,
   SignOut,
+  IdentificationBadge,
 } from "phosphor-react";
 
 import UserProfileCard from "../card/UserProfileCard";
@@ -46,8 +47,8 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = ({}) => {
     { text: "Messages", icon: ChatCircle, path: "/doctormessages" },
     {
       text: "My Patients",
-      icon: ChatCircle,
-      path: "/patients",
+      icon: IdentificationBadge,
+      path: "/doctorpatients",
     },
     { text: "My Appointments", icon: Calendar, path: "/appointments" },
   ];
