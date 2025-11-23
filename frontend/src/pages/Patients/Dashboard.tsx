@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import DoctorSearchBar from "../../components/input/SearchBar";
-import LongTextArea from "../../components/input/LongTextArea";
 import MedicationCard from "../../components/card/MedicationCard";
 import UpcomingAppointmentCard from "../../components/card/UpcomingAppointmentCard";
 import DoctorSearchResults from "../../components/dashboard/DoctorSearchResults";
@@ -8,7 +7,8 @@ import AppointmentBookingModal from "../../components/modal/BookingModal";
 import { useRequireRole } from "hooks/useRequireRole";
 import { availabilityService } from "api/services/availability.service";
 import { useAuth } from "contexts/AuthContext";
-import ChatBox from "components/chats/chatBox";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+import ChatModal from "components/modal/ChatsModal";
 
 const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -27,6 +27,8 @@ const Dashboard: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<
     { sender: "user" | "bot"; text: string }[]
   >([]);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
 
   const [isBotTyping, setIsBotTyping] = useState(false);
 
@@ -116,6 +118,14 @@ const Dashboard: React.FC = () => {
     } finally {
       setIsBotTyping(false);
     }
+  };
+
+  const handleSendChat = async () => {
+    const trimmed = chatInput.trim();
+    if (!trimmed || isBotTyping) return;
+    // send and let handleAskQuestion update chatMessages
+    await handleAskQuestion(trimmed);
+    setChatInput("");
   };
 
   const handleBookAppointment = (doctorId: string, timeSlot: any) => {
@@ -226,12 +236,26 @@ const Dashboard: React.FC = () => {
                     This is your AI chatbot to help answer questions on your
                     appointments.
                   </p>
-                  <ChatBox
-                    messages={chatMessages}
-                    onSubmit={handleAskQuestion}
-                    isBotTyping={isBotTyping}
-                  />
+
+                  {/* Open Chat Modal Button */}
+                  <div>
+                    <PrimaryButton
+                      text="Open Chat"
+                      variant="primary"
+                      size="small"
+                      onClick={() => setChatModalOpen(true)}
+                    />
+                  </div>
                 </div>
+                <ChatModal
+                  isOpen={chatModalOpen}
+                  onClose={() => setChatModalOpen(false)}
+                  chatMessages={chatMessages}
+                  chatInput={chatInput}
+                  setChatInput={setChatInput}
+                  onSend={handleSendChat}
+                  isBotTyping={isBotTyping}
+                />
 
                 <div>
                   <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">
