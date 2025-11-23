@@ -44,6 +44,7 @@ import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import DoctorDashboard from "pages/Doctor/DoctorDashboard";
 import DoctorMessages from "pages/Doctor/DoctorMessages";
 import DoctorPatientsPage from "pages/Doctor/DoctorPatients";
+import DoctorAppointments from "pages/Doctor/DoctorAppointments";
 // Layout Components
 const PatientLayout: React.FC = () => {
   return (
@@ -250,6 +251,10 @@ const AppRoutes: React.FC = () => {
             <Route path="/doctordashboard" element={<DoctorDashboard />} />
             <Route path="/doctormessages" element={<DoctorMessages />} />
             <Route path="/doctorpatients" element={<DoctorPatientsPage />} />
+            <Route
+              path="/doctorappointments"
+              element={<DoctorAppointments />}
+            />
           </Route>
 
           {/* Error route */}

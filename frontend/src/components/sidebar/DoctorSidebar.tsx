@@ -50,7 +50,7 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = ({}) => {
       icon: IdentificationBadge,
       path: "/doctorpatients",
     },
-    { text: "My Appointments", icon: Calendar, path: "/appointments" },
+    { text: "My Appointments", icon: Calendar, path: "/doctorappointments" },
   ];
 
   const bottomItems = [

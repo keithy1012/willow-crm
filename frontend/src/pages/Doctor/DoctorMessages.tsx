@@ -22,13 +22,13 @@ const DoctorMessages: React.FC = () => {
   };
 
   const customActions = (
-    <div className="flex items-center mr-3 gap-3">
+    <div className="flex items-center mr-1 gap-1">
       <PrimaryButton
         text="All"
         onClick={() => setFilterMode("all")}
         variant="outline"
         size="small"
-        className="w-[20px]"
+        className="w-[20px] h-[30px]"
         controlled={true}
         selected={filterMode === "all"}
         toggleable={false}
@@ -38,7 +38,7 @@ const DoctorMessages: React.FC = () => {
         onClick={() => setFilterMode("patients")}
         variant="outline"
         size="small"
-        className="w-[20px]"
+        className="w-[20px] h-[30px]"
         controlled={true}
         selected={filterMode === "patients"}
         toggleable={false}
@@ -48,7 +48,7 @@ const DoctorMessages: React.FC = () => {
         onClick={() => setFilterMode("doctors")}
         variant="outline"
         size="small"
-        className="w-[20px]"
+        className="w-[20px] h-[30px]"
         controlled={true}
         selected={filterMode === "doctors"}
         toggleable={false}

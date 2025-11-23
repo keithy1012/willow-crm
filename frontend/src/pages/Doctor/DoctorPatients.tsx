@@ -160,8 +160,8 @@ const DoctorPatientsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-b from-primary to-[#6886AC] text-white py-8">
-        <div className="mx-24">
+      <div className="bg-gradient-to-b from-primary to-[#6886AC] text-white px-12 py-12">
+        <div>
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-semibold mb-2">My Patients</h1>
@@ -173,7 +173,7 @@ const DoctorPatientsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-full mx-auto p-24">
+      <div className="w-full mx-auto p-12">
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex-1">
             <SmallSearchBar
@@ -225,7 +225,7 @@ const DoctorPatientsPage: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-sm text-secondaryText mb-4">
+        <p className="text-md text-secondaryText mb-4">
           Showing {filteredPatients.length} of {patients.length} patients
           {searchQuery && ` matching "${searchQuery}"`}
         </p>
