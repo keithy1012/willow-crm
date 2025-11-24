@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TicketCard from "../../components/card/TicketCard";
 import ConfirmTicketModal from "../../components/modal/ConfirmTicketModal";
 import FinishTicketModal from "../../components/modal/FinishTicketModal";
+import ApproveCreationModal from "../../components/modal/ApproveCreationModal";
 import { useRequireRole } from "../../hooks/useRequireRole";
 import { ticketService } from "../../api";
 import {
@@ -27,8 +28,8 @@ const OpsDoctorDashboard: React.FC = () => {
     null
   );
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
 
   const user = useRequireRole("Ops", true);
 
@@ -229,6 +230,7 @@ const OpsDoctorDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Modals remain the same */}
       <ConfirmTicketModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
@@ -251,10 +253,10 @@ const OpsDoctorDashboard: React.FC = () => {
         }
       />
 
-      <FinishTicketModal
+      <ApproveCreationModal
         isOpen={isApproveModalOpen}
         onClose={() => setIsApproveModalOpen(false)}
-        onConfirm={handleApproveCreation}
+        onApprove={handleApproveCreation}
         ticket={
           selectedTicket && isCreationTicket(selectedTicket)
             ? transformCreationTicketForModal(selectedTicket)

@@ -100,6 +100,7 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = ({}) => {
           name={`Dr. ${userName}`}
           username={username}
           initials={userInitials}
+          role={"Doctor"}
         />
       </div>
     </div>

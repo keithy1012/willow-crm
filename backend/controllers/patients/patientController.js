@@ -34,8 +34,8 @@ export const createPatient = async (req, res) => {
     const convertBase64ToBuffer = (base64String) => {
       if (!base64String) return null;
       // Remove the data URL prefix (data:image/png;base64,)
-      const base64Data = base64String.replace(/^data:image\/\w+;base64,/, '');
-      return Buffer.from(base64Data, 'base64');
+      const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
+      return Buffer.from(base64Data, "base64");
     };
 
     // Convert insurance card images to Buffer
@@ -103,7 +103,7 @@ export const getAllPatients = async (req, res) => {
     const patients = await Patient.find().populate(
       "user",
       "firstName lastName email username gender phoneNumber profilePic role"
-    );
+    ).populate("emergencyContact", "name phoneNumber relationship");
     res.status(200).json(patients);
   } catch (err) {
     console.error("Error fetching patients:", err);
@@ -114,10 +114,11 @@ export const getAllPatients = async (req, res) => {
 // Get single patient by user ID
 export const getPatientById = async (req, res) => {
   try {
-    const patient = await Patient.findOne({ user: req.params.userId }).populate(
-      "user",
-      "firstName lastName email username gender phoneNumber profilePic role"
-    );
+    const userId = req.params.id || req.params.userId;
+    const patient = await Patient.findOne({ user: userId }).populate([
+      { path: 'user', select: 'firstName lastName email username gender phoneNumber profilePic role' },
+      { path: 'emergencyContact', select: 'name phoneNumber relationship' }
+    ]);
     if (!patient) return res.status(404).json({ error: "Patient not found" });
     res.status(200).json(patient);
   } catch (err) {
@@ -129,8 +130,9 @@ export const getPatientById = async (req, res) => {
 // Update patient by user ID
 export const updatePatient = async (req, res) => {
   try {
+    const userId = req.params.id || req.params.userId;
     const updatedPatient = await Patient.findOneAndUpdate(
-      { user: req.params.userId },
+      { user: userId },
       req.body,
       { new: true, runValidators: true }
     );
@@ -146,9 +148,8 @@ export const updatePatient = async (req, res) => {
 // Delete patient by user ID
 export const deletePatient = async (req, res) => {
   try {
-    const deletedPatient = await Patient.findOneAndDelete({
-      user: req.params.userId,
-    });
+    const userId = req.params.id || req.params.userId;
+    const deletedPatient = await Patient.findOneAndDelete({ user: userId });
 
     if (!deletedPatient)
       return res.status(404).json({ error: "Patient not found" });
@@ -168,7 +169,7 @@ export const deletePatient = async (req, res) => {
 export const getInsuranceCards = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     console.log("Fetching insurance cards for user ID:", id);
 
     // Find patient by user ID
@@ -192,13 +193,54 @@ export const getInsuranceCards = async (req, res) => {
       ? `data:image/png;base64,${patient.insuranceCardBack.toString("base64")}`
       : null;
 
-    res.json({ 
+    res.json({
       success: true,
-      insuranceCardFront, 
-      insuranceCardBack 
+      insuranceCardFront,
+      insuranceCardBack,
     });
   } catch (err) {
     console.error("Error fetching insurance cards:", err.message);
-    res.status(500).json({ error: "Internal server error", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: err.message });
+  }
+};
+
+// Search patients by name
+export const searchPatientsByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ error: "Name parameter is required" });
+    }
+
+    // Find all patients and populate user info
+    const patients = await Patient.find()
+      .populate("user", "firstName lastName email phoneNumber profilePic")
+      .lean();
+
+    // Filter by name
+    const filteredPatients = patients.filter((patient) => {
+      const fullName =
+        `${patient.user.firstName} ${patient.user.lastName}`.toLowerCase();
+      const firstName = patient.user.firstName.toLowerCase();
+      const lastName = patient.user.lastName.toLowerCase();
+      const searchTerm = name.toLowerCase();
+      
+      return (
+        fullName.includes(searchTerm) ||
+        firstName.includes(searchTerm) ||
+        lastName.includes(searchTerm)
+      );
+    });
+
+    return res.json({
+      searchTerm: name,
+      count: filteredPatients.length,
+      patients: filteredPatients,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 };

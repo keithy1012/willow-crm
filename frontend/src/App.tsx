@@ -7,8 +7,10 @@ import Appointments from "./pages/Patients/Appointments";
 import MedicalRecords from "./pages/Patients/MedicalRecords";
 import Medications from "./pages/Patients/Medications";
 import Insurance from "./pages/Patients/Insurance";
-import BugReportPage from "./pages/Bugs/BugReport";
-import HelpSupportPage from "./pages/Patients/HelpSupport";
+import BugReportPage from "./pages/General/BugReport";
+import HelpSupportPage from "./pages/General/HelpSupport";
+import FinanceSidebar from "./components/sidebar/FinanceSidebar";
+import Invoices from "./pages/Finance/Invoices";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { SignupProvider } from "./contexts/SignUpContext";
 import {
@@ -17,6 +19,7 @@ import {
   Route,
   Outlet,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import Landing from "./pages/Onboarding/Landing";
 import SignUp1 from "./pages/Onboarding/SignUp1";
@@ -37,15 +40,24 @@ import OpsPatientDashboard from "pages/Operations/PatientDashboard";
 import OpsHistory from "pages/Operations/HistoryDashboard";
 import OpsSidebar from "components/sidebar/OpsSidebar";
 import ItSidebar from "components/sidebar/ItSidebar";
-import PendingDashboard from "pages/IT/PendingDashboard";
-import ITHistory from "pages/IT/ITHistory";
 import { AuthProvider, useAuth } from "contexts/AuthContext";
 import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import DoctorDashboard from "pages/Doctor/DoctorDashboard";
 import DoctorMessages from "pages/Doctor/DoctorMessages";
 import DoctorPatientsPage from "pages/Doctor/DoctorPatients";
 import DoctorAppointments from "pages/Doctor/DoctorAppointments";
+import PatientProfile from "pages/Patients/Profile";
+import PatientEditRequest from "pages/Patients/PatientEditRequest";
 // Layout Components
+import PendingDashboard from "./pages/IT/PendingDashboard";
+import ITHistory from "./pages/IT/ITHistory";
+import Billing from "pages/Finance/Billing";
+import OpsProfile from "pages/Operations/Profile";
+import FinanceProfile from "pages/Finance/Profile";
+import ITProfile from "pages/IT/Profile";
+import ViewInvoices from "pages/Patients/ViewInvoices";
+import Logout from "components/sidebar/logout";
+
 const PatientLayout: React.FC = () => {
   return (
     <div className="flex">
@@ -98,20 +110,14 @@ const DoctorLayout: React.FC = () => {
   );
 };
 
-// Logout Component
-const Logout: React.FC = () => {
-  const { logout } = useAuth();
-
-  React.useEffect(() => {
-    logout();
-    window.location.href = "/login";
-  }, [logout]);
-
+const FinanceLayout: React.FC = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-gray-500">Logging out...</p>
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <FinanceSidebar />
+      </div>
+      <div className="flex-1">
+        <Outlet />
       </div>
     </div>
   );
@@ -133,6 +139,68 @@ const getDefaultRoute = (role: string): string => {
     default:
       return "/login";
   }
+};
+
+const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const storedUser =
+    typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const role = user?.role;
+
+  if (role === "Ops") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <OpsSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "Finance") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <FinanceSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "IT") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <ItSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+
+  if (role === "Doctor") {
+    return (
+      <div className="flex">
+        <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+          <DoctorSidebar />
+        </div>
+        <div className="flex-1">{children}</div>
+      </div>
+    );
+  }
+  // Default to Patient layout
+  return (
+    <div className="flex">
+      <div className="w-56 h-screen bg-background border-r border-stroke flex flex-col sticky top-0">
+        <PatientSidebar />
+      </div>
+      <div className="flex-1">{children}</div>
+    </div>
+  );
 };
 
 // Main App Routes Component that uses Auth Context
@@ -158,6 +226,32 @@ const AppRoutes: React.FC = () => {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/signup1" element={<SignUp1 />} />
+          <Route path="/signup2" element={<SignUp2 />} />
+          <Route path="/signup3" element={<SignUp3 />} />
+          <Route path="/roleselection" element={<RollSelection />} />
+          <Route path="/patientonboarding1" element={<PatientOnboarding1 />} />
+          <Route path="/patientonboarding2" element={<PatientOnboarding2 />} />
+          <Route path="/patientonboarding3" element={<PatientOnboarding3 />} />
+          <Route path="/patientonboarding4" element={<PatientOnboarding4 />} />
+          <Route path="/staffonboarding" element={<StaffOnboarding />} />
+          <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/error" element={<Error />} />
+          {/* Redirect everything else to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </SignupProvider>
+    );
+  }
+
+  return (
+    <WebSocketProvider token={token || ""} currentUser={user}>
+      <SignupProvider>
+        <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/signup1" element={<SignUp1 />} />
           <Route path="/signup2" element={<SignUp2 />} />
           <Route path="/signup3" element={<SignUp3 />} />
@@ -169,35 +263,8 @@ const AppRoutes: React.FC = () => {
           <Route path="/staffonboarding" element={<StaffOnboarding />} />
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/error" element={<Error />} />
-
-          {/* Redirect everything else to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </SignupProvider>
-    );
-  }
-
-  // Protected routes for authenticated users
-  return (
-    <WebSocketProvider token={token} currentUser={user}>
-      <SignupProvider>
-        <Routes>
-          {/* Root redirect based on role */}
-          <Route
-            path="/"
-            element={<Navigate to={getDefaultRoute(user.role)} replace />}
-          />
-
-          {/* Allow logout */}
           <Route path="/logout" element={<Logout />} />
-
-          {/* Redirect login to dashboard if already logged in */}
-          <Route
-            path="/login"
-            element={<Navigate to={getDefaultRoute(user.role)} replace />}
-          />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
 
           {/* Patient routes */}
           <Route element={<PatientLayout />}>
@@ -209,9 +276,15 @@ const AppRoutes: React.FC = () => {
             <Route path="/insurance" element={<Insurance />} />
             <Route path="/bug-report" element={<BugReportPage />} />
             <Route path="/help-support" element={<HelpSupportPage />} />
+            <Route path="/patient-profile" element={<PatientProfile />} />
+            <Route
+              path="/patient-profile-edit"
+              element={<PatientEditRequest />}
+            />
+            <Route path="/view-invoices" element={<ViewInvoices />} />
           </Route>
 
-          {/* Operations routes */}
+          {/* Operations Routes */}
           <Route element={<OpsLayout />}>
             <Route
               path="/opsdashboard/doctors"
@@ -222,31 +295,9 @@ const AppRoutes: React.FC = () => {
               element={<OpsPatientDashboard />}
             />
             <Route path="/opsdashboard/history" element={<OpsHistory />} />
-            <Route path="/ops-bug-report" element={<BugReportPage />} />
-            <Route path="/ops-help-support" element={<HelpSupportPage />} />
+            <Route path="/ops-profile" element={<OpsProfile />} />
           </Route>
 
-          {/* IT routes */}
-          <Route element={<ItsLayout />}>
-            <Route path="/itdashboard" element={<PendingDashboard />} />
-            <Route path="/itdashboard/history" element={<ITHistory />} />
-            <Route path="/it-bug-report" element={<BugReportPage />} />
-          </Route>
-
-          {/* Finance routes - placeholder for now */}
-          <Route
-            path="/financedashboard"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-2xl font-bold mb-2">Finance Dashboard</h1>
-                  <p className="text-gray-500">Coming Soon</p>
-                </div>
-              </div>
-            }
-          />
-
-          {/* Doctor routes - placeholder for now */}
           <Route element={<DoctorLayout />}>
             <Route path="/doctordashboard" element={<DoctorDashboard />} />
             <Route path="/doctormessages" element={<DoctorMessages />} />
@@ -256,15 +307,38 @@ const AppRoutes: React.FC = () => {
               element={<DoctorAppointments />}
             />
           </Route>
+          {/* IT Routes */}
+          <Route element={<ItsLayout />}>
+            <Route path="/itdashboard" element={<PendingDashboard />} />
+            <Route path="/itdashboard/history" element={<ITHistory />} />
+            <Route path="it-profile" element={<ITProfile />} />
+          </Route>
 
-          {/* Error route */}
-          <Route path="/error" element={<Error />} />
+          {/* Finance Routes */}
+          <Route element={<FinanceLayout />}>
+            <Route path="/invoices" element={<Invoices />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/finance-profile" element={<FinanceProfile />} />
+          </Route>
 
-          {/* Catch all - redirect to appropriate dashboard */}
           <Route
-            path="*"
-            element={<Navigate to={getDefaultRoute(user.role)} replace />}
+            path="/bug-report"
+            element={
+              <RoleLayoutWrapper>
+                <BugReportPage />
+              </RoleLayoutWrapper>
+            }
           />
+          <Route
+            path="/help-support"
+            element={
+              <RoleLayoutWrapper>
+                <HelpSupportPage />
+              </RoleLayoutWrapper>
+            }
+          />
+
+          <Route path="/error" element={<Error />} />
         </Routes>
       </SignupProvider>
     </WebSocketProvider>

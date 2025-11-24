@@ -8,7 +8,7 @@ interface EnrichedTicket {
   ticketName: string;
   description: string;
   requestedByName: string;
-  requestedByType: "Doctor" | "Patient";
+  requestedByType: "Doctor" | "Patient" | "DoctorCreation";
   createdAt: string;
   dateCompleted: string;
 }
@@ -23,10 +23,12 @@ const OpsHistory: React.FC = () => {
       if (!user?._id) return;
 
       try {
-        const [doctorTickets, patientTickets] = await Promise.all([
-          ticketService.doctor.getAllByOpsId(user._id),
-          ticketService.patient.getAllByOpsId(user._id),
-        ]);
+        const [doctorTickets, patientTickets, doctorCreationCompleted] =
+          await Promise.all([
+            ticketService.doctor.getAllByOpsId(user._id),
+            ticketService.patient.getAllByOpsId(user._id),
+            ticketService.doctorCreation.getCompletedByUserId(user._id),
+          ]);
 
         const combined: EnrichedTicket[] = [
           ...doctorTickets.map((t: any) => ({
@@ -38,6 +40,16 @@ const OpsHistory: React.FC = () => {
             ...t,
             requestedByName: t.patientName,
             requestedByType: "Patient" as const,
+          })),
+
+          ...doctorCreationCompleted.map((t: any) => ({
+            _id: t._id,
+            ticketName: "Doctor Account Creation",
+            description: t.notes,
+            requestedByName: `${t.firstName || ""} ${t.lastName || ""}`.trim(),
+            requestedByType: "DoctorCreation" as const,
+            createdAt: t.createdAt,
+            dateCompleted: t.updatedAt,
           })),
         ];
 
@@ -77,7 +89,7 @@ const OpsHistory: React.FC = () => {
         <h2 className="text-lg font-medium mb-6 text-gray-700">
           Your Ticket History
         </h2>
-        <TicketHistoryTable tickets={tickets} />
+        <TicketHistoryTable tickets={tickets as any} />
       </div>
     </div>
   );

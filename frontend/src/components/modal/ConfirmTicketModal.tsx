@@ -40,6 +40,29 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
     return "No description available";
   };
 
+  // Try to extract an image URL or data URL from the description/content
+  const extractImageFromText = (text: string | null) => {
+    if (!text) return null;
+    // data URL (base64) or direct image URL ending with common extensions
+    const dataUrlMatch = text.match(
+      /(data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+/=]+)/
+    );
+    if (dataUrlMatch) return dataUrlMatch[1];
+
+    const urlMatch = text.match(
+      /https?:\/\/[\w\-./?=&%#]+\.(?:png|jpe?g|gif|webp)/i
+    );
+    if (urlMatch) return urlMatch[0];
+
+    return null;
+  };
+
+  const rawDescription = getDescription();
+  const imageUrl = extractImageFromText(rawDescription);
+  const descriptionText = imageUrl
+    ? rawDescription.replace(imageUrl, "").trim()
+    : rawDescription;
+
   const getDate = (): string | null => {
     const ticketAny = ticket as any;
 
@@ -96,7 +119,16 @@ const ConfirmTicketModal: React.FC<ConfirmTicketModalProps> = ({
               {new Date(date).toLocaleDateString()}
             </p>
           )}
-          <p className="mt-2 text-gray-700">{getDescription()}</p>
+          <p className="mt-2 text-gray-700">{descriptionText}</p>
+          {imageUrl && (
+            <div className="my-3">
+              <img
+                src={imageUrl}
+                alt="ticket-image-preview"
+                className="w-full max-h-48 object-contain rounded-md border"
+              />
+            </div>
+          )}
         </div>
 
         <hr className="my-4" />
