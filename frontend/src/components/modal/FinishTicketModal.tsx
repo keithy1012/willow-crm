@@ -4,13 +4,20 @@ import {
   EnrichedBugTicket,
   PatientTicket,
   DoctorTicket,
+  DoctorAccountCreationTicket,
 } from "../../api/types/ticket.types";
 
 type AcceptedTicketTypes =
   | EnrichedTicket
   | EnrichedBugTicket
   | PatientTicket
-  | DoctorTicket;
+  | DoctorTicket
+  | DoctorAccountCreationTicket
+  | (DoctorAccountCreationTicket & {
+      ticketName: string;
+      description: string;
+      doctorName: string;
+    }); 
 
 interface FinishTicketModalProps {
   isOpen: boolean;
@@ -30,6 +37,14 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
   const getTitle = () => {
     if ("title" in ticket) return ticket.title;
     if ("ticketName" in ticket) return ticket.ticketName;
+    // For DoctorAccountCreationTicket
+    if (
+      "firstName" in ticket &&
+      "lastName" in ticket &&
+      !("ticketName" in ticket)
+    ) {
+      return `New Doctor Account: Dr. ${ticket.firstName} ${ticket.lastName}`;
+    }
     return "Untitled Ticket";
   };
 
@@ -37,6 +52,15 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
     if ("description" in ticket && ticket.description)
       return ticket.description;
     if ("content" in ticket && ticket.content) return ticket.content;
+    // For DoctorAccountCreationTicket
+    if (
+      "speciality" in ticket &&
+      "education" in ticket &&
+      !("description" in ticket)
+    ) {
+      const t = ticket as DoctorAccountCreationTicket;
+      return `Speciality: ${t.speciality} | Education: ${t.education} | Email: ${t.email}`;
+    }
     return "No description available";
   };
 
@@ -71,6 +95,14 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
     if ("patientName" in ticket && ticket.patientName)
       return ticket.patientName;
     if ("doctorName" in ticket && ticket.doctorName) return ticket.doctorName;
+    // For DoctorAccountCreationTicket
+    if (
+      "firstName" in ticket &&
+      "lastName" in ticket &&
+      !("doctorName" in ticket)
+    ) {
+      return `${ticket.firstName} ${ticket.lastName}`;
+    }
     return "Unknown";
   };
 
@@ -78,7 +110,32 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
     // Determine the label based on ticket type
     if ("patientName" in ticket) return "Patient Name";
     if ("doctorName" in ticket) return "Doctor Name";
+    if (
+      "firstName" in ticket &&
+      "lastName" in ticket &&
+      !("doctorName" in ticket)
+    ) {
+      return "Applicant Name";
+    }
     return "Requested By";
+  };
+
+  const isDoctorCreationTicket = () => {
+    return (
+      "firstName" in ticket &&
+      "lastName" in ticket &&
+      "speciality" in ticket &&
+      "education" in ticket &&
+      !("doctorName" in ticket && !("ticketName" in ticket))
+    );
+  };
+
+  const getActionText = () => {
+    return isDoctorCreationTicket() ? "approved" : "finished";
+  };
+
+  const getButtonText = () => {
+    return isDoctorCreationTicket() ? "Approve" : "Finish";
   };
 
   const date = getDate();
@@ -103,7 +160,7 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
         </div>
 
         <p className="text-sm text-gray-500 mb-4">
-          You're about to mark this ticket as <strong>finished</strong>.
+          You're about to mark this ticket as <strong>{getActionText()}</strong>.
         </p>
 
         <hr className="my-3" />
@@ -146,7 +203,7 @@ const FinishTicketModal: React.FC<FinishTicketModalProps> = ({
             onClick={onConfirm}
             className="px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary-dark transition"
           >
-            Finish
+            {getButtonText()}
           </button>
         </div>
       </div>

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import SmallSearchBar from "./SmallSearchBar";
 import { X } from "phosphor-react";
-import { messageService } from "api/services/message.service";
-import { UserSearchResult, UserRole } from "api/types/user.types";
+import { userService } from "api/services/user.service";
+import { UserSearchResult } from "api/types/user.types";
+import ProfileAvatar from "components/avatar/Avatar";
+import PrimaryButton from "components/buttons/PrimaryButton";
+import SmallSearchBar from "components/input/SmallSearchBar";
 
 interface UserSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectUser: (userId: string, user: UserSearchResult) => void;
-  currentUserId?: string;
+  currentUserId: string;
+  currentUserRole: "Doctor" | "Patient" | "Ops" | "IT" | "Finance";
 }
 
 const UserSearchModal: React.FC<UserSearchModalProps> = ({
@@ -16,225 +19,203 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
   onClose,
   onSelectUser,
   currentUserId,
+  currentUserRole,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState<UserSearchResult[]>([]);
+  const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedRole, setSelectedRole] = useState<UserRole | "">("");
+  const [selectedTab, setSelectedTab] = useState<
+    "all" | "doctors" | "patients"
+  >("all");
 
-  // Debounced search
+  const getMessageableRoles = (): string[] => {
+    switch (currentUserRole) {
+      case "Patient":
+        return ["Doctor"];
+      case "Doctor":
+        return ["Doctor", "Patient"];
+      default:
+        return [];
+    }
+  };
+
+  const messageableRoles = getMessageableRoles();
+
   useEffect(() => {
     if (!isOpen) {
-      // Reset state when modal closes
       setSearchQuery("");
-      setUsers([]);
-      setError(null);
-      setSelectedRole("");
+      setSearchResults([]);
       return;
     }
 
-    if (searchQuery.length < 2) {
-      setUsers([]);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      searchUsers();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery, selectedRole, isOpen]);
-
-  const searchUsers = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      let response;
-
-      if (selectedRole) {
-        response = await messageService.users.searchByRole(
-          selectedRole,
-          searchQuery
-        );
-      } else {
-        response = await messageService.users.search(searchQuery);
+    const searchUsers = async () => {
+      if (searchQuery.length < 2) {
+        setSearchResults([]);
+        return;
       }
 
-      // Filter out current user from results
-      const filteredUsers = response.users.filter(
-        (user) => user._id !== currentUserId
-      );
+      setLoading(true);
+      try {
+        const response = await userService.search(searchQuery);
+        const filteredResults = response.users.filter(
+          (user) =>
+            user._id !== currentUserId && messageableRoles.includes(user.role)
+        );
 
-      setUsers(filteredUsers);
-    } catch (error) {
-      console.error("Search failed:", error);
-      setError("Failed to search users. Please try again.");
-      setUsers([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+        let tabFilteredResults = filteredResults;
+        if (currentUserRole === "Doctor" && selectedTab !== "all") {
+          tabFilteredResults = filteredResults.filter((user) => {
+            if (selectedTab === "doctors") return user.role === "Doctor";
+            if (selectedTab === "patients") return user.role === "Patient";
+            return true;
+          });
+        }
 
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    setUsers([]);
-    setError(null);
-  };
-
-  const handleSelectUser = (user: UserSearchResult) => {
-    // Ensure fullName is set
-    const userWithFullName = {
-      ...user,
-      fullName: user.fullName || `${user.firstName} ${user.lastName}`,
+        setSearchResults(tabFilteredResults);
+      } catch (error) {
+        console.error("Error searching users:", error);
+        setSearchResults([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    onSelectUser(user._id, userWithFullName);
-    handleClose();
-  };
-
-  const handleClose = () => {
-    handleClearSearch();
-    setSelectedRole("");
-    onClose();
-  };
-
-  const getUserInitials = (user: UserSearchResult): string => {
-    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-  };
-
-  const getRoleBadgeColor = (role: UserRole): string => {
-    const colors: Record<UserRole, string> = {
-      Doctor: "bg-blue-100 text-blue-800",
-      Patient: "bg-green-100 text-green-800",
-      Ops: "bg-purple-100 text-purple-800",
-      IT: "bg-orange-100 text-orange-800",
-      Finance: "bg-yellow-100 text-yellow-800",
-    };
-    return colors[role] || "bg-gray-100 text-gray-800";
-  };
+    const debounceTimer = setTimeout(searchUsers, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, isOpen, currentUserId, selectedTab, currentUserRole]);
 
   if (!isOpen) return null;
 
+  const handleUserClick = (user: UserSearchResult) => {
+    onSelectUser(user._id, user);
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-background rounded-lg w-full max-w-md mx-4 shadow-xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-stroke">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md relative">
+        <div className="flex items-center justify-between p-5 border-b border-stroke">
           <h2 className="text-lg font-semibold text-primaryText">
-            Start New Conversation
+            Start Message
           </h2>
           <button
-            onClick={handleClose}
+            onClick={onClose}
             className="p-1 hover:bg-foreground rounded-lg transition-colors"
-            aria-label="Close modal"
+            aria-label="Close"
           >
             <X size={20} className="text-secondaryText" />
           </button>
         </div>
-
-        <div className="p-4 space-y-3">
-          <select
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value as UserRole | "")}
-            className="w-full px-3 py-2 bg-foreground border border-stroke rounded-lg text-primaryText focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            aria-label="Filter by role"
-          >
-            <option value="">All Users</option>
-            <option value="Doctor">Doctors</option>
-            <option value="Patient">Patients</option>
-            <option value="Ops">Operations</option>
-            <option value="IT">IT Staff</option>
-            <option value="Finance">Finance</option>
-          </select>
-
+        <div className="p-4 border-b border-stroke">
           <SmallSearchBar
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Search by name, username, or email..."
-            onClear={handleClearSearch}
+            onClear={() => setSearchQuery("")}
+            placeholder={
+              currentUserRole === "Patient"
+                ? "Search for doctors..."
+                : "Search for users..."
+            }
           />
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-error px-3 py-2 rounded-lg text-sm">
-              {error}
+          {currentUserRole === "Doctor" && (
+            <div className="flex gap-2 mt-3">
+              <PrimaryButton
+                text="All"
+                onClick={() => setSelectedTab("all")}
+                variant="outline"
+                size="small"
+                controlled={true}
+                selected={selectedTab === "all"}
+                toggleable={false}
+                className="w-[20px]"
+              />
+              <PrimaryButton
+                text="Doctors"
+                onClick={() => setSelectedTab("doctors")}
+                variant="outline"
+                size="small"
+                controlled={true}
+                selected={selectedTab === "doctors"}
+                toggleable={false}
+                className="w-[20px]"
+              />
+              <PrimaryButton
+                text="Patients"
+                onClick={() => setSelectedTab("patients")}
+                variant="outline"
+                size="small"
+                controlled={true}
+                selected={selectedTab === "patients"}
+                toggleable={false}
+                className="w-[20px]"
+              />
             </div>
           )}
         </div>
-
         <div className="max-h-96 overflow-y-auto">
-          {loading && (
-            <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-secondaryText mt-2">Searching...</p>
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
-          )}
-
-          {!loading && searchQuery.length > 0 && searchQuery.length < 2 && (
-            <div className="p-4 text-center text-secondaryText text-sm">
-              Type at least 2 characters to search
+          ) : searchQuery.length < 2 ? (
+            <div className="py-8 px-4 text-center text-secondaryText">
+              <p className="text-sm">
+                {currentUserRole === "Patient"
+                  ? "Search for doctors by name"
+                  : "Search for users by name"}
+              </p>
             </div>
-          )}
-
-          {!loading && users.length === 0 && searchQuery.length >= 2 && (
-            <div className="p-4 text-center text-secondaryText">
-              No users found
-            </div>
-          )}
-
-          {!loading && users.length > 0 && (
-            <div className="py-2">
-              {users.map((user) => (
-                <button
+          ) : searchResults.length > 0 ? (
+            <div className="py-5">
+              {searchResults.map((user) => (
+                <div
                   key={user._id}
-                  onClick={() => handleSelectUser(user)}
-                  className="w-full px-4 py-3 hover:bg-foreground transition-colors flex items-center gap-3 border-b border-stroke last:border-b-0"
+                  className="px-4 py-3 hover:bg-foreground transition-colors cursor-pointer flex items-center justify-between group"
                 >
-                  <div className="relative flex-shrink-0">
-                    {user.profilePic ? (
-                      <img
-                        src={user.profilePic}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-medium">
-                        {getUserInitials(user)}
-                      </div>
-                    )}
-                    {user.isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-background"></div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 text-left">
-                    <div className="font-medium text-primaryText">
-                      {user.firstName} {user.lastName}
-                    </div>
-                    <div className="text-sm text-secondaryText flex items-center gap-2">
-                      {user.username && <span>@{user.username}</span>}
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeColor(
-                          user.role
-                        )}`}
-                      >
-                        {user.role}
-                      </span>
+                  <div className="flex items-center gap-3">
+                    <ProfileAvatar
+                      imageUrl={user.profilePic}
+                      name={
+                        user.fullName || `${user.firstName} ${user.lastName}`
+                      }
+                      size={40}
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-primaryText">
+                        {user.fullName || `${user.firstName} ${user.lastName}`}
+                      </p>
+                      <p className="text-xs text-secondaryText">
+                        @{user.username}
+                        {user.role && (
+                          <span className="ml-2 px-1.5 py-0.5 bg-foreground text-secondaryText rounded text-xs">
+                            {user.role}
+                          </span>
+                        )}
+                      </p>
                     </div>
                   </div>
-                </button>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <PrimaryButton
+                      text="Message"
+                      onClick={() => {
+                        handleUserClick(user);
+                      }}
+                      variant="primary"
+                      size="small"
+                      toggleable={false}
+                      className="w-[30px]"
+                    />
+                  </div>
+                </div>
               ))}
             </div>
+          ) : (
+            <div className="py-8 px-4 text-center text-secondaryText">
+              <p className="text-sm">No users found</p>
+              {currentUserRole === "Patient" && (
+                <p className="text-xs mt-1">Only doctors can be messaged</p>
+              )}
+            </div>
           )}
-        </div>
-        <div className="p-4 border-t border-stroke">
-          <button
-            onClick={handleClose}
-            className="w-full py-2 bg-foreground hover:bg-stroke rounded-lg transition-colors text-primaryText font-medium"
-          >
-            Cancel
-          </button>
         </div>
       </div>
     </div>
