@@ -8,6 +8,7 @@ import { useRequireRole } from "hooks/useRequireRole";
 import { availabilityService } from "api/services/availability.service";
 import { useAuth } from "contexts/AuthContext";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
+import LongTextArea from "../../components/input/LongTextArea";
 import ChatModal from "components/modal/ChatsModal";
 
 const Dashboard: React.FC = () => {
@@ -229,22 +230,36 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-9 gap-8">
               <div className="lg:col-span-6">
                 <div className="mb-4">
-                  <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">
-                    Ask me a question
-                  </h2>
-                  <p className="flex justify-start text-sm text-secondaryText mb-4">
-                    This is your AI chatbot to help answer questions on your
-                    appointments.
-                  </p>
+                  <div className="mb-6">
+                    <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">
+                      Ask me a question
+                    </h2>
+                    <p className="flex justify-start text-sm text-secondaryText mb-4">
+                      This is your AI chatbot to help answer questions on your
+                      appointments.
+                    </p>
 
-                  {/* Open Chat Modal Button */}
-                  <div>
-                    <PrimaryButton
-                      text="Open Chat"
-                      variant="primary"
-                      size="small"
-                      onClick={() => setChatModalOpen(true)}
-                    />
+                    <div className="flex gap-3">
+                      <LongTextArea
+                        value={chatInput}
+                        onChange={(text) => setChatInput(text)}
+                        placeholder="Type your question here..."
+                        className="flex-1"
+                      />
+
+                      <PrimaryButton
+                        text={isBotTyping ? "Sending..." : "Submit"}
+                        variant="primary"
+                        size="small"
+                        disabled={isBotTyping}
+                        onClick={async () => {
+                          if (!chatInput.trim()) return;
+
+                          await handleSendChat();
+                          setChatModalOpen(true);
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
                 <ChatModal
