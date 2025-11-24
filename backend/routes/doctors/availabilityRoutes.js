@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticate } from "../../middleware/authentication.js";
 import {
   createRecurringAvailability,
   setDateAvailability,
@@ -10,13 +11,21 @@ import {
 
 const router = express.Router();
 
-// Set availability
-router.post("/doctor/:doctorId/recurring", createRecurringAvailability);
-router.post("/doctor/:doctorId/date", setDateAvailability);
+// Set availability (protected routes)
+router.post(
+  "/doctor/:doctorId/recurring",
+  authenticate,
+  createRecurringAvailability
+);
+router.post("/doctor/:doctorId/date", authenticate, setDateAvailability);
 
 // Remove availability
-router.delete("/doctor/:doctorId/date", removeAvailabilityForDate);
-router.delete("/slot/:availabilityId/:slotIndex", removeTimeSlot);
+router.delete(
+  "/doctor/:doctorId/date",
+  authenticate,
+  removeAvailabilityForDate
+);
+router.delete("/slot/:availabilityId/:slotIndex", authenticate, removeTimeSlot);
 
 // Get availability
 router.get("/doctor/:doctorId", getDoctorAvailabilityForDate);

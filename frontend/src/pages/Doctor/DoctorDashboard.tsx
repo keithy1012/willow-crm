@@ -7,6 +7,9 @@ import Calendar from "components/calendar/Calendar";
 import { Heartbeat } from "phosphor-react";
 import PrimaryButton from "components/buttons/PrimaryButton";
 import AvailabilityModal from "./AvailabilityModal";
+import { apiClient } from "api/client";
+import toast from "react-hot-toast";
+import { doctorService } from "api/services/doctor.service";
 
 // Patient data map for quick lookup
 const patientDataMap = {
@@ -277,6 +280,7 @@ const isAppointmentCurrent = (appointment: EnhancedAppointment): boolean => {
 };
 
 const DoctorDashboard: React.FC = () => {
+  // ALL state declarations must be inside the component and at the top
   const [todayAppointments, setTodayAppointments] = useState<
     EnhancedAppointment[]
   >([]);
@@ -284,14 +288,84 @@ const DoctorDashboard: React.FC = () => {
     EnhancedAppointment[]
   >([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [doctorId, setDoctorId] = useState<string>("");
+  const [isLoadingDoctor, setIsLoadingDoctor] = useState(true);
 
+  // Hook must be called at the top level
   useRequireRole("Doctor");
 
+  // Get doctor ID from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      // Assuming doctor info is in the user object
+      // You might need to adjust based on your actual user structure
+      setDoctorId(user.doctor?._id || user.doctorId || user._id || "");
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchDoctorInfo = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        console.log("User ID from localStorage:", user._id);
+
+        try {
+          const doctorData = await doctorService.getByUserId(user._id);
+          console.log("Doctor data received:", doctorData);
+          setDoctorId(doctorData._id);
+        } catch (error: any) {
+          console.error("Failed to get doctor info:", error);
+          console.log("Using user ID as fallback (won't work!):", user._id);
+          setDoctorId(user._id);
+        } finally {
+          setIsLoadingDoctor(false);
+        }
+      }
+    };
+
+    fetchDoctorInfo();
+  }, []);
+
+  // Load appointments
   useEffect(() => {
     // In production, replace with actual API calls
     setTodayAppointments(getTodayAppointments());
     setMonthAppointments(getMonthAppointments());
+
+    // If you have the API ready:
+    // fetchAppointments();
   }, []);
+
+  // If you need to fetch appointments from API
+  const fetchAppointments = async () => {
+    try {
+      // Example API call
+      // const today = new Date().toISOString().split('T')[0];
+      // const appointments = await appointmentService.getDoctorAppointments(doctorId, today);
+      // setTodayAppointments(appointments);
+
+      // For now, using mock data
+      setTodayAppointments(getTodayAppointments());
+      setMonthAppointments(getMonthAppointments());
+    } catch (error) {
+      console.error("Failed to fetch appointments:", error);
+    }
+  };
+
+  const handleAvailabilityComplete = (data: any) => {
+    console.log("Availability saved:", data);
+    // Refresh appointments after saving availability
+    fetchAppointments();
+    setIsModalOpen(false);
+  };
+
+  const handleAvailability = () => {
+    setIsModalOpen(true);
+  };
 
   const generateTimeSlots = () => {
     const slots = [];
@@ -309,7 +383,6 @@ const DoctorDashboard: React.FC = () => {
 
   const timeSlots = generateTimeSlots();
 
-  // Helper function to get appointments in a time slot
   const getAppointmentsForTimeSlot = (hour: number) => {
     return todayAppointments.filter((apt) => {
       const aptHour = new Date(apt.startTime).getHours();
@@ -317,7 +390,6 @@ const DoctorDashboard: React.FC = () => {
     });
   };
 
-  // Format date for display
   const formatDate = (date: Date | string) => {
     const d = new Date(date);
     return d.toLocaleDateString("en-US", {
@@ -327,16 +399,13 @@ const DoctorDashboard: React.FC = () => {
     });
   };
 
-  // Get appointment dates for calendar highlighting
   const getAppointmentDates = (): Date[] => {
     return monthAppointments.map((apt) => new Date(apt.startTime));
   };
 
-  // Handle calendar date selection
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
 
-    // Find appointments for selected date
     const selectedDateAppointments = monthAppointments.filter((apt) => {
       const aptDate = new Date(apt.startTime);
       return (
@@ -352,12 +421,7 @@ const DoctorDashboard: React.FC = () => {
           date
         )}`
       );
-      // You can show these appointments in a modal or sidebar
     }
-  };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleAvailability = () => {
-    setIsModalOpen(true);
   };
 
   return (
@@ -449,14 +513,15 @@ const DoctorDashboard: React.FC = () => {
           />
         </div>
       </div>
-      <AvailabilityModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onComplete={(data) => {
-          console.log("Availability data:", data);
-          // Handle the availability data here
-        }}
-      />
+
+      {doctorId && (
+        <AvailabilityModal
+          isOpen={isModalOpen}
+          doctorId={doctorId}
+          onClose={() => setIsModalOpen(false)}
+          onComplete={handleAvailabilityComplete}
+        />
+      )}
     </div>
   );
 };

@@ -9,7 +9,8 @@ import {
   Availability,
 } from "api/types/availability.types";
 import CustomTimePicker from "components/input/CustomTimePicker";
-
+import { availabilityService } from "api/services/availability.service";
+import toast from "react-hot-toast";
 interface SelectedDateAvailability {
   date: Date;
   selectedTimes: string[];
@@ -17,6 +18,7 @@ interface SelectedDateAvailability {
 
 interface AvailabilityModalProps {
   isOpen: boolean;
+  doctorId: string;
   onClose: () => void;
   onComplete: (data: {
     type: "Recurring" | "Single";
@@ -28,6 +30,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   isOpen,
   onClose,
   onComplete,
+  doctorId,
 }) => {
   const [activeTab, setActiveTab] = useState<"monthly" | "weekly">("monthly");
 
@@ -213,39 +216,77 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     }
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     saveCurrentSelection();
 
-    if (activeTab === "monthly") {
-      // Create Single type availabilities for each date
-      const availabilities: Partial<Availability>[] =
-        selectedDateAvailabilities.map((item) => ({
-          type: "Single" as const,
-          date: item.date.toISOString(),
-          timeSlots: item.selectedTimes.map((time) => ({
+    try {
+      let result;
+
+      if (activeTab === "monthly") {
+        // Handle single date availabilities
+        const availabilities: Partial<Availability>[] = [];
+
+        for (const item of selectedDateAvailabilities) {
+          const dateStr = item.date.toISOString().split("T")[0];
+          const timeSlots = item.selectedTimes.map((time) => ({
             startTime: time,
             endTime: addMinutes(time, 30),
             isBooked: false,
-          })),
-          isActive: true,
-        }));
+          }));
 
-      onComplete({ type: "Single", availabilities });
-    } else {
-      // Create Recurring type availabilities for each day
-      const availabilities: Partial<Availability>[] = weeklySchedule
-        .filter((day) => day.timeSlots.length > 0)
-        .map((day) => ({
+          // Call API for each date
+          await availabilityService.setForDate(doctorId, dateStr, timeSlots);
+
+          // Build availability object for callback
+          availabilities.push({
+            type: "Single" as const,
+            date: dateStr,
+            timeSlots: timeSlots,
+            doctor: doctorId,
+            isActive: true,
+          });
+        }
+
+        result = {
+          type: "Single" as const,
+          availabilities,
+        };
+      } else {
+        // Handle recurring availabilities
+        const validSchedule = weeklySchedule.filter(
+          (day) => day.timeSlots.length > 0
+        );
+
+        // Call API
+        await availabilityService.setRecurring(doctorId, validSchedule);
+
+        // Build availability objects for callback
+        const availabilities = validSchedule.map((day) => ({
           type: "Recurring" as const,
           dayOfWeek: day.dayOfWeek,
           timeSlots: day.timeSlots,
+          doctor: doctorId,
           isActive: true,
         }));
 
-      onComplete({ type: "Recurring", availabilities });
-    }
+        result = {
+          type: "Recurring" as const,
+          availabilities,
+        };
+      }
 
-    onClose();
+      toast.success("Availability saved successfully!");
+      onComplete(result);
+      onClose();
+
+      // Reset state
+      setSelectedDateAvailabilities([]);
+      setCurrentSelectedDate(null);
+      setCurrentSelectedTimes([]);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to save availability");
+      console.error("Error saving availability:", error);
+    }
   };
 
   // Helper function to add minutes to time string
