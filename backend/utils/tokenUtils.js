@@ -1,13 +1,20 @@
 import crypto from "crypto";
 
+/**
+ * generateResetToken()
+ * - returns { raw, hash } where `raw` is sent to the user and `hash` is stored in DB.
+ */
 export const generateResetToken = () => {
-  return crypto.randomBytes(32).toString("hex");
+  const raw = crypto.randomBytes(32).toString("hex"); // 64 chars
+  const hash = crypto.createHash("sha256").update(raw).digest("hex");
+  return { raw, hash };
 };
 
-export const verifyResetToken = (token) => {
-  // Basic validation - in production, consider JWT or more robust methods
-  if (!token || typeof token !== "string" || token.length !== 64) {
-    return null;
-  }
-  return token;
+/**
+ * hashToken(token)
+ * - helper to hash an incoming token string using same algorithm.
+ */
+export const hashToken = (token) => {
+  if (!token || typeof token !== "string") return null;
+  return crypto.createHash("sha256").update(token).digest("hex");
 };

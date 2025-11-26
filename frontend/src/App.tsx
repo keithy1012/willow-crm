@@ -33,6 +33,7 @@ import StaffOnboarding from "./pages/Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./pages/Onboarding/Staff/DoctorOnboarding";
 import Login from "./pages/Login/LoginScreen";
 import ForgotPassword from "./pages/Login/ForgotPassword";
+import ResetPassword from "pages/Login/ResetPassword";
 import Error from "./pages/Error/ErrorPage";
 import OpsDoctorDashboard from "pages/Operations/DoctorDashboard";
 import OpsPatientDashboard from "pages/Operations/PatientDashboard";
@@ -233,6 +234,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/error" element={<Error />} />
 
@@ -273,6 +275,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/logout" element={<Logout />} />
 
             {/* Patient routes */}

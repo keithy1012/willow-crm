@@ -1,8 +1,5 @@
 import User from "../../models/users/User.js";
-import {
-  generateResetToken,
-  verifyResetToken,
-} from "../../utils/tokenUtils.js";
+import { generateResetToken, hashToken } from "../../utils/tokenUtils.js";
 import { sendResetEmail } from "../../utils/emailService.js";
 
 export const authController = {
@@ -17,25 +14,26 @@ export const authController = {
       // Find user by email
       const user = await User.findOne({ email });
 
-      // Don't reveal if email exists for security
       if (!user) {
         return res.json({
-          message:
-            "If an account exists for this email, a reset link has been sent.",
+          message: "This user does not exist.",
         });
       }
 
-      // Generate reset token
-      const resetToken = generateResetToken();
+      // Generate reset token (raw for email, hash for DB)
+      const { raw: rawToken, hash: hashedToken } = generateResetToken();
       const resetTokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
 
-      // Save token to user
-      user.resetToken = resetToken;
+      // Save hashed token to user
+      user.resetToken = hashedToken;
       user.resetTokenExpiry = resetTokenExpiry;
       await user.save();
 
-      // Send reset email
-      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+      // Send reset email with raw token
+      const resetUrl = `${
+        process.env.FRONTEND_URL || "http://localhost:3000"
+      }/reset-password/${rawToken}`;
+
       await sendResetEmail(user.email, resetUrl, user.firstName);
 
       res.json({
@@ -57,17 +55,17 @@ export const authController = {
           .status(400)
           .json({ error: "Token and new password are required." });
       }
-
-      // Verify token format
-      const email = verifyResetToken(token);
-      if (!email) {
-        return res.status(400).json({ error: "Invalid or expired token." });
+      console.log("TOKEN RECEIVED:", token);
+      console.log("NEW PASSWORD:", newPassword);
+      // Hash incoming token the same way we stored it
+      const hashedIncoming = hashToken(token);
+      if (!hashedIncoming) {
+        return res.status(400).json({ error: "Invalid token format." });
       }
 
-      // Find user by email and verify token
+      // Find user by hashed token and ensure token hasn't expired
       const user = await User.findOne({
-        email,
-        resetToken: token,
+        resetToken: hashedIncoming,
         resetTokenExpiry: { $gt: Date.now() },
       });
 
