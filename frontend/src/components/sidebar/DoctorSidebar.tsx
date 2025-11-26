@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { House, Bug, Question, SignOut } from "phosphor-react";
+import IconSidebar from "./IconSidebar";
+import {
+  House,
+  ChatCircle,
+  Bug,
+  Question,
+  Calendar,
+  SignOut,
+  IdentificationBadge,
+} from "phosphor-react";
+
 import UserProfileCard from "../card/UserProfileCard";
 import SidebarItem from "./IconSidebar";
 
-interface DoctorSidebarProps {}
+interface DoctorSidebarProps {
+  userName?: string;
+  username?: string;
+  userInitials?: string;
+}
 
-const DoctorSidebar: React.FC<DoctorSidebarProps> = () => {
+const DoctorSidebar: React.FC<DoctorSidebarProps> = ({}) => {
   const [activeItem, setActiveItem] = useState("Messages");
   const [isNavigating, setIsNavigating] = useState(false);
   const [userName, setUserName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [userRole, setUserRole] = useState<string>("");
   const [userInitials, setUserInitials] = useState<string>("");
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Pull user info from localStorage
@@ -27,20 +38,28 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = () => {
 
       setUserName(fullName || "Unknown User");
       setUsername(user.username || user.email || "unknown");
-      setUserRole(user.role || "N/A");
       setUserInitials(initials.toUpperCase());
     }
   }, []);
 
   const menuItems = [
-    { text: "Pending Tickets", icon: House, path: "/itdashboard" },
-    { text: "Ticket History", icon: House, path: "/itdashboard/history" },
+    { text: "Dashboard", icon: House, path: "/doctordashboard" },
+    { text: "Messages", icon: ChatCircle, path: "/doctormessages" },
+    {
+      text: "My Patients",
+      icon: IdentificationBadge,
+      path: "/doctorpatients",
+    },
+    { text: "My Appointments", icon: Calendar, path: "/doctorappointments" },
   ];
 
   const bottomItems = [
-    { text: "Bug Report", icon: Bug, path: "/bug-report" },
+    { text: "Bug Report", icon: Bug, path: "/doctor-bug-report" },
+    { text: "Help / Support", icon: Question, path: "/doctor-help-support" },
     { text: "Logout", icon: SignOut, path: "/logout" },
   ];
+
+  const navigate = useNavigate();
 
   const handleItemClick = (text: string, path: string) => {
     if (isNavigating) return;
@@ -78,10 +97,10 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = () => {
         ))}
 
         <UserProfileCard
-          name={userName}
+          name={`Dr. ${userName}`}
           username={username}
           initials={userInitials}
-          role={userRole}
+          role={"Doctor"}
         />
       </div>
     </div>

@@ -18,7 +18,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
+<<<<<<< HEAD
     "nodemailer": "^7.0.10",
+=======
+    "pdfkit": "^0.17.2",
+>>>>>>> 41a20d08680bd4d773ba477fb275d06fa5ec01b4
     "uuid": "^13.0.0",
     "ws": "^8.18.3"
   },
