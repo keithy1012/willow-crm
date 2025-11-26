@@ -1,36 +1,20 @@
 import React from "react";
 import DoctorResultCard from "../card/DoctorResultCard";
 import BookingButton from "../buttons/BookingButton";
+import { AvailableDoctorResult } from "api/types/availability.types";
 const noResultsImage = "/533.Checking-The-Calendar.png";
+
 interface TimeSlot {
   startTime: string;
   endTime: string;
   isBooked: boolean;
-  _id: string;
-}
-
-interface DoctorResult {
-  doctor: {
-    _id: string;
-    user: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      phoneNumber: string;
-      profilePic?: string;
-    };
-    bioContent: string;
-    education: string;
-    speciality: string;
-  };
-  availabilityType: string;
-  timeSlots: TimeSlot[];
+  _id?: string;
 }
 
 interface DoctorSearchResultsProps {
   searchDate: string;
   searchName: string;
-  results: DoctorResult[];
+  results: AvailableDoctorResult[]; // Use AvailableDoctorResult instead
   specialtyFilter?: string;
   onSpecialtyChange?: (specialty: string) => void;
   onBookAppointment?: (doctorId: string, timeSlot: TimeSlot) => void;
@@ -112,12 +96,6 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
     return allSlots;
   };
 
-  // Get unique specialties from results
-  const getSpecialties = () => {
-    const specialties = new Set(results.map((r) => r.doctor.speciality));
-    return Array.from(specialties).sort();
-  };
-
   return (
     <div className="w-full px-12 min-h-screen bg-background">
       <div className="mx-auto py-8">
@@ -162,17 +140,33 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
                 {results.map((result) => {
                   const timeSlots = getDoctorTimeSlots(result.timeSlots);
 
+                  // Handle case where doctor.user might be a string (ID) or User object
+                  const user =
+                    typeof result.doctor.user === "string"
+                      ? null
+                      : result.doctor.user;
+
+                  if (!user) {
+                    console.warn(
+                      "Doctor user data not populated:",
+                      result.doctor
+                    );
+                    return null;
+                  }
+
                   return (
                     <div key={result.doctor._id}>
                       <div className="flex gap-6">
                         <div className="flex-shrink-0 w-[500px]">
                           <DoctorResultCard
                             doctorId={result.doctor._id}
-                            doctorName={`${result.doctor.user.firstName} ${result.doctor.user.lastName}`}
-                            specialty={result.doctor.speciality}
-                            email={result.doctor.user.email}
-                            phd={result.doctor.education}
-                            profilePicUrl={result.doctor.user.profilePic}
+                            doctorName={`${user.firstName} ${user.lastName}`}
+                            specialty={
+                              result.doctor.speciality || "General Practice"
+                            }
+                            email={user.email}
+                            phd={result.doctor.education || ""}
+                            profilePicUrl={user.profilePic}
                             onMessageDoctor={() =>
                               onMessageDoctor &&
                               onMessageDoctor(result.doctor._id)

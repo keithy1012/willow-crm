@@ -1,157 +1,94 @@
 import React, { useState, useEffect } from "react";
 import { useRequireRole } from "hooks/useRequireRole";
-import { Appointment, PopulatedAppointment } from "api/types/appointment.types";
-import { Patient } from "api/types/patient.types";
-import { User } from "api/types/user.types";
 import DoctorAppointmentCard from "components/card/DoctorAppointmentCard";
-import SmallInfoCard from "components/card/SmallInfoCard";
 import Dropdown from "components/input/Dropdown";
 import PrimaryButton from "components/buttons/PrimaryButton";
-import ProfileAvatar from "components/avatar/Avatar";
-import {
-  Calendar,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Warning,
-  Users,
-  FirstAid,
-} from "phosphor-react";
-import EnhancedAppointmentCard from "components/card/MoreInfoAppointmentCard";
+import { Calendar, Clock, CheckCircle, Warning } from "phosphor-react";
+import { appointmentService } from "api/services/appointment.service";
+import { doctorService } from "api/services/doctor.service";
+import toast from "react-hot-toast";
 
-// Main Doctor Appointments Page
 const DoctorAppointments: React.FC = () => {
   useRequireRole("Doctor");
-
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [filteredAppointments, setFilteredAppointments] = useState<
-    Appointment[]
-  >([]);
-  const [sortBy, setSortBy] = useState("upcoming");
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [filteredAppointments, setFilteredAppointments] = useState<any[]>([]);
+  const [sortBy, setSortBy] = useState("All");
   const [filterStatus, setFilterStatus] = useState("all");
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [doctorId, setDoctorId] = useState<string>("");
 
-  // Load appointments
+  // Get doctor ID first
   useEffect(() => {
-    fetchAppointments();
+    const fetchDoctorInfo = async () => {
+      const storedUser = localStorage.getItem("user");
+      console.log("Stored user from localStorage:", storedUser);
+
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        console.log("Parsed user:", user);
+        console.log("User ID:", user._id);
+        console.log("User role:", user.role);
+
+        try {
+          const doctorData = await doctorService.getByUserId(user._id);
+          console.log("Doctor data from service:", doctorData);
+          console.log("Doctor ID:", doctorData._id);
+          setDoctorId(doctorData._id);
+        } catch (error) {
+          console.error("Failed to get doctor info:", error);
+          toast.error("Failed to load doctor information");
+        }
+      }
+    };
+
+    fetchDoctorInfo();
   }, []);
 
+  // Debug: Monitor appointments state changes
+  useEffect(() => {
+    console.log("Appointments state changed:", appointments);
+    console.log("Appointments length:", appointments.length);
+  }, [appointments]);
+
+  // Load appointments when doctor ID is available
+  useEffect(() => {
+    console.log("DoctorId changed:", doctorId);
+    if (doctorId) {
+      console.log("Calling fetchAppointments with doctorId:", doctorId);
+      fetchAppointments();
+    }
+  }, [doctorId]);
+
   const fetchAppointments = async () => {
+    if (!doctorId) return;
+
     try {
       setLoading(true);
-      // Replace with actual API call
-      // const response = await appointmentService.getDoctorAppointments();
+      const response: any = await appointmentService.getDoctorAppointments(
+        doctorId
+      );
+      console.log("Fetched appointments:", response);
 
-      // Sample data
-      const sampleAppointments: Appointment[] = [
-        {
-          _id: "1",
-          appointmentID: "APT001",
-          patientID: {
-            _id: "p1",
-            user: {
-              _id: "u1",
-              firstName: "John",
-              lastName: "Doe",
-              email: "john.doe@email.com",
-              phoneNumber: "(555) 123-4567",
-              profilePic: undefined,
-              role: "Patient",
-            } as User,
-            birthday: new Date("1980-05-15"),
-            address: "123 Main St",
-            bloodtype: "A+",
-            allergies: ["Penicillin"],
-            medicalHistory: ["Hypertension"],
-            emergencyContact: [],
-          } as Patient,
-          doctorID: "doctor1",
-          summary: "General Consultation",
-          startTime: new Date("2025-11-24T09:00:00"),
-          endTime: new Date("2025-11-24T10:00:00"),
-          status: "Scheduled",
-        },
-        {
-          _id: "2",
-          appointmentID: "APT002",
-          patientID: {
-            _id: "p2",
-            user: {
-              _id: "u2",
-              firstName: "Jane",
-              lastName: "Smith",
-              email: "jane.smith@email.com",
-              phoneNumber: "(555) 987-6543",
-              profilePic: undefined,
-              role: "Patient",
-            } as User,
-            birthday: new Date("1975-08-22"),
-            address: "456 Oak Ave",
-            bloodtype: "O+",
-            allergies: [],
-            medicalHistory: ["Diabetes"],
-            emergencyContact: [],
-          } as Patient,
-          doctorID: "doctor1",
-          summary: "Follow-up Appointment",
-          startTime: new Date("2025-11-24T14:00:00"),
-          endTime: new Date("2025-11-24T15:00:00"),
-          status: "Scheduled",
-        },
-        {
-          _id: "3",
-          appointmentID: "APT002",
-          patientID: {
-            _id: "p2",
-            user: {
-              _id: "u2",
-              firstName: "Jane",
-              lastName: "Smith",
-              email: "jane.smith@email.com",
-              phoneNumber: "(555) 987-6543",
-              profilePic: undefined,
-              role: "Patient",
-            } as User,
-            birthday: new Date("1975-08-22"),
-            address: "456 Oak Ave",
-            bloodtype: "O+",
-            allergies: [],
-            medicalHistory: ["Diabetes"],
-            emergencyContact: [],
-          } as Patient,
-          doctorID: "doctor1",
-          summary: "Follow-up Appointment",
-          startTime: new Date("2025-11-24T14:00:00"),
-          endTime: new Date("2025-11-24T15:00:00"),
-          status: "Scheduled",
-        },
-        {
-          _id: "3",
-          appointmentID: "APT003",
-          patientID: "patient3",
-          doctorID: "doctor1",
-          summary: "Post-Surgery Checkup",
-          startTime: new Date("2025-11-20T10:00:00"),
-          endTime: new Date("2025-11-20T11:00:00"),
-          status: "Completed",
-        },
-        {
-          _id: "4",
-          appointmentID: "APT004",
-          patientID: "patient4",
-          doctorID: "doctor1",
-          summary: "Routine Physical",
-          startTime: new Date("2025-11-19T15:00:00"),
-          endTime: new Date("2025-11-19T16:00:00"),
-          status: "No-Show",
-        },
-      ];
+      // FIX: The backend returns an array directly, NOT response.appointments
+      const appointmentsData = Array.isArray(response) ? response : [];
 
-      setAppointments(sampleAppointments);
-      setFilteredAppointments(sampleAppointments);
+      // Sort by date
+      const sortedAppointments = appointmentsData.sort(
+        (a: any, b: any) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      );
+
+      setAppointments(sortedAppointments);
+      setFilteredAppointments(sortedAppointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
+      setAppointments([]);
+      setFilteredAppointments([]);
+      // Don't show error toast if API returns 404 (no appointments)
+      if (error instanceof Error && !error.message.includes("404")) {
+        toast.error("Failed to load appointments");
+      }
     } finally {
       setLoading(false);
     }
@@ -159,13 +96,19 @@ const DoctorAppointments: React.FC = () => {
 
   // Filter and sort appointments
   useEffect(() => {
+    console.log("=== Filter Effect Running ===");
+    console.log("Initial appointments:", appointments);
+    console.log("Current sortBy:", sortBy);
+    console.log("Current filterStatus:", filterStatus);
+
     let filtered = [...appointments];
 
     // Filter by status
     if (filterStatus !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.status.toLowerCase() === filterStatus
+        (apt) => apt.status?.toLowerCase() === filterStatus.toLowerCase()
       );
+      console.log(`After status filter (${filterStatus}):`, filtered);
     }
 
     // Filter by selected date
@@ -174,6 +117,7 @@ const DoctorAppointments: React.FC = () => {
         const aptDate = new Date(apt.startTime);
         return aptDate.toDateString() === selectedDate.toDateString();
       });
+      console.log(`After date filter:`, filtered);
     }
 
     // Sort appointments
@@ -181,14 +125,15 @@ const DoctorAppointments: React.FC = () => {
       const dateA = new Date(a.startTime).getTime();
       const dateB = new Date(b.startTime).getTime();
 
-      if (sortBy === "Upcoming") {
+      if (sortBy === "upcoming") {
         return dateA - dateB;
-      } else if (sortBy === "Past") {
+      } else if (sortBy === "past") {
         return dateB - dateA;
       }
       return 0;
     });
 
+    console.log("Final filtered appointments:", filtered);
     setFilteredAppointments(filtered);
   }, [appointments, sortBy, filterStatus, selectedDate]);
 
@@ -196,13 +141,35 @@ const DoctorAppointments: React.FC = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const upcomingAppointments = filteredAppointments.filter(
-    (apt) => new Date(apt.startTime) >= today
+  console.log("Today's date for comparison:", today);
+  console.log(
+    "Filtering appointments, total count:",
+    filteredAppointments.length
   );
 
-  const pastAppointments = filteredAppointments.filter(
-    (apt) => new Date(apt.startTime) < today
-  );
+  const upcomingAppointments = filteredAppointments.filter((apt) => {
+    const aptDate = new Date(apt.startTime);
+    const isUpcoming =
+      aptDate >= today &&
+      apt.status !== "Cancelled" &&
+      apt.status !== "Completed";
+    console.log(
+      `Appointment ${apt._id}: date=${aptDate}, isUpcoming=${isUpcoming}, status=${apt.status}`
+    );
+    return isUpcoming;
+  });
+
+  const pastAppointments = filteredAppointments.filter((apt) => {
+    const aptDate = new Date(apt.startTime);
+    const isPast =
+      aptDate < today ||
+      apt.status === "Completed" ||
+      apt.status === "Cancelled";
+    return isPast;
+  });
+
+  console.log("Upcoming appointments count:", upcomingAppointments.length);
+  console.log("Past appointments count:", pastAppointments.length);
 
   // Calculate statistics
   const stats = {
@@ -222,26 +189,47 @@ const DoctorAppointments: React.FC = () => {
   };
 
   // Handlers
-  const handleViewDetails = (
-    appointment: Appointment | PopulatedAppointment
-  ) => {
+  const handleViewDetails = (appointment: any) => {
     console.log("View details:", appointment);
-    // Navigate to appointment details page
   };
 
   const handleMessagePatient = (patientId: string) => {
     console.log("Message patient:", patientId);
     // Navigate to messages with this patient
+    window.location.href = `/messages?patientId=${patientId}`;
   };
 
-  const handleCancelAppointment = (appointmentId: string) => {
-    console.log("Cancel appointment:", appointmentId);
-    // Call API to cancel appointment
+  const handleCancelAppointment = async (appointmentId: string) => {
+    try {
+      await appointmentService.cancel(appointmentId);
+      toast.success("Appointment cancelled successfully");
+      fetchAppointments(); // Refresh the list
+    } catch (error) {
+      console.error("Failed to cancel appointment:", error);
+      toast.error("Failed to cancel appointment");
+    }
   };
 
-  const handleCompleteAppointment = (appointmentId: string) => {
-    console.log("Complete appointment:", appointmentId);
-    // Call API to mark appointment as completed
+  const handleCompleteAppointment = async (appointmentId: string) => {
+    try {
+      await appointmentService.updateStatus(appointmentId, "Completed");
+      toast.success("Appointment marked as completed");
+      fetchAppointments(); // Refresh the list
+    } catch (error) {
+      console.error("Failed to complete appointment:", error);
+      toast.error("Failed to complete appointment");
+    }
+  };
+
+  const handleMarkNoShow = async (appointmentId: string) => {
+    try {
+      await appointmentService.updateStatus(appointmentId, "No-Show");
+      toast.success("Appointment marked as no-show");
+      fetchAppointments(); // Refresh the list
+    } catch (error) {
+      console.error("Failed to update appointment:", error);
+      toast.error("Failed to update appointment");
+    }
   };
 
   if (loading) {
@@ -297,6 +285,7 @@ const DoctorAppointments: React.FC = () => {
           </div>
         </div>
       </div>
+
       <div className="p-12">
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex-1 flex gap-4">
@@ -307,7 +296,7 @@ const DoctorAppointments: React.FC = () => {
               <Dropdown
                 value={sortBy}
                 onChange={setSortBy}
-                options={["upcoming", "past", "all"]}
+                options={["Upcoming", "Past", "All"]}
                 placeholder="Select sort option"
               />
             </div>
@@ -320,56 +309,118 @@ const DoctorAppointments: React.FC = () => {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="w-full px-3 py-2 bg-white border border-stroke rounded-lg text-sm text-primaryText focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
-                <option value="all">All Status</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="no-show">No-Show</option>
+                <option value="All">All Status</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="No-Show">No-Show</option>
               </select>
             </div>
           </div>
         </div>
 
-        {upcomingAppointments.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4 text-primaryText">
-              Upcoming Appointments
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {upcomingAppointments.map((appointment) => (
-                <EnhancedAppointmentCard
-                  key={appointment._id}
-                  appointment={appointment}
-                  onViewDetails={handleViewDetails}
-                  onMessagePatient={handleMessagePatient}
-                  onCancelAppointment={handleCancelAppointment}
-                  onCompleteAppointment={handleCompleteAppointment}
-                  isPast={false}
-                />
-              ))}
-            </div>
+        {appointments.length === 0 ? (
+          <div className="text-center py-12">
+            <Calendar size={64} className="mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-medium text-primaryText mb-2">
+              No appointments yet
+            </h3>
+            <p className="text-secondaryText">
+              Appointments will appear here once patients book them
+            </p>
           </div>
-        )}
+        ) : (
+          <>
+            {upcomingAppointments.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-4 text-primaryText">
+                  Upcoming Appointments ({upcomingAppointments.length})
+                </h2>
+                <div className="max-w-4xl space-y-5">
+                  {upcomingAppointments.map((appointment) => (
+                    <DoctorAppointmentCard
+                      key={appointment._id}
+                      startTime={appointment.startTime}
+                      endTime={appointment.endTime}
+                      patientName={
+                        appointment.patientID?.user?.firstName &&
+                        appointment.patientID?.user?.lastName
+                          ? `${appointment.patientID.user.firstName} ${appointment.patientID.user.lastName}`
+                          : "Unknown Patient"
+                      }
+                      patientId={
+                        appointment.patientID?._id || appointment.patientID
+                      }
+                      patientProfilePic={
+                        appointment.patientID?.user?.profilePic
+                      }
+                      appointmentType={
+                        appointment.summary || "Medical Consultation"
+                      }
+                      appointmentDescription={appointment.description}
+                      appointmentId={appointment._id}
+                      status={appointment.status || "Scheduled"}
+                      isCurrentAppointment={false}
+                      onViewDetails={() => handleViewDetails(appointment)}
+                      onMessage={() =>
+                        handleMessagePatient(
+                          appointment.patientID?._id || appointment.patientID
+                        )
+                      }
+                      onComplete={() =>
+                        handleCompleteAppointment(appointment._id)
+                      }
+                      onCancel={() => handleCancelAppointment(appointment._id)}
+                      onMarkNoShow={() => handleMarkNoShow(appointment._id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
-        {pastAppointments.length > 0 && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-primaryText">
-              Past Appointments
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {pastAppointments.map((appointment) => (
-                <EnhancedAppointmentCard
-                  key={appointment._id}
-                  appointment={appointment}
-                  onViewDetails={handleViewDetails}
-                  onMessagePatient={handleMessagePatient}
-                  onCancelAppointment={handleCancelAppointment}
-                  onCompleteAppointment={handleCompleteAppointment}
-                  isPast={true}
-                />
-              ))}
-            </div>
-          </div>
+            {pastAppointments.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-primaryText">
+                  Past Appointments ({pastAppointments.length})
+                </h2>
+                <div className="max-w-4xl">
+                  {pastAppointments.map((appointment) => (
+                    <DoctorAppointmentCard
+                      key={appointment._id}
+                      startTime={appointment.startTime}
+                      endTime={appointment.endTime}
+                      patientName={
+                        appointment.patientID?.user?.firstName &&
+                        appointment.patientID?.user?.lastName
+                          ? `${appointment.patientID.user.firstName} ${appointment.patientID.user.lastName}`
+                          : "Unknown Patient"
+                      }
+                      patientId={
+                        appointment.patientID?._id || appointment.patientID
+                      }
+                      patientProfilePic={
+                        appointment.patientID?.user?.profilePic
+                      }
+                      appointmentType={
+                        appointment.summary || "Medical Consultation"
+                      }
+                      appointmentDescription={appointment.description}
+                      appointmentId={appointment._id}
+                      status={appointment.status || "Completed"}
+                      isCurrentAppointment={false}
+                      onViewDetails={() => handleViewDetails(appointment)}
+                      onMessage={() =>
+                        handleMessagePatient(
+                          appointment.patientID?._id || appointment.patientID
+                        )
+                      }
+                      isTimeline={true}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

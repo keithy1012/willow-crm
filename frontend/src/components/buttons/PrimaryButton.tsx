@@ -43,7 +43,7 @@ const PrimaryButton: React.FC<ButtonProps> = ({
   };
 
   const baseStyles =
-    "inline-flex items-center justify-center shadow-md font-md rounded-lg transition-all duration-200 transform";
+    "inline-flex items-center justify-center shadow-sm font-md rounded-lg transition-all duration-200 transform";
 
   const disabledStyles = disabled
     ? "opacity-50 cursor-not-allowed"
@@ -52,14 +52,14 @@ const PrimaryButton: React.FC<ButtonProps> = ({
   const variants = {
     primary:
       "bg-primary border border-primary text-background " +
-      (disabled ? "" : "hover:scale-105 hover:shadow-lg active:scale-100"),
+      (disabled ? "" : "hover:scale-103 hover:shadow-lg active:scale-100"),
     outline: (controlled ? selected : isSelected)
       ? "bg-primary border border-primary text-background " +
-        (disabled ? "" : "hover:scale-105 hover:shadow-lg active:scale-100")
+        (disabled ? "" : "hover:scale-103 hover:shadow-lg active:scale-100")
       : "border border-primary border-1 bg-background shadow-md text-primary " +
         (disabled
           ? ""
-          : "hover:bg-primary hover:text-background hover:scale-105 hover:shadow-lg " +
+          : "hover:bg-primary hover:text-background hover:scale-103 hover:shadow-lg " +
             "active:scale-100 active:bg-primary active:text-background"),
   };
 

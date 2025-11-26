@@ -8,6 +8,8 @@ interface ProfileHeaderCardProps {
   profilePic?: string;
   userId: string;
   message?: boolean;
+  onMessage?: () => void;
+  onViewProfile?: () => void;
 }
 
 const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
@@ -16,6 +18,8 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
   profilePic,
   userId,
   message,
+  onMessage,
+  onViewProfile,
 }) => {
   return (
     <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-stroke">
@@ -28,12 +32,18 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
       </div>
       <div className="space-x-4">
         <PrimaryButton
+          onClick={onViewProfile}
           text="View Profile"
           variant={message ? "outline" : "primary"}
           size="small"
         />
         {message && (
-          <PrimaryButton text="Message" variant="primary" size="small" />
+          <PrimaryButton
+            onClick={onMessage}
+            text="Message"
+            variant="primary"
+            size="small"
+          />
         )}
       </div>
     </div>

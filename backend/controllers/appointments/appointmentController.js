@@ -6,12 +6,23 @@ import Patient from "../../models/patients/Patient.js";
 // Book an appointment
 export const bookAppointment = async (req, res) => {
   try {
-    const { doctorId, patientId, date, startTime, endTime, summary } = req.body;
+    const {
+      doctorId,
+      patientId,
+      date,
+      startTime,
+      endTime,
+      summary,
+      notes,
+      symptoms,
+      duration,
+      isEmergency,
+    } = req.body;
 
     // Validate doctor and patient exist
     const [doctor, patient] = await Promise.all([
-      Doctor.findById(doctorId),
-      Patient.findById(patientId),
+      Doctor.findById(doctorId).populate("user"),
+      Patient.findById(patientId).populate("user"),
     ]);
 
     if (!doctor) {
@@ -21,8 +32,14 @@ export const bookAppointment = async (req, res) => {
       return res.status(404).json({ error: "Patient not found" });
     }
 
-    // Parse the date
-    const appointmentDate = new Date(date);
+    // Parse the date properly to handle timezone
+    const [year, month, day] = date.split("-").map(Number);
+    const appointmentDate = new Date(year, month - 1, day, 12, 0, 0); // Set to noon
+
+    // Create date range for querying
+    const startOfDay = new Date(year, month - 1, day, 0, 0, 0);
+    const endOfDay = new Date(year, month - 1, day, 23, 59, 59);
+
     const dayOfWeek = [
       "Sunday",
       "Monday",
@@ -38,18 +55,36 @@ export const bookAppointment = async (req, res) => {
     let availability = await Availability.findOne({
       doctor: doctorId,
       type: "Single",
-      date: appointmentDate,
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
       isActive: true,
     });
 
     // If no single date, check recurring
     if (!availability) {
-      availability = await Availability.findOne({
+      // Check if there's a blocking entry (empty slots)
+      const blockingEntry = await Availability.findOne({
         doctor: doctorId,
-        type: "Recurring",
-        dayOfWeek: dayOfWeek,
+        type: "Single",
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
         isActive: true,
+        timeSlots: { $size: 0 },
       });
+
+      if (!blockingEntry) {
+        // No blocking entry, check recurring
+        availability = await Availability.findOne({
+          doctor: doctorId,
+          type: "Recurring",
+          dayOfWeek: dayOfWeek,
+          isActive: true,
+        });
+      }
     }
 
     if (!availability) {
@@ -75,13 +110,21 @@ export const bookAppointment = async (req, res) => {
       });
     }
 
-    // Create appointment
+    // Create the appointment with proper date/time
+    const appointmentStartTime = new Date(year, month - 1, day);
+    const [startHour, startMin] = startTime.split(":").map(Number);
+    appointmentStartTime.setHours(startHour, startMin, 0, 0);
+
+    const appointmentEndTime = new Date(year, month - 1, day);
+    const [endHour, endMin] = endTime.split(":").map(Number);
+    appointmentEndTime.setHours(endHour, endMin, 0, 0);
+
     const appointment = new Appointment({
       patientID: patientId,
       doctorID: doctorId,
       summary: summary || "Medical Consultation",
-      startTime: new Date(`${date} ${startTime}`),
-      endTime: new Date(`${date} ${endTime}`),
+      startTime: appointmentStartTime,
+      endTime: appointmentEndTime,
       status: "Scheduled",
     });
 
@@ -92,7 +135,67 @@ export const bookAppointment = async (req, res) => {
     timeSlot.appointmentId = appointment._id;
     await availability.save();
 
-    // Populate doctor and patient info for response
+    // If this was a recurring availability, we might need to create a single date entry
+    // to properly track this specific booking
+    if (availability.type === "Recurring") {
+      // Create a single date entry for this specific date with the booking
+      const singleDateAvailability = await Availability.findOne({
+        doctor: doctorId,
+        type: "Single",
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+        isActive: true,
+      });
+
+      if (!singleDateAvailability) {
+        // Copy all time slots from recurring and mark this one as booked
+        const newTimeSlots = availability.timeSlots.map((slot) => ({
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isBooked:
+            slot.startTime === startTime && slot.endTime === endTime
+              ? true
+              : false,
+          appointmentId:
+            slot.startTime === startTime && slot.endTime === endTime
+              ? appointment._id
+              : undefined,
+        }));
+
+        const singleEntry = new Availability({
+          doctor: doctorId,
+          type: "Single",
+          date: appointmentDate,
+          timeSlots: newTimeSlots,
+          isActive: true,
+          createdBy: req.user?._id,
+        });
+
+        await singleEntry.save();
+      }
+    }
+
+    // Send confirmation email
+    try {
+      await sendAppointmentConfirmation({
+        patientEmail: patient.user.email,
+        patientName: `${patient.user.firstName} ${patient.user.lastName}`,
+        doctorName: `Dr. ${doctor.user.firstName} ${doctor.user.lastName}`,
+        appointmentDate: formatDate(appointmentStartTime),
+        appointmentTime: `${formatTime(startTime)} - ${formatTime(endTime)}`,
+        appointmentId: appointment.appointmentID,
+        summary: summary || "Medical Consultation",
+        notes: notes,
+        symptoms: symptoms,
+      });
+    } catch (emailError) {
+      console.error("Failed to send confirmation email:", emailError);
+      // Continue even if email fails
+    }
+
+    // Populate for response
     await appointment.populate([
       {
         path: "doctorID",
@@ -114,6 +217,23 @@ export const bookAppointment = async (req, res) => {
   }
 };
 
+// Helper functions
+const formatDate = (date) => {
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const formatTime = (time) => {
+  const [hours, minutes] = time.split(":");
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minutes} ${ampm}`;
+};
 // Cancel an appointment
 export const cancelAppointment = async (req, res) => {
   try {

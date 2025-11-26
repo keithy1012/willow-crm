@@ -1,0 +1,263 @@
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// Create transporter for sending emails
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER, // Your email address
+    pass: process.env.EMAIL_PASSWORD, // App-specific password for Gmail
+  },
+});
+
+// Send appointment confirmation email
+export const sendAppointmentConfirmation = async ({
+  patientEmail,
+  patientName,
+  doctorName,
+  appointmentDate,
+  appointmentTime,
+  appointmentId,
+  summary,
+  notes,
+  symptoms,
+}) => {
+  const symptomsList =
+    symptoms && symptoms.length > 0
+      ? symptoms.map((s) => `<li>${s}</li>`).join("")
+      : "<li>None specified</li>";
+
+  const emailHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .appointment-card { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .info-row { display: flex; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .info-label { font-weight: bold; width: 150px; color: #666; }
+        .info-value { flex: 1; color: #333; }
+        .symptoms-list { margin: 10px 0; padding-left: 20px; }
+        .notes-section { background: #f0f7ff; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="margin: 0;">Appointment Confirmation</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your appointment has been successfully booked</p>
+        </div>
+        
+        <div class="content">
+          <p>Dear ${patientName},</p>
+          <p>Your appointment has been confirmed with the following details:</p>
+          
+          <div class="appointment-card">
+            <div class="info-row">
+              <div class="info-label">Confirmation ID:</div>
+              <div class="info-value"><strong>${appointmentId}</strong></div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Doctor:</div>
+              <div class="info-value">${doctorName}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Date:</div>
+              <div class="info-value">${appointmentDate}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Time:</div>
+              <div class="info-value">${appointmentTime}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Reason for Visit:</div>
+              <div class="info-value">${summary}</div>
+            </div>
+            ${
+              symptoms && symptoms.length > 0
+                ? `
+            <div class="info-row">
+              <div class="info-label">Symptoms:</div>
+              <div class="info-value">
+                <ul class="symptoms-list">
+                  ${symptomsList}
+                </ul>
+              </div>
+            </div>
+            `
+                : ""
+            }
+          </div>
+
+          ${
+            notes
+              ? `
+          <div class="notes-section">
+            <h3 style="margin-top: 0;">Additional Notes:</h3>
+            <p>${notes}</p>
+          </div>
+          `
+              : ""
+          }
+
+          <div class="warning">
+            <strong>Important Reminders:</strong>
+            <ul style="margin: 10px 0;">
+              <li>Please arrive 15 minutes early to complete any necessary paperwork</li>
+              <li>Bring your insurance card and a valid ID</li>
+              <li>Bring a list of current medications</li>
+              <li>If you need to cancel or reschedule, please do so at least 24 hours in advance</li>
+            </ul>
+          </div>
+
+          <center>
+            <a href="${
+              process.env.APP_URL
+            }/appointments" class="button">View My Appointments</a>
+          </center>
+
+          <p>If you have any questions or need to make changes to your appointment, please contact us as soon as possible.</p>
+          
+          <p>Best regards,<br>
+          Willow CRM Medical Team</p>
+        </div>
+        
+        <div class="footer">
+          <p>This is an automated email. Please do not reply directly to this message.</p>
+          <p>© 2025 Willow CRM. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const mailOptions = {
+    from: {
+      name: "Willow CRM",
+      address: process.env.EMAIL_USER,
+    },
+    to: patientEmail,
+    subject: `Appointment Confirmation - ${appointmentDate}`,
+    html: emailHTML,
+    text: `
+      Appointment Confirmation
+      
+      Dear ${patientName},
+      
+      Your appointment has been confirmed with the following details:
+      
+      Confirmation ID: ${appointmentId}
+      Doctor: ${doctorName}
+      Date: ${appointmentDate}
+      Time: ${appointmentTime}
+      Reason for Visit: ${summary}
+      
+      Important Reminders:
+      - Please arrive 15 minutes early
+      - Bring your insurance card and ID
+      - Bring a list of current medications
+      - Cancel at least 24 hours in advance if needed
+      
+      Best regards,
+      Willow CRM Medical Team
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", info.messageId);
+    return info;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};
+
+// Send appointment cancellation email
+export const sendAppointmentCancellation = async ({
+  patientEmail,
+  patientName,
+  doctorName,
+  appointmentDate,
+  appointmentTime,
+  appointmentId,
+  reason,
+}) => {
+  const emailHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #dc3545; color: white; padding: 30px; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .info-card { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #dc3545; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="margin: 0;">Appointment Cancelled</h1>
+        </div>
+        
+        <div class="content">
+          <p>Dear ${patientName},</p>
+          <p>Your appointment has been cancelled:</p>
+          
+          <div class="info-card">
+            <p><strong>Appointment ID:</strong> ${appointmentId}</p>
+            <p><strong>Doctor:</strong> ${doctorName}</p>
+            <p><strong>Original Date:</strong> ${appointmentDate}</p>
+            <p><strong>Original Time:</strong> ${appointmentTime}</p>
+            ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ""}
+          </div>
+
+          <p>If you would like to reschedule, please book a new appointment through our system.</p>
+          
+          <center>
+            <a href="${
+              process.env.APP_URL
+            }/search" class="button">Book New Appointment</a>
+          </center>
+          
+          <p>Best regards,<br>
+          Willow CRM Medical Team</p>
+        </div>
+        
+        <div class="footer">
+          <p>This is an automated email. Please do not reply directly to this message.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const mailOptions = {
+    from: {
+      name: "Willow CRM",
+      address: process.env.EMAIL_USER,
+    },
+    to: patientEmail,
+    subject: `Appointment Cancelled - ${appointmentDate}`,
+    html: emailHTML,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    return info;
+  } catch (error) {
+    console.error("Error sending cancellation email:", error);
+    throw error;
+  }
+};
