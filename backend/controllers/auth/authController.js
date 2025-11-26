@@ -20,9 +20,8 @@ export const authController = {
         });
       }
 
-      // Generate reset token (raw for email, hash for DB)
       const { raw: rawToken, hash: hashedToken } = generateResetToken();
-      const resetTokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+      const resetTokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000);
 
       // Save hashed token to user
       user.resetToken = hashedToken;

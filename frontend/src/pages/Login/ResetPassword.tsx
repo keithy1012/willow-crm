@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 
 const ResetPassword: React.FC = () => {
