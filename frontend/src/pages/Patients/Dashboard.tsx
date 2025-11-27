@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import DoctorSearchBar from "../../components/input/SearchBar";
-import LongTextArea from "../../components/input/LongTextArea";
 import MedicationCard from "../../components/card/MedicationCard";
 import UpcomingAppointmentCard from "../../components/card/UpcomingAppointmentCard";
 import DoctorSearchResults from "../../components/dashboard/DoctorSearchResults";
@@ -8,6 +7,9 @@ import AppointmentBookingModal from "../../components/modal/BookingModal";
 import { useRequireRole } from "hooks/useRequireRole";
 import { availabilityService } from "api/services/availability.service";
 import { useAuth } from "contexts/AuthContext";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+import LongTextArea from "../../components/input/LongTextArea";
+import ChatModal from "components/modal/ChatsModal";
 
 const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -23,6 +25,13 @@ const Dashboard: React.FC = () => {
     date: string;
   } | null>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<
+    { sender: "user" | "bot"; text: string }[]
+  >([]);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   const user = useRequireRole("Patient");
   const { user: authUser } = useAuth();
@@ -85,9 +94,39 @@ const Dashboard: React.FC = () => {
     setSearchError(null);
   };
 
-  const handleAskQuestion = (question: string) => {
-    console.log("Question:", question);
-    // TODO: Implement AI chatbot integration
+  const handleAskQuestion = async (newMessage: string) => {
+    const updatedMessages: { sender: "user" | "bot"; text: string }[] = [
+      ...chatMessages,
+      { sender: "user", text: newMessage },
+    ];
+
+    setIsBotTyping(true);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updatedMessages }), // send full context
+      });
+
+      const data = await res.json();
+      setChatMessages([
+        ...updatedMessages,
+        { sender: "bot", text: data.answer },
+      ]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsBotTyping(false);
+    }
+  };
+
+  const handleSendChat = async () => {
+    const trimmed = chatInput.trim();
+    if (!trimmed || isBotTyping) return;
+    // send and let handleAskQuestion update chatMessages
+    await handleAskQuestion(trimmed);
+    setChatInput("");
   };
 
   const handleBookAppointment = (doctorId: string, timeSlot: any) => {
@@ -191,20 +230,47 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-9 gap-8">
               <div className="lg:col-span-6">
                 <div className="mb-4">
-                  <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">
-                    Ask me a question
-                  </h2>
-                  <p className="flex justify-start text-sm text-secondaryText mb-4">
-                    This is your AI chatbot to help answer questions on your
-                    appointments.
-                  </p>
-                  <LongTextArea
-                    placeholder="Ask a question here..."
-                    buttonText="Send"
-                    onSubmit={handleAskQuestion}
-                    button={true}
-                  />
+                  <div className="mb-6">
+                    <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">
+                      Ask me a question
+                    </h2>
+                    <p className="flex justify-start text-sm text-secondaryText mb-4">
+                      This is your AI chatbot to help answer questions on your
+                      appointments.
+                    </p>
+
+                    <div className="flex gap-3">
+                      <LongTextArea
+                        value={chatInput}
+                        onChange={(text) => setChatInput(text)}
+                        placeholder="Type your question here..."
+                        className="flex-1"
+                      />
+
+                      <PrimaryButton
+                        text={isBotTyping ? "Sending..." : "Submit"}
+                        variant="primary"
+                        size="small"
+                        disabled={isBotTyping}
+                        onClick={async () => {
+                          if (!chatInput.trim()) return;
+
+                          await handleSendChat();
+                          setChatModalOpen(true);
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
+                <ChatModal
+                  isOpen={chatModalOpen}
+                  onClose={() => setChatModalOpen(false)}
+                  chatMessages={chatMessages}
+                  chatInput={chatInput}
+                  setChatInput={setChatInput}
+                  onSend={handleSendChat}
+                  isBotTyping={isBotTyping}
+                />
 
                 <div>
                   <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">

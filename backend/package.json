@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/genai": "^1.30.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -21,6 +22,7 @@
 <<<<<<< HEAD
     "nodemailer": "^7.0.10",
 =======
+    "openai": "^6.9.1",
     "pdfkit": "^0.17.2",
 >>>>>>> 41a20d08680bd4d773ba477fb275d06fa5ec01b4
     "uuid": "^13.0.0",

@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+
 // Setup __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,6 +13,7 @@ if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
   console.error("❌ Missing JWT_SECRET or MONGO_URI in .env file");
   process.exit(1);
 }
+
 
 console.log("✅ Environment variables loaded");
 
@@ -33,7 +35,7 @@ import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRou
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
 import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
-import authRoutes from "./routes/auth/authRoutes.js";
+import authRoutes from "./routes/auth/authRoutes.js";import chatRoutes from "./routes/chat/chatRoutes.js";
 // Setup Express
 const app = express();
 
@@ -55,6 +57,7 @@ app.use("/api/tickets/patientChange", patientRequestChangeRoutes);
 app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
 app.use("/api/tickets/bugTicket", bugTicketRoutes);
 app.use("/api/availability", availabilityRoutes);
+app.use("/api/chat", chatRoutes);
 
 // Start server
 const server = http.createServer(app);
