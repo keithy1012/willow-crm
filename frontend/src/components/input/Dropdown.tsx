@@ -10,7 +10,7 @@ interface CustomDropdownProps {
   className?: string;
 }
 
-const CustomDropdown: React.FC<CustomDropdownProps> = ({
+const Dropdown: React.FC<CustomDropdownProps> = ({
   value,
   onChange,
   options,
@@ -94,4 +94,4 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   );
 };
 
-export default CustomDropdown;
+export default Dropdown;

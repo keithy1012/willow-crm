@@ -5,6 +5,7 @@ import MedicationCard from "../../components/card/MedicationCard";
 import UpcomingAppointmentCard from "../../components/card/UpcomingAppointmentCard";
 import DoctorSearchResults from "../../components/dashboard/DoctorSearchResults";
 import AppointmentBookingModal from "../../components/modal/BookingModal";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
 
 import { useRequireRole } from "hooks/useRequireRole";
 import { useAuth } from "contexts/AuthContext";
@@ -12,9 +13,11 @@ import { useAuth } from "contexts/AuthContext";
 import { availabilityService } from "api/services/availability.service";
 import { appointmentService } from "api/services/appointment.service";
 import { patientService } from "api/services/patient.service";
-
+import { userService } from "api/services/user.service";
 import toast from "react-hot-toast";
 import { AvailableDoctorResult } from "api/types/availability.types";
+import { MedorderResponse } from "api/types/medorder.types";
+import { medorderService } from "api/services/medorder.service";
 
 interface TimeSlot {
   startTime: string;
@@ -30,11 +33,16 @@ const Dashboard: React.FC = () => {
 
   // State
   const [patientId, setPatientId] = useState("");
+  const [patientEmail, setPatientEmail] = useState("");
+  const [isTestingEmail, setIsTestingEmail] = useState(false);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
 
   const [isSearching, setIsSearching] = useState(false);
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
-
+  const [medications, setMedications] = useState<MedorderResponse[]>([]);
+  const [loadingMedications, setLoadingMedications] = useState(true);
   const [searchResults, setSearchResults] = useState<AvailableDoctorResult[]>(
     []
   );
@@ -59,11 +67,33 @@ const Dashboard: React.FC = () => {
         const stored = localStorage.getItem("user");
         if (stored) {
           const userParsed = JSON.parse(stored);
-          const patient = await patientService.getById(userParsed._id);
-          setPatientId(patient._id);
+
+          // The user object in localStorage should have the role-specific ID
+          // For a patient user, the _id should be the patient ID
+          // If not, we need to search for the patient by name
+
+          try {
+            // First try to get patient directly by the stored ID
+            const patient = await patientService.getById(userParsed._id);
+            setPatientId(patient._id);
+            setPatientEmail(userParsed.email || "");
+          } catch (err) {
+            // If that fails, search for patient by name
+            console.log("Direct patient fetch failed, searching by name...");
+            const fullName = `${userParsed.firstName} ${userParsed.lastName}`;
+            const searchResult = await patientService.searchByName(fullName);
+
+            if (searchResult.patients && searchResult.patients.length > 0) {
+              const patient = searchResult.patients[0];
+              setPatientId(patient._id);
+              setPatientEmail(userParsed.email || "");
+            } else {
+              throw new Error("Patient not found");
+            }
+          }
         }
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load patient:", err);
         toast.error("Failed to load patient information");
       }
     };
@@ -71,6 +101,105 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const patientName = authUser?.firstName || user?.firstName || "Patient";
+
+  // UPCOMING APPOINTMENTS FETCH
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!patientId) return;
+
+      try {
+        setLoadingAppointments(true);
+        const appointments = (await appointmentService.getPatientAppointments(
+          patientId
+        )) as any[];
+        setUpcomingAppointments(appointments);
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load upcoming appointments");
+      } finally {
+        setLoadingAppointments(false);
+      }
+    };
+    fetchAppointments();
+  }, [patientId]);
+  useEffect(() => {
+    const fetchMedications = async () => {
+      if (!patientId) return;
+
+      try {
+        setLoadingMedications(true);
+        const response = await medorderService.getMedordersByPatient(patientId);
+        setMedications(response.medorders);
+      } catch (err) {
+        console.error("Error fetching medications:", err);
+        toast.error("Failed to load medications");
+      } finally {
+        setLoadingMedications(false);
+      }
+    };
+
+    fetchMedications();
+  }, [patientId]);
+
+  // EMAIL TEST FUNCTION
+  const testEmailService = async () => {
+    setIsTestingEmail(true);
+
+    try {
+      const testData = {
+        patientEmail: patientEmail || authUser?.email || "test@example.com",
+        patientName: `${authUser?.firstName || "Test"} ${
+          authUser?.lastName || "User"
+        }`,
+        doctorName: "Dr. Test Doctor",
+        appointmentDate: new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        appointmentTime: "2:00 PM - 3:00 PM",
+        appointmentId: "TEST-" + Date.now(),
+        summary: "Test Appointment - Medical Consultation",
+        notes:
+          "This is a test email to verify the email service is working correctly.",
+        symptoms: ["Test Symptom 1", "Test Symptom 2", "Test Symptom 3"],
+      };
+
+      console.log("Sending test email with data:", testData);
+
+      const response = await fetch(
+        "http://localhost:5001/api/appointments/test-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(testData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(
+          `Test email sent to ${testData.patientEmail}! Check your inbox.`
+        );
+        console.log("Email sent successfully:", data);
+      } else {
+        toast.error("Failed to send test email. Check console for details.");
+        console.error("Email error:", data);
+      }
+    } catch (error) {
+      console.error("Test failed:", error);
+      toast.error(
+        "Email service test failed. Check your backend configuration."
+      );
+    } finally {
+      setIsTestingEmail(false);
+    }
+  };
 
   // ---------------------------------------------
   // SEARCH + BOOKING LOGIC (from first component)
@@ -113,7 +242,36 @@ const Dashboard: React.FC = () => {
       setSearchResults([]);
     }
   };
+  const handleRefillRequest = async (medicationId: string) => {
+    try {
+      const medication = medications.find(
+        (med) => med.orderID === medicationId
+      );
+      if (!medication) return;
 
+      // Send refill request email
+      await fetch("http://localhost:5050/api/medorders/refill-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          medicationName: medication.medicationName,
+          patientName: `${medication.patientID.name}`,
+          patientEmail: medication.patientID.email,
+          quantity: medication.quantity,
+          pharmacy: "Willow CRM Pharmacy",
+          lastRefillDate: medication.lastRefillDate,
+        }),
+      });
+
+      toast.success("Refill request sent successfully!");
+    } catch (error) {
+      console.error("Error requesting refill:", error);
+      toast.error("Failed to request refill. Please try again.");
+    }
+  };
+  // Updated handleBookAppointment function in Dashboard.tsx
   const handleBookAppointment = (doctorId: string, slot: TimeSlot) => {
     const doctorData = searchResults.find(
       (r) => r.doctor._id === doctorId
@@ -126,6 +284,25 @@ const Dashboard: React.FC = () => {
         typeof u === "string" ? `Dr. ${u}` : `Dr. ${u.firstName} ${u.lastName}`;
     }
 
+    // Validate the time slot is 1 hour (60 minutes)
+    console.log("Selected time slot:", slot);
+    console.log("Slot start:", slot.startTime, "Slot end:", slot.endTime);
+
+    const [startHour, startMin] = slot.startTime.split(":").map(Number);
+    const [endHour, endMin] = slot.endTime.split(":").map(Number);
+    const durationMinutes = endHour * 60 + endMin - (startHour * 60 + startMin);
+
+    // Allow slots between 30 and 90 minutes (to handle edge cases)
+    if (durationMinutes > 90) {
+      console.error(
+        "ERROR: Time slot is too long:",
+        durationMinutes,
+        "minutes"
+      );
+      toast.error("Invalid time slot selected. Please select a 1-hour slot.");
+      return;
+    }
+
     setSelectedBooking({
       doctorId,
       doctorName,
@@ -135,57 +312,173 @@ const Dashboard: React.FC = () => {
     setIsBookingModalOpen(true);
   };
 
+  // Fixed handleBookingComplete function in Dashboard.tsx
   const handleBookingComplete = async (formData: any) => {
     if (!selectedBooking || !patientId) {
       toast.error("Missing booking information");
       return;
     }
 
-    setIsBooking(true);
-
     try {
-      const appt = {
+      setIsBooking(true);
+
+      const startTime = selectedBooking.timeSlot.startTime;
+
+      // IMPORTANT: Calculate end time as 1 hour after start time
+      const [startHour, startMin] = startTime.split(":").map(Number);
+      let endHour = startHour + 1;
+      let endMin = startMin;
+
+      // Ensure we use the actual slot end time if it's provided and valid
+      let endTime = selectedBooking.timeSlot.endTime;
+
+      // Validate the slot is actually 1 hour
+      const [slotEndHour, slotEndMin] = endTime.split(":").map(Number);
+      const slotDuration =
+        slotEndHour * 60 + slotEndMin - (startHour * 60 + startMin);
+
+      // If the slot isn't 60 minutes, force it to be 1 hour
+      if (slotDuration !== 60) {
+        console.log(
+          "Adjusting slot duration from",
+          slotDuration,
+          "to 60 minutes"
+        );
+        endTime = `${String(endHour).padStart(2, "0")}:${String(
+          endMin
+        ).padStart(2, "0")}`;
+      }
+
+      // Get patient email - prioritize the one from state/localStorage
+      const storedUser = localStorage.getItem("user");
+      const userData = storedUser ? JSON.parse(storedUser) : null;
+      const finalPatientEmail =
+        patientEmail || userData?.email || authUser?.email;
+
+      // Get doctor email from search results
+      let doctorEmail = undefined;
+      const doctorData = searchResults.find(
+        (r) => r.doctor._id === selectedBooking.doctorId
+      );
+      if (
+        doctorData?.doctor?.user &&
+        typeof doctorData.doctor.user === "object"
+      ) {
+        doctorEmail = doctorData.doctor.user.email;
+      }
+
+      // Build appointment data
+      const appointmentData = {
         doctorId: selectedBooking.doctorId,
         patientId,
         date: selectedBooking.date,
-        startTime: selectedBooking.timeSlot.startTime,
-        endTime: selectedBooking.timeSlot.endTime,
+        startTime,
+        endTime, // This will now be exactly 1 hour after startTime
         summary: `${
           formData.newOrOngoing === "new" ? "New Condition" : "Follow-up"
-        } - ${formData.symptoms.join(", ")}`,
-        notes: formData.notes,
-        symptoms: formData.symptoms,
-        duration: formData.duration,
-        isEmergency: formData.isEmergency,
+        } - ${formData.symptoms?.join(", ") || "General Consultation"}`,
+        notes: formData.notes || "",
+        symptoms: formData.symptoms || [],
+        duration: 60, // Always 60 minutes for 1-hour slots
+        isEmergency: formData.isEmergency || false,
+        patientEmail: finalPatientEmail, // Pass the patient email explicitly
+        doctorEmail: doctorEmail,
       };
 
-      await appointmentService.book(appt);
+      console.log("Booking appointment with data:", appointmentData);
+      console.log("Patient email being sent:", finalPatientEmail);
 
-      toast.success("Appointment booked successfully!");
+      const response = await appointmentService.book(appointmentData);
 
-      // Remove booked slot from results
-      const updated = searchResults.map((r) => {
-        if (r.doctor._id === selectedBooking.doctorId) {
-          return {
-            ...r,
-            timeSlots: r.timeSlots.filter(
-              (s) =>
-                !(
-                  s.startTime === selectedBooking.timeSlot.startTime &&
-                  s.endTime === selectedBooking.timeSlot.endTime
-                )
-            ),
-          };
-        }
-        return r;
-      });
+      toast.success(
+        `Appointment booked successfully! Confirmation email sent to ${finalPatientEmail}.`
+      );
 
-      setSearchResults(updated);
+      // Update search results to remove the booked slot
+      setSearchResults((prev) =>
+        prev.map((r) => {
+          if (r.doctor._id === selectedBooking.doctorId) {
+            // Filter out the booked slot or update the larger slot
+            return {
+              ...r,
+              timeSlots: r.timeSlots.reduce((slots, slot) => {
+                // If this is the exact slot that was booked, remove it
+                if (slot.startTime === startTime && slot.endTime === endTime) {
+                  return slots; // Don't include this slot
+                }
+
+                // If this is a larger slot containing the booked time
+                const [slotStartH, slotStartM] = slot.startTime
+                  .split(":")
+                  .map(Number);
+                const [slotEndH, slotEndM] = slot.endTime
+                  .split(":")
+                  .map(Number);
+                const [bookStartH, bookStartM] = startTime
+                  .split(":")
+                  .map(Number);
+                const [bookEndH, bookEndM] = endTime.split(":").map(Number);
+
+                const slotStartMin = slotStartH * 60 + slotStartM;
+                const slotEndMin = slotEndH * 60 + slotEndM;
+                const bookStartMin = bookStartH * 60 + bookStartM;
+                const bookEndMin = bookEndH * 60 + bookEndM;
+
+                // If the booked time is within this slot, split it
+                if (bookStartMin >= slotStartMin && bookEndMin <= slotEndMin) {
+                  const newSlots = [];
+
+                  // Add slot before booked time if there's space
+                  if (slotStartMin < bookStartMin) {
+                    newSlots.push({
+                      ...slot,
+                      startTime: slot.startTime,
+                      endTime: startTime,
+                      isBooked: false,
+                    });
+                  }
+
+                  // Add slot after booked time if there's space
+                  if (bookEndMin < slotEndMin) {
+                    newSlots.push({
+                      ...slot,
+                      startTime: endTime,
+                      endTime: slot.endTime,
+                      isBooked: false,
+                    });
+                  }
+
+                  return [...slots, ...newSlots];
+                }
+
+                // Otherwise, keep the slot as is
+                return [...slots, slot];
+              }, [] as typeof r.timeSlots),
+            };
+          }
+          return r;
+        })
+      );
+
+      // Refresh appointments list
+      try {
+        const appointments = (await appointmentService.getPatientAppointments(
+          patientId
+        )) as any[];
+        setUpcomingAppointments(appointments);
+      } catch (err) {
+        console.log("Could not refresh appointments:", err);
+      }
+
       setIsBookingModalOpen(false);
       setSelectedBooking(null);
     } catch (err: any) {
-      console.error(err);
-      toast.error(err.response?.data?.error || "Booking failed");
+      console.error("Booking failed:", err);
+      toast.error(
+        err?.response?.data?.error ||
+          err?.message ||
+          "Failed to book appointment. Please try again."
+      );
     } finally {
       setIsBooking(false);
     }
@@ -207,24 +500,22 @@ const Dashboard: React.FC = () => {
     console.log("AI Question:", q);
   };
 
-  // Helpers
-  const formatTime = (t: string) => {
-    const [h, m] = t.split(":");
-    const hour = parseInt(h);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    return `${hour % 12 || 12}:${m} ${ampm}`;
-  };
-
-  const formatDate = (d: string) => {
-    if (!d) return "";
-    const [y, m, day] = d.split("-");
-    const dateObj = new Date(+y, +m - 1, +day);
-    return dateObj.toLocaleDateString("en-US", {
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
       weekday: "long",
+      year: "numeric",
       month: "long",
       day: "numeric",
-      year: "numeric",
     });
+  };
+
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(":");
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
   };
 
   // -------------------------------------------------------
@@ -305,9 +596,11 @@ const Dashboard: React.FC = () => {
         ) : (
           // DASHBOARD HOME
           <div className="p-12">
-            <h1 className="text-2xl font-semibold text-primaryText mb-6">
-              {patientName}'s Dashboard
-            </h1>
+            <div className="flex justify-between items-start mb-6">
+              <h1 className="text-2xl font-semibold text-primaryText">
+                {patientName}'s Dashboard
+              </h1>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-9 gap-8">
               {/* LEFT SIDE */}
@@ -335,26 +628,51 @@ const Dashboard: React.FC = () => {
                   Preview your medications here.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
-                  <MedicationCard
-                    medication="Medication 1"
-                    description="This is the instructions for the medication yess fjdfjfasdfasdf sklfsdf"
-                  />
-                  <MedicationCard
-                    medication="Medication 1"
-                    description="This is the instructions for the medication yess fjdfjfasdfasdf sklfsdf"
-                  />
-                  <MedicationCard
-                    medication="Medication 1"
-                    description="This is the instructions for the medication yess fjdfjfasdfasdf sklfsdf"
-                  />
-                </div>
+                {loadingMedications ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : medications.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+                      {medications.slice(0, 3).map((medication) => (
+                        <MedicationCard
+                          key={medication.orderID}
+                          medicationId={medication.orderID}
+                          medicationName={medication.medicationName}
+                          instruction={medication.instruction}
+                          quantity={medication.quantity || "N/A"}
+                          pharmacy="Willow CRM Pharmacy"
+                          lastRefillDate={
+                            medication.lastRefillDate
+                              ? new Date(
+                                  medication.lastRefillDate
+                                ).toLocaleDateString()
+                              : undefined
+                          }
+                          onRefillRequest={handleRefillRequest}
+                        />
+                      ))}
+                    </div>
 
-                <div className="text-right text-sm font-sm mt-4">
-                  <button className="text-secondaryText hover:text-primaryText transition-colors">
-                    See More
-                  </button>
-                </div>
+                    <div className="text-right text-sm font-sm mt-4">
+                      {medications.length > 3 && (
+                        <button
+                          onClick={() =>
+                            (window.location.href = "/medications")
+                          }
+                          className="text-secondaryText hover:text-primaryText transition-colors"
+                        >
+                          See {medications.length - 3} More
+                        </button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-8 text-secondaryText">
+                    <p>No medications prescribed yet</p>
+                  </div>
+                )}
               </div>
 
               {/* RIGHT SIDE */}
@@ -367,27 +685,58 @@ const Dashboard: React.FC = () => {
                 </p>
 
                 <div className="space-y-4 bg-foreground shadow-sm p-5 border border-stroke rounded-lg">
-                  <UpcomingAppointmentCard
-                    date="September 20th, 2025"
-                    doctorName="Dr. Lok Ye Young - Cardiologist"
-                    appointmentType="Surgery"
-                  />
-                  <UpcomingAppointmentCard
-                    date="September 20th, 2025"
-                    doctorName="Dr. Lok Ye Young - Cardiologist"
-                    appointmentType="Surgery"
-                  />
-                  <UpcomingAppointmentCard
-                    date="September 20th, 2025"
-                    doctorName="Dr. Lok Ye Young - Cardiologist"
-                    appointmentType="Surgery"
-                  />
+                  {loadingAppointments ? (
+                    <div className="flex justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                  ) : upcomingAppointments.length > 0 ? (
+                    upcomingAppointments.slice(0, 3).map((appointment) => (
+                      <UpcomingAppointmentCard
+                        key={appointment._id}
+                        date={new Date(
+                          appointment.startTime
+                        ).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                        doctorName={
+                          appointment.doctorID?.user?.firstName &&
+                          appointment.doctorID?.user?.lastName
+                            ? `Dr. ${appointment.doctorID.user.firstName} ${
+                                appointment.doctorID.user.lastName
+                              }${
+                                appointment.doctorID.specialization
+                                  ? ` - ${appointment.doctorID.specialization}`
+                                  : ""
+                              }`
+                            : "Doctor"
+                        }
+                        appointmentType={
+                          appointment.summary || "Medical Consultation"
+                        }
+                      />
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-secondaryText">
+                      <p>No upcoming appointments</p>
+                      <p className="text-sm mt-2">
+                        Book an appointment to get started
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-right text-sm font-sm mt-4">
-                  <button className="text-secondaryText hover:text-primaryText transition-colors">
-                    See More
-                  </button>
+                  {upcomingAppointments.length > 3 && (
+                    <button
+                      onClick={() => (window.location.href = "/appointments")}
+                      className="text-secondaryText hover:text-primaryText transition-colors"
+                    >
+                      See {upcomingAppointments.length - 3} More
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

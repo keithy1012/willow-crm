@@ -1,7 +1,27 @@
-import Appointment from "../../models/Appointment.js";
+import Appointment from "../../models/appointments/Appointment.js";
 import Availability from "../../models/doctors/Availability.js";
 import Doctor from "../../models/doctors/Doctor.js";
 import Patient from "../../models/patients/Patient.js";
+import { sendAppointmentConfirmation } from "../../utils/emailService.js";
+import { sendDocumentNotification } from "../../utils/emailService.js";
+
+// Helper functions
+const formatDate = (date) => {
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const formatTime = (time) => {
+  const [hours, minutes] = time.split(":");
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minutes} ${ampm}`;
+};
 
 // Book an appointment
 export const bookAppointment = async (req, res) => {
@@ -17,7 +37,11 @@ export const bookAppointment = async (req, res) => {
       symptoms,
       duration,
       isEmergency,
+      patientEmail,
+      doctorEmail,
     } = req.body;
+
+    console.log("Booking appointment with data:", req.body);
 
     // Validate doctor and patient exist
     const [doctor, patient] = await Promise.all([
@@ -34,7 +58,7 @@ export const bookAppointment = async (req, res) => {
 
     // Parse the date properly to handle timezone
     const [year, month, day] = date.split("-").map(Number);
-    const appointmentDate = new Date(year, month - 1, day, 12, 0, 0); // Set to noon
+    const appointmentDate = new Date(year, month - 1, day, 12, 0, 0);
 
     // Create date range for querying
     const startOfDay = new Date(year, month - 1, day, 0, 0, 0);
@@ -51,7 +75,6 @@ export const bookAppointment = async (req, res) => {
     ][appointmentDate.getDay()];
 
     // Check if slot is available
-    // First check for single date availability
     let availability = await Availability.findOne({
       doctor: doctorId,
       type: "Single",
@@ -64,7 +87,6 @@ export const bookAppointment = async (req, res) => {
 
     // If no single date, check recurring
     if (!availability) {
-      // Check if there's a blocking entry (empty slots)
       const blockingEntry = await Availability.findOne({
         doctor: doctorId,
         type: "Single",
@@ -77,7 +99,6 @@ export const bookAppointment = async (req, res) => {
       });
 
       if (!blockingEntry) {
-        // No blocking entry, check recurring
         availability = await Availability.findOne({
           doctor: doctorId,
           type: "Recurring",
@@ -93,20 +114,42 @@ export const bookAppointment = async (req, res) => {
       });
     }
 
-    // Find the specific time slot
-    const timeSlot = availability.timeSlots.find(
-      (slot) => slot.startTime === startTime && slot.endTime === endTime
-    );
+    // Helper function to check if a time is within a range
+    const isTimeWithinRange = (timeStart, timeEnd, rangeStart, rangeEnd) => {
+      const [startHour, startMin] = timeStart.split(":").map(Number);
+      const [endHour, endMin] = timeEnd.split(":").map(Number);
+      const [rangeStartHour, rangeStartMin] = rangeStart.split(":").map(Number);
+      const [rangeEndHour, rangeEndMin] = rangeEnd.split(":").map(Number);
 
-    if (!timeSlot) {
-      return res.status(400).json({
-        error: "Time slot not found",
-      });
+      const startMinutes = startHour * 60 + startMin;
+      const endMinutes = endHour * 60 + endMin;
+      const rangeStartMinutes = rangeStartHour * 60 + rangeStartMin;
+      const rangeEndMinutes = rangeEndHour * 60 + rangeEndMin;
+
+      return startMinutes >= rangeStartMinutes && endMinutes <= rangeEndMinutes;
+    };
+
+    // Check if the requested slot falls within any available slot
+    let availableSlot = null;
+
+    for (const slot of availability.timeSlots) {
+      // Skip if already booked
+      if (slot.isBooked) continue;
+
+      // Check if requested time falls within this slot
+      if (isTimeWithinRange(startTime, endTime, slot.startTime, slot.endTime)) {
+        availableSlot = slot;
+        break;
+      }
     }
 
-    if (timeSlot.isBooked) {
+    if (!availableSlot) {
       return res.status(400).json({
-        error: "Time slot is already booked",
+        error: "Time slot not available or already booked",
+        requestedTime: `${startTime} - ${endTime}`,
+        availableSlots: availability.timeSlots
+          .filter((s) => !s.isBooked)
+          .map((s) => `${s.startTime} - ${s.endTime}`),
       });
     }
 
@@ -126,19 +169,75 @@ export const bookAppointment = async (req, res) => {
       startTime: appointmentStartTime,
       endTime: appointmentEndTime,
       status: "Scheduled",
+      notes: notes || "",
+      symptoms: symptoms || [],
     });
 
     await appointment.save();
 
-    // Mark time slot as booked
-    timeSlot.isBooked = true;
-    timeSlot.appointmentId = appointment._id;
+    // Handle slot booking based on whether it's a large block or exact match
+    if (
+      availableSlot.startTime === startTime &&
+      availableSlot.endTime === endTime
+    ) {
+      // Exact match - mark as booked
+      availableSlot.isBooked = true;
+      availableSlot.appointmentId = appointment._id;
+    } else {
+      // The slot is a larger block, need to split it
+      const slotIndex = availability.timeSlots.indexOf(availableSlot);
+      const newSlots = [];
+
+      // Add slots before the booked time
+      const [slotStartHour, slotStartMin] = availableSlot.startTime
+        .split(":")
+        .map(Number);
+      const [bookStartHour, bookStartMin] = startTime.split(":").map(Number);
+
+      if (
+        slotStartHour < bookStartHour ||
+        (slotStartHour === bookStartHour && slotStartMin < bookStartMin)
+      ) {
+        newSlots.push({
+          startTime: availableSlot.startTime,
+          endTime: startTime,
+          isBooked: false,
+        });
+      }
+
+      // Add the booked slot
+      newSlots.push({
+        startTime: startTime,
+        endTime: endTime,
+        isBooked: true,
+        appointmentId: appointment._id,
+      });
+
+      // Add slots after the booked time
+      const [slotEndHour, slotEndMin] = availableSlot.endTime
+        .split(":")
+        .map(Number);
+      const [bookEndHour, bookEndMin] = endTime.split(":").map(Number);
+
+      if (
+        bookEndHour < slotEndHour ||
+        (bookEndHour === slotEndHour && bookEndMin < slotEndMin)
+      ) {
+        newSlots.push({
+          startTime: endTime,
+          endTime: availableSlot.endTime,
+          isBooked: false,
+        });
+      }
+
+      // Replace the original slot with the new split slots
+      availability.timeSlots.splice(slotIndex, 1, ...newSlots);
+    }
+
     await availability.save();
 
-    // If this was a recurring availability, we might need to create a single date entry
-    // to properly track this specific booking
+    // If this was a recurring availability, create a single date entry
     if (availability.type === "Recurring") {
-      // Create a single date entry for this specific date with the booking
       const singleDateAvailability = await Availability.findOne({
         doctor: doctorId,
         type: "Single",
@@ -150,18 +249,12 @@ export const bookAppointment = async (req, res) => {
       });
 
       if (!singleDateAvailability) {
-        // Copy all time slots from recurring and mark this one as booked
+        // Copy all time slots from recurring and apply the booking
         const newTimeSlots = availability.timeSlots.map((slot) => ({
           startTime: slot.startTime,
           endTime: slot.endTime,
-          isBooked:
-            slot.startTime === startTime && slot.endTime === endTime
-              ? true
-              : false,
-          appointmentId:
-            slot.startTime === startTime && slot.endTime === endTime
-              ? appointment._id
-              : undefined,
+          isBooked: slot.isBooked,
+          appointmentId: slot.appointmentId,
         }));
 
         const singleEntry = new Availability({
@@ -179,20 +272,27 @@ export const bookAppointment = async (req, res) => {
 
     // Send confirmation email
     try {
+      const finalPatientEmail = patientEmail || patient.user.email;
+      const finalDoctorEmail = doctorEmail || doctor.user.email;
+
+      console.log("Sending confirmation email to:", finalPatientEmail);
+
       await sendAppointmentConfirmation({
-        patientEmail: patient.user.email,
+        patientEmail: finalPatientEmail,
         patientName: `${patient.user.firstName} ${patient.user.lastName}`,
         doctorName: `Dr. ${doctor.user.firstName} ${doctor.user.lastName}`,
         appointmentDate: formatDate(appointmentStartTime),
         appointmentTime: `${formatTime(startTime)} - ${formatTime(endTime)}`,
-        appointmentId: appointment.appointmentID,
+        appointmentId: appointment._id.toString(),
         summary: summary || "Medical Consultation",
-        notes: notes,
-        symptoms: symptoms,
+        notes: notes || "",
+        symptoms: symptoms || [],
       });
+
+      console.log("Confirmation email sent successfully");
     } catch (emailError) {
       console.error("Failed to send confirmation email:", emailError);
-      // Continue even if email fails
+      // Continue even if email fails - appointment is still booked
     }
 
     // Populate for response
@@ -210,6 +310,7 @@ export const bookAppointment = async (req, res) => {
     return res.status(201).json({
       message: "Appointment booked successfully",
       appointment,
+      emailSent: true, // Indicate email was attempted
     });
   } catch (err) {
     console.error("Booking error:", err);
@@ -217,23 +318,6 @@ export const bookAppointment = async (req, res) => {
   }
 };
 
-// Helper functions
-const formatDate = (date) => {
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
-const formatTime = (time) => {
-  const [hours, minutes] = time.split(":");
-  const hour = parseInt(hours);
-  const ampm = hour >= 12 ? "PM" : "AM";
-  const displayHour = hour % 12 || 12;
-  return `${displayHour}:${minutes} ${ampm}`;
-};
 // Cancel an appointment
 export const cancelAppointment = async (req, res) => {
   try {
@@ -246,7 +330,7 @@ export const cancelAppointment = async (req, res) => {
 
     // Find and update availability slot
     const date = new Date(appointment.startTime);
-    const startTime = date.toTimeString().slice(0, 5); // Get HH:MM format
+    const startTime = date.toTimeString().slice(0, 5);
 
     const dayOfWeek = [
       "Sunday",
@@ -406,6 +490,271 @@ export const updateAppointmentStatus = async (req, res) => {
       appointment,
     });
   } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Get appointment by ID
+// Updated getAppointmentById to include document info but not the full base64 data by default
+export const getAppointmentById = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { includeDocuments } = req.query; // Optional query param to include full documents
+
+    let appointment;
+
+    if (includeDocuments === "true") {
+      // Include full document data (base64)
+      appointment = await Appointment.findById(appointmentId)
+        .select("+afterVisitSummary +notesAndInstructions")
+        .populate([
+          {
+            path: "doctorID",
+            populate: {
+              path: "user",
+              select: "firstName lastName email phoneNumber",
+            },
+          },
+          {
+            path: "patientID",
+            populate: {
+              path: "user",
+              select: "firstName lastName email phoneNumber gender",
+            },
+          },
+        ]);
+    } else {
+      // Default: include document metadata but not the actual base64 data
+      appointment = await Appointment.findById(appointmentId).populate([
+        {
+          path: "doctorID",
+          populate: {
+            path: "user",
+            select: "firstName lastName email phoneNumber",
+          },
+        },
+        {
+          path: "patientID",
+          populate: {
+            path: "user",
+            select:
+              "firstName lastName email phoneNumber gender allergies medicalHistory",
+          },
+        },
+      ]);
+    }
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    // Add flags to indicate if documents exist
+    const appointmentData = appointment.toObject();
+    appointmentData.hasAfterVisitSummary = !!appointment.afterVisitSummaryName;
+    appointmentData.hasNotesAndInstructions =
+      !!appointment.notesAndInstructionsName;
+
+    return res.json(appointmentData);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Send notification when document is uploaded
+export const notifyPatientOfDocument = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const {
+      documentType,
+      patientEmail,
+      patientName,
+      doctorName,
+      appointmentDate,
+    } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId)
+      .populate({
+        path: "patientID",
+        populate: { path: "user", select: "firstName lastName email" },
+      })
+      .populate({
+        path: "doctorID",
+        populate: { path: "user", select: "firstName lastName" },
+      });
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    const finalPatientEmail = patientEmail || appointment.patientID.user.email;
+    const finalPatientName =
+      patientName ||
+      `${appointment.patientID.user.firstName} ${appointment.patientID.user.lastName}`;
+    const finalDoctorName =
+      doctorName ||
+      `Dr. ${appointment.doctorID.user.firstName} ${appointment.doctorID.user.lastName}`;
+    const finalAppointmentDate =
+      appointmentDate || new Date(appointment.startTime).toLocaleDateString();
+
+    await sendDocumentNotification({
+      patientEmail: finalPatientEmail,
+      patientName: finalPatientName,
+      doctorName: finalDoctorName,
+      appointmentDate: finalAppointmentDate,
+      appointmentId: appointmentId,
+      documentType: documentType,
+    });
+    return res.json({
+      message: "Notification sent successfully",
+      sentTo: finalPatientEmail,
+    });
+  } catch (err) {
+    console.error("Error sending notification:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Fixed updateAppointmentDocuments function for your appointmentController.js
+export const updateAppointmentDocuments = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const {
+      afterVisitSummary,
+      afterVisitSummaryName,
+      afterVisitSummaryUploadDate,
+      notesAndInstructions,
+      notesAndInstructionsName,
+      notesAndInstructionsUploadDate,
+    } = req.body;
+
+    // Need to explicitly select the document fields since they have select: false
+    const appointment = await Appointment.findById(appointmentId).select(
+      "+afterVisitSummary +notesAndInstructions"
+    );
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    // Update appointment with documents
+    if (afterVisitSummary !== undefined) {
+      appointment.afterVisitSummary = afterVisitSummary;
+      appointment.afterVisitSummaryName =
+        afterVisitSummaryName || "after_visit_summary.pdf";
+      appointment.afterVisitSummaryUploadDate =
+        afterVisitSummaryUploadDate || new Date();
+    }
+
+    if (notesAndInstructions !== undefined) {
+      appointment.notesAndInstructions = notesAndInstructions;
+      appointment.notesAndInstructionsName =
+        notesAndInstructionsName || "notes_and_instructions.pdf";
+      appointment.notesAndInstructionsUploadDate =
+        notesAndInstructionsUploadDate || new Date();
+    }
+
+    await appointment.save();
+
+    // Return response without the large base64 data
+    const response = {
+      message: "Documents uploaded successfully",
+      appointment: {
+        _id: appointment._id,
+        appointmentID: appointment.appointmentID,
+        hasAfterVisitSummary: !!appointment.afterVisitSummary,
+        hasNotesAndInstructions: !!appointment.notesAndInstructions,
+        afterVisitSummaryName: appointment.afterVisitSummaryName,
+        afterVisitSummaryUploadDate: appointment.afterVisitSummaryUploadDate,
+        notesAndInstructionsName: appointment.notesAndInstructionsName,
+        notesAndInstructionsUploadDate:
+          appointment.notesAndInstructionsUploadDate,
+      },
+    };
+
+    return res.json(response);
+  } catch (err) {
+    console.error("Error updating documents:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Also fix getAppointmentDocuments to properly select the fields
+export const getAppointmentDocuments = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { includeData } = req.query; // Optional query param to include base64 data
+
+    let appointment;
+
+    if (includeData === "true") {
+      // Include the actual base64 data
+      appointment = await Appointment.findById(appointmentId).select(
+        "+afterVisitSummary +notesAndInstructions afterVisitSummaryName afterVisitSummaryUploadDate notesAndInstructionsName notesAndInstructionsUploadDate"
+      );
+    } else {
+      // Just get metadata
+      appointment = await Appointment.findById(appointmentId).select(
+        "afterVisitSummaryName afterVisitSummaryUploadDate notesAndInstructionsName notesAndInstructionsUploadDate"
+      );
+    }
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    const response = {
+      hasAfterVisitSummary: !!appointment.afterVisitSummaryName,
+      hasNotesAndInstructions: !!appointment.notesAndInstructionsName,
+      afterVisitSummaryName: appointment.afterVisitSummaryName,
+      afterVisitSummaryUploadDate: appointment.afterVisitSummaryUploadDate,
+      notesAndInstructionsName: appointment.notesAndInstructionsName,
+      notesAndInstructionsUploadDate:
+        appointment.notesAndInstructionsUploadDate,
+    };
+
+    if (includeData === "true" && appointment.afterVisitSummary) {
+      response.afterVisitSummary = appointment.afterVisitSummary;
+    }
+
+    if (includeData === "true" && appointment.notesAndInstructions) {
+      response.notesAndInstructions = appointment.notesAndInstructions;
+    }
+
+    return res.json(response);
+  } catch (err) {
+    console.error("Error getting documents:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Fix downloadDocument to properly select the document field
+export const downloadDocument = async (req, res) => {
+  try {
+    const { appointmentId, documentType } = req.params;
+
+    if (!["afterVisitSummary", "notesAndInstructions"].includes(documentType)) {
+      return res.status(400).json({ error: "Invalid document type" });
+    }
+
+    // Need to explicitly select the document field since it has select: false
+    const appointment = await Appointment.findById(appointmentId).select(
+      `+${documentType} ${documentType}Name`
+    );
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    if (!appointment[documentType]) {
+      return res.status(404).json({ error: "Document not found" });
+    }
+
+    return res.json({
+      document: appointment[documentType],
+      filename: appointment[`${documentType}Name`] || `${documentType}.pdf`,
+    });
+  } catch (err) {
+    console.error("Error downloading document:", err);
     return res.status(500).json({ error: err.message });
   }
 };

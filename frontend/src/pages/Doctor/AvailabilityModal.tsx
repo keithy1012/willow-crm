@@ -15,10 +15,10 @@ import toast from "react-hot-toast";
 interface SelectedDateAvailability {
   date: Date;
   selectedTimes: string[];
-  bookedTimes: string[]; // Times that have appointments
-  isFromRecurring: boolean; // Whether this date's availability comes from recurring
+  bookedTimes: string[];
+  isFromRecurring: boolean;
   existingId?: string;
-  hasBeenModified?: boolean; // Track if user made changes to this date
+  hasBeenModified?: boolean;
 }
 
 interface AvailabilityModalProps {
@@ -43,7 +43,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     Availability[]
   >([]);
 
-  // Track original state to detect changes
   const [originalWeeklySchedule, setOriginalWeeklySchedule] = useState<
     WeeklyScheduleItem[]
   >([]);
@@ -51,7 +50,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     SelectedDateAvailability[]
   >([]);
 
-  // Monthly availability
   const [selectedDateAvailabilities, setSelectedDateAvailabilities] = useState<
     SelectedDateAvailability[]
   >([]);
@@ -63,7 +61,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   );
   const [currentBookedTimes, setCurrentBookedTimes] = useState<string[]>([]);
 
-  // Weekly recurring availability
   const [weeklySchedule, setWeeklySchedule] = useState<WeeklyScheduleItem[]>([
     { dayOfWeek: "Monday" as DayOfWeek, timeSlots: [] },
     { dayOfWeek: "Tuesday" as DayOfWeek, timeSlots: [] },
@@ -75,27 +72,18 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   ]);
 
   const [recurringDates, setRecurringDates] = useState<Date[]>([]);
-
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
+  // CHANGED: Updated to 1-hour time slots only
   const timeOptions = [
     "09:00",
-    "09:30",
     "10:00",
-    "10:30",
     "11:00",
-    "11:30",
     "12:00",
-    "12:30",
     "13:00",
-    "13:30",
     "14:00",
-    "14:30",
     "15:00",
-    "15:30",
     "16:00",
-    "16:30",
-    "17:00",
   ];
 
   // Reset state when modal closes
@@ -117,7 +105,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const fetchExistingAvailabilities = async () => {
     setIsLoading(true);
     try {
-      // Try the /all endpoint first
       const response = await availabilityService.getDoctorAvailabilities(
         doctorId
       );
@@ -128,80 +115,14 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
         processExistingAvailabilities(response.availabilities);
       }
     } catch (error: any) {
-      console.error(
-        "Failed to fetch from /all endpoint, trying fallback:",
-        error
-      );
-
-      // Fallback: Try to get availability using the date-specific endpoint
-      try {
-        // Get recurring availability by checking each day of the week
-        const tempAvailabilities: any[] = [];
-        const daysOfWeek = [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ];
-
-        // Check a week's worth of dates to find recurring patterns
-        const today = new Date();
-        for (let i = 0; i < 7; i++) {
-          const checkDate = new Date(today);
-          checkDate.setDate(today.getDate() + i);
-          const dateStr = checkDate.toISOString().split("T")[0];
-
-          try {
-            const dayAvail = await availabilityService.getForDate(
-              doctorId,
-              dateStr
-            );
-            if (dayAvail.available && dayAvail.type === "Recurring") {
-              // Add to temp availabilities if not already there
-              const dayOfWeek =
-                daysOfWeek[
-                  checkDate.getDay() === 0 ? 6 : checkDate.getDay() - 1
-                ];
-              if (
-                !tempAvailabilities.find(
-                  (a) => a.dayOfWeek === dayOfWeek && a.type === "Recurring"
-                )
-              ) {
-                tempAvailabilities.push({
-                  type: "Recurring",
-                  dayOfWeek: dayOfWeek,
-                  timeSlots: dayAvail.timeSlots,
-                  isActive: true,
-                });
-              }
-            } else if (dayAvail.available && dayAvail.type === "Single") {
-              tempAvailabilities.push({
-                type: "Single",
-                date: checkDate,
-                timeSlots: dayAvail.timeSlots,
-                isActive: true,
-              });
-            }
-          } catch (dayError) {
-            // Skip this day
-          }
-        }
-
-        setExistingAvailabilities(tempAvailabilities);
-        processExistingAvailabilities(tempAvailabilities);
-      } catch (fallbackError) {
-        console.error("Fallback also failed:", fallbackError);
-        toast.error("Failed to load existing availability");
-      }
+      console.error("Failed to fetch availabilities:", error);
+      toast.error("Failed to load existing availability");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Helper function to generate time slots from a time range
+  // CHANGED: Updated to generate 1-hour slots from ranges
   const generateTimeSlotsFromRange = (
     startTime: string,
     endTime: string
@@ -211,32 +132,19 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     const [endHour, endMin] = endTime.split(":").map(Number);
 
     let currentHour = startHour;
-    let currentMin = startMin;
 
-    while (
-      currentHour < endHour ||
-      (currentHour === endHour && currentMin < endMin)
-    ) {
-      const timeStr = `${currentHour.toString().padStart(2, "0")}:${currentMin
-        .toString()
-        .padStart(2, "0")}`;
+    while (currentHour < endHour) {
+      const timeStr = `${currentHour.toString().padStart(2, "0")}:00`;
       if (timeOptions.includes(timeStr)) {
         slots.push(timeStr);
       }
-
-      // Add 30 minutes
-      currentMin += 30;
-      if (currentMin >= 60) {
-        currentMin = 0;
-        currentHour += 1;
-      }
+      currentHour += 1; // Increment by 1 hour instead of 30 minutes
     }
 
     return slots;
   };
 
   const processExistingAvailabilities = (availabilities: Availability[]) => {
-    // Process recurring availabilities
     const recurringAvails = availabilities.filter(
       (a) => a.type === "Recurring" && a.isActive !== false
     );
@@ -257,7 +165,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       JSON.parse(JSON.stringify(updatedWeeklySchedule))
     );
 
-    // Process dates for current viewing month
     regenerateDatesForMonth(availabilities, updatedWeeklySchedule);
   };
 
@@ -271,33 +178,25 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     const firstDay = new Date(viewYear, viewMonth, 1);
     const lastDay = new Date(viewYear, viewMonth + 1, 0);
 
-    // Keep track of explicitly blocked dates
     const blockedDates = new Set<string>();
 
-    // First, process all single date availabilities for this month
     const singleAvails = availabilities.filter(
       (a) => a.type === "Single" && a.isActive !== false
     );
 
     singleAvails.forEach((avail) => {
       if (avail.date) {
-        // Parse the date as local, not UTC
         const date =
           typeof avail.date === "string"
             ? parseLocalDate(avail.date.split("T")[0])
             : new Date(avail.date);
 
-        // Only process if it's in the current viewing month
         if (date >= firstDay && date <= lastDay) {
           const dateKey = date.toDateString();
 
-          // Check if this is a blocked date (no time slots)
           if (!avail.timeSlots || avail.timeSlots.length === 0) {
-            // This date is explicitly blocked
             blockedDates.add(dateKey);
-            // Don't add to dateAvailabilities - this date has no availability
           } else {
-            // Process time slots normally
             let times: string[] = [];
             let bookedTimes: string[] = [];
 
@@ -325,7 +224,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
               }
             });
 
-            // Only add if there are available times
             if (times.length > 0 || bookedTimes.length > 0) {
               dateAvailabilities.push({
                 date,
@@ -341,7 +239,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       }
     });
 
-    // Then, add recurring dates that aren't blocked or overridden
     for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
       const currentDate = new Date(d);
       const dateKey = currentDate.toDateString();
@@ -355,18 +252,15 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
         "Saturday",
       ][currentDate.getDay()];
 
-      // Skip if this date is explicitly blocked
       if (blockedDates.has(dateKey)) {
         continue;
       }
 
-      // Skip if this date already has a single date entry
       const hasSingleEntry = dateAvailabilities.some(
         (da) => da.date.toDateString() === dateKey
       );
 
       if (!hasSingleEntry) {
-        // Check the current weekly schedule for recurring availability
         const recurringDay = weekSchedule.find(
           (w) => w.dayOfWeek === dayOfWeek
         );
@@ -398,7 +292,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
             }
           });
 
-          // Only add if there are available times
           if (times.length > 0) {
             dateAvailabilities.push({
               date: currentDate,
@@ -419,14 +312,12 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     generateRecurringDatesForMonth();
   };
 
-  // Update dates when month changes
   useEffect(() => {
     if (existingAvailabilities.length > 0) {
       regenerateDatesForMonth(existingAvailabilities, weeklySchedule);
     }
   }, [currentMonth]);
 
-  // Generate dates that have recurring availability for the current viewing month
   const generateRecurringDatesForMonth = () => {
     const dates: Date[] = [];
     const viewMonth = currentMonth.getMonth();
@@ -470,7 +361,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   };
 
   const handleDateSelect = (date: Date) => {
-    // Check if the selected date is in a different month
     const selectedMonth = date.getMonth();
     const selectedYear = date.getFullYear();
     const currentMonthValue = currentMonth.getMonth();
@@ -480,11 +370,9 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       selectedMonth !== currentMonthValue ||
       selectedYear !== currentYearValue
     ) {
-      // Month has changed, update the current month
       setCurrentMonth(new Date(selectedYear, selectedMonth, 1));
     }
 
-    // Save current selection if exists
     if (currentSelectedDate) {
       const existingIndex = selectedDateAvailabilities.findIndex(
         (item) =>
@@ -497,7 +385,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
         updated[existingIndex].hasBeenModified = true;
         setSelectedDateAvailabilities(updated);
       } else {
-        // Check if this date would have recurring availability
         const dayOfWeek = [
           "Sunday",
           "Monday",
@@ -527,7 +414,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       }
     }
 
-    // If clicking same date, deselect
     if (currentSelectedDate?.toDateString() === date.toDateString()) {
       setCurrentSelectedDate(null);
       setCurrentSelectedTimes([]);
@@ -535,7 +421,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       return;
     }
 
-    // Load existing times for this date
     const existing = selectedDateAvailabilities.find(
       (item) => item.date.toDateString() === date.toDateString()
     );
@@ -546,7 +431,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
       setCurrentSelectedTimes(existing.selectedTimes);
       setCurrentBookedTimes(existing.bookedTimes || []);
     } else {
-      // Check if this date should have recurring availability
       const dayOfWeek = [
         "Sunday",
         "Monday",
@@ -565,13 +449,11 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
         let bookedTimes: string[] = [];
 
         recurringDay.timeSlots.forEach((slot) => {
-          // Check if this is a range
           if (
             slot.startTime &&
             slot.endTime &&
             slot.startTime !== slot.endTime
           ) {
-            // Generate individual slots from the range
             const slotsFromRange = generateTimeSlotsFromRange(
               slot.startTime,
               slot.endTime
@@ -582,7 +464,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
               times.push(...slotsFromRange);
             }
           } else {
-            // Individual slot
             if (slot.isBooked) {
               bookedTimes.push(slot.startTime);
             } else {
@@ -603,7 +484,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const handleTimeToggle = (time: string) => {
     if (!currentSelectedDate) return;
 
-    // Check if this time is booked
     if (currentBookedTimes.includes(time)) {
       toast.error("Cannot remove availability for booked time slot");
       return;
@@ -621,7 +501,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const toggleDayAvailability = (dayIndex: number) => {
     const updated = [...weeklySchedule];
 
-    // Check if any times are booked for this day
     const hasBookedSlots = updated[dayIndex].timeSlots.some(
       (slot) => slot.isBooked
     );
@@ -656,7 +535,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
   const removeTimeSlot = (dayIndex: number, slotIndex: number) => {
     const updated = [...weeklySchedule];
 
-    // Check if this slot is booked
     if (updated[dayIndex].timeSlots[slotIndex].isBooked) {
       toast.error("Cannot remove booked time slot");
       return;
@@ -688,18 +566,16 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
 
   const parseLocalDate = (dateStr: string): Date => {
     const [year, month, day] = dateStr.split("-").map(Number);
-    return new Date(year, month - 1, day); // month is 0-indexed
+    return new Date(year, month - 1, day);
   };
-  // Get all dates for calendar display with proper highlighting
+
   const getAllSelectedDates = (): Date[] => {
     const dates: Date[] = [];
 
-    // Add all dates with availability (both single and recurring)
     selectedDateAvailabilities.forEach((item) => {
       dates.push(item.date);
     });
 
-    // Add current selected date
     if (
       currentSelectedDate &&
       !dates.find(
@@ -712,18 +588,15 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     return dates;
   };
 
-  // Get dates that actually have availability (for highlighting)
   const getDatesWithAvailability = (): Date[] => {
     const dates: Date[] = [];
 
-    // Add dates with selected times (available slots)
     selectedDateAvailabilities.forEach((item) => {
       if (item.selectedTimes.length > 0) {
         dates.push(item.date);
       }
     });
 
-    // Add current date if it has times
     if (currentSelectedDate && currentSelectedTimes.length > 0) {
       const alreadyIncluded = dates.some(
         (d) => d.toDateString() === currentSelectedDate.toDateString()
@@ -743,7 +616,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
           item.date.toDateString() === currentSelectedDate.toDateString()
       );
 
-      // Check if this date would have recurring availability
       const dayOfWeek = [
         "Sunday",
         "Monday",
@@ -766,7 +638,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
         updated[existingIndex].hasBeenModified = true;
         setSelectedDateAvailabilities(updated);
       } else if (hasRecurring || currentSelectedTimes.length !== 0) {
-        // Only save if different from recurring or if explicitly set
         setSelectedDateAvailabilities([
           ...selectedDateAvailabilities,
           {
@@ -781,8 +652,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
     }
   };
 
-  // In AvailabilityModal.tsx, update the handleComplete function:
-
+  // CHANGED: Updated to save 1-hour slots
   const handleComplete = async () => {
     saveCurrentSelection();
 
@@ -831,15 +701,15 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
 
         for (const item of allDateAvailabilities) {
           if (item.hasBeenModified) {
-            // Use local date string instead of ISO string
             const dateStr = toLocalDateString(item.date);
 
             const allTimes = [
               ...new Set([...item.selectedTimes, ...item.bookedTimes]),
             ];
+            // CHANGED: Create 1-hour slots
             const timeSlots = allTimes.map((time) => ({
               startTime: time,
-              endTime: addMinutes(time, 30),
+              endTime: addMinutes(time, 60), // Changed from 30 to 60
               isBooked: item.bookedTimes.includes(time),
             }));
 
@@ -860,7 +730,6 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
           availabilities,
         };
       } else {
-        // Weekly recurring logic remains the same
         const validSchedule = weeklySchedule.filter(
           (day) => day.timeSlots.length > 0
         );
@@ -920,11 +789,11 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
             <CalendarBlank size={28} className="text-primary" />
             <div>
               <h2 className="text-md font-medium text-primaryText">
-                Manage Your Availability
+                Manage Your Availability (1-Hour Slots)
               </h2>
               <p className="text-sm text-secondaryText">
-                View and update your availability. Booked slots cannot be
-                removed.
+                Set your availability in 1-hour time slots. Booked slots cannot
+                be removed.
               </p>
             </div>
           </div>
@@ -978,9 +847,8 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm text-secondaryText mb-2">
-                      Your existing availability is shown. Select a date to
-                      modify. Light green dates use recurring schedule. Removing
-                      all times blocks that date.
+                      Select 1-hour time slots for specific dates. Each slot
+                      represents a full hour appointment.
                     </p>
                   </div>
 
@@ -992,8 +860,8 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
                             Editing: {currentSelectedDate.toLocaleDateString()}
                             {currentSelectedTimes.length > 0 ? (
                               <span className="ml-2">
-                                ({currentSelectedTimes.length} available,{" "}
-                                {currentBookedTimes.length} booked)
+                                ({currentSelectedTimes.length} hours available,{" "}
+                                {currentBookedTimes.length} hours booked)
                               </span>
                             ) : (
                               <span className="ml-2 text-error">
@@ -1008,15 +876,12 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
                         highlightedDates={getDatesWithAvailability()}
                         onDateSelect={handleDateSelect}
                         onMonthChange={(newMonth: Date) => {
-                          // Update current month and regenerate dates
                           setCurrentMonth(newMonth);
                         }}
                         currentMonth={currentMonth}
                         className="w-full"
                       />
 
-                      {/* Note: Calendar handles its own month navigation internally. 
-                          When user selects a date in a different month, we detect and update accordingly */}
                       <div className="mt-2 text-xs text-secondaryText space-y-1">
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 bg-primary/20 rounded"></div>
@@ -1038,7 +903,7 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
                         <>
                           <div className="flex items-center justify-between mb-3">
                             <p className="text-sm font-medium pt-4 text-primaryText">
-                              Time Slots
+                              1-Hour Time Slots
                             </p>
                             <div className="flex gap-2">
                               {currentSelectedTimes.length > 0 && (
@@ -1094,7 +959,8 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
                                   disabled={isBooked}
                                 >
                                   <span className="text-sm flex items-center gap-2">
-                                    {formatTimeDisplay(time)}
+                                    {formatTimeDisplay(time)} -{" "}
+                                    {formatTimeDisplay(addMinutes(time, 60))}
                                     {isBooked && <Lock size={14} />}
                                   </span>
                                   {(isSelected || isBooked) && (
@@ -1122,8 +988,8 @@ const AvailabilityModal: React.FC<AvailabilityModalProps> = ({
               ) : (
                 <div className="space-y-4">
                   <p className="text-sm text-secondaryText">
-                    Set your recurring weekly schedule. This applies to all
-                    future dates unless overridden by specific date settings.
+                    Set your recurring weekly schedule with 1-hour appointment
+                    slots.
                   </p>
 
                   {weeklySchedule.map((day, dayIndex) => {

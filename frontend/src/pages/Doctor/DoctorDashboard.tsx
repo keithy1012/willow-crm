@@ -11,8 +11,9 @@ import { availabilityService } from "api/services/availability.service";
 import { appointmentService } from "api/services/appointment.service";
 import { doctorService } from "api/services/doctor.service";
 import toast from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 const DoctorDashboard: React.FC = () => {
+  const navigate = useNavigate();
   // State declarations
   const [todayAppointments, setTodayAppointments] = useState<any[]>([]);
   const [monthAppointments, setMonthAppointments] = useState<any[]>([]);
@@ -242,28 +243,7 @@ const DoctorDashboard: React.FC = () => {
     try {
       console.log("Fetching appointments for doctorId:", doctorId);
 
-      // Get today's date string for API
-      const today = new Date();
-      const todayStr = today.toISOString().split("T")[0];
-      console.log("Today's date string:", todayStr);
-
-      // Fetch today's appointments specifically
-      const todayResponse: any = await appointmentService.getDoctorAppointments(
-        doctorId,
-        todayStr
-      );
-      console.log("Today's appointments raw response:", todayResponse);
-
-      // The backend returns an array directly
-      const todayData = Array.isArray(todayResponse)
-        ? todayResponse
-        : todayResponse?.appointments || [];
-      console.log("Today's appointments:", todayData);
-
-      // Set today's appointments (these should already be filtered by the backend)
-      setTodayAppointments(todayData);
-
-      // Fetch ALL appointments to calculate month statistics
+      // Fetch ALL appointments
       const allAppointmentsResponse: any =
         await appointmentService.getDoctorAppointments(doctorId);
       console.log("All appointments raw response:", allAppointmentsResponse);
@@ -271,6 +251,27 @@ const DoctorDashboard: React.FC = () => {
       const allData = Array.isArray(allAppointmentsResponse)
         ? allAppointmentsResponse
         : allAppointmentsResponse?.appointments || [];
+
+      // Filter today's appointments from all appointments
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const todayData = allData.filter((apt: any) => {
+        const aptDate = new Date(apt.startTime);
+        return aptDate >= today && aptDate < tomorrow;
+      });
+
+      console.log("Today's appointments:", todayData);
+
+      // Sort by start time
+      const sortedTodayData = todayData.sort(
+        (a: any, b: any) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      );
+
+      setTodayAppointments(sortedTodayData);
 
       // Filter for current month appointments for statistics
       const currentMonth = today.getMonth();
@@ -322,7 +323,7 @@ const DoctorDashboard: React.FC = () => {
   // Helper functions for the dashboard
   const generateTimeSlots = () => {
     const slots = [];
-    for (let hour = 9; hour <= 17; hour++) {
+    for (let hour = 8; hour <= 18; hour++) {
       const time = hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`;
       const displayTime = hour === 12 ? "12:00 PM" : time;
       slots.push({
@@ -422,6 +423,22 @@ const DoctorDashboard: React.FC = () => {
     }
   };
 
+  // Handlers
+  const handleMessagePatient = (patientId: string) => {
+    window.location.href = `/doctormessages?patientId=${patientId}`;
+  };
+
+  const handleViewPatientProfile = (patientId: string) => {
+    window.location.href = `/patient-profile/${patientId}`;
+  };
+
+  const handleViewDetails = (appointment: any) => {
+    navigate(`/doctor/appointment/${appointment._id}`);
+  };
+  const handleViewSummary = (appointmentId: string) => {
+    window.location.href = `http://localhost:3000/medical-records/${appointmentId}`;
+  };
+
   // Calculate statistics
   const upcomingAppointmentsCount = monthAppointments.filter(
     (apt) => new Date(apt.startTime) > new Date()
@@ -449,107 +466,112 @@ const DoctorDashboard: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-2">
-              {todayAppointments.length > 0 ? (
-                generateTimeSlots().map((slot) => {
-                  const appointments = getAppointmentsForTimeSlot(slot.hour);
+              {generateTimeSlots().map((slot) => {
+                const appointments = getAppointmentsForTimeSlot(slot.hour);
 
-                  if (appointments.length > 0) {
-                    return appointments.map((appointment) => (
-                      <DoctorAppointmentCard
-                        key={appointment._id}
-                        startTime={appointment.startTime}
-                        endTime={appointment.endTime}
-                        patientName={
-                          appointment.patientID?.user?.firstName &&
-                          appointment.patientID?.user?.lastName
-                            ? `${appointment.patientID.user.firstName} ${appointment.patientID.user.lastName}`
-                            : appointment.patientName || "Unknown Patient"
-                        }
-                        patientId={
+                if (appointments.length > 0) {
+                  return appointments.map((appointment) => (
+                    <DoctorAppointmentCard
+                      key={appointment._id}
+                      startTime={appointment.startTime}
+                      endTime={appointment.endTime}
+                      patientName={
+                        appointment.patientID?.user?.firstName &&
+                        appointment.patientID?.user?.lastName
+                          ? `${appointment.patientID.user.firstName} ${appointment.patientID.user.lastName}`
+                          : appointment.patientName || "Unknown Patient"
+                      }
+                      patientId={
+                        appointment.patientID?._id || appointment.patientID
+                      }
+                      patientProfilePic={
+                        appointment.patientID?.user?.profilePic
+                      }
+                      appointmentType={appointment.summary || "Consultation"}
+                      appointmentDescription={appointment.description}
+                      appointmentId={appointment._id}
+                      status={appointment.status || "Scheduled"}
+                      isCurrentAppointment={isAppointmentCurrent(appointment)}
+                      onViewDetails={() => handleViewDetails(appointment)}
+                      onMessage={() =>
+                        handleMessagePatient(
                           appointment.patientID?._id || appointment.patientID
+                        )
+                      }
+                      onViewProfile={() =>
+                        handleViewPatientProfile(
+                          appointment.patientID?._id || appointment.patientID
+                        )
+                      }
+                      onComplete={async () => {
+                        try {
+                          await appointmentService.updateStatus(
+                            appointment._id,
+                            "Completed"
+                          );
+                          toast.success("Appointment marked as completed");
+                          fetchAppointments();
+                        } catch (error) {
+                          toast.error("Failed to complete appointment");
                         }
-                        patientProfilePic={
-                          appointment.patientID?.user?.profilePic
+                      }}
+                      onCancel={async () => {
+                        try {
+                          await appointmentService.cancel(appointment._id);
+                          toast.success("Appointment cancelled");
+                          fetchAppointments();
+                        } catch (error) {
+                          toast.error("Failed to cancel appointment");
                         }
-                        appointmentType={appointment.summary || "Consultation"}
-                        appointmentDescription={appointment.description}
-                        appointmentId={appointment._id}
-                        status={appointment.status}
-                        isCurrentAppointment={isAppointmentCurrent(appointment)}
-                        onViewDetails={() =>
-                          console.log("View details:", appointment)
+                      }}
+                      onMarkNoShow={async () => {
+                        try {
+                          await appointmentService.updateStatus(
+                            appointment._id,
+                            "No-Show"
+                          );
+                          toast.success("Appointment marked as no-show");
+                          fetchAppointments();
+                        } catch (error) {
+                          toast.error("Failed to update appointment");
                         }
-                        onMessage={() =>
-                          (window.location.href = `/messages?patientId=${
-                            appointment.patientID?._id || appointment.patientID
-                          }`)
+                      }}
+                      isTimeline={true}
+                      onStartAppointment={async () => {
+                        try {
+                          await appointmentService.updateStatus(
+                            appointment._id,
+                            "In-Progress"
+                          );
+                          toast.success("Appointment started");
+                          fetchAppointments();
+                        } catch (error) {
+                          toast.error("Failed to start appointment");
                         }
-                        onComplete={async () => {
-                          try {
-                            await appointmentService.updateStatus(
-                              appointment._id,
-                              "Completed"
-                            );
-                            toast.success("Appointment marked as completed");
-                            fetchAppointments();
-                          } catch (error) {
-                            toast.error("Failed to complete appointment");
-                          }
-                        }}
-                        onCancel={async () => {
-                          try {
-                            await appointmentService.cancel(appointment._id);
-                            toast.success("Appointment cancelled");
-                            fetchAppointments();
-                          } catch (error) {
-                            toast.error("Failed to cancel appointment");
-                          }
-                        }}
-                        onMarkNoShow={async () => {
-                          try {
-                            await appointmentService.updateStatus(
-                              appointment._id,
-                              "No-Show"
-                            );
-                            toast.success("Appointment marked as no-show");
-                            fetchAppointments();
-                          } catch (error) {
-                            toast.error("Failed to update appointment");
-                          }
-                        }}
-                        isTimeline={true}
-                        onStartAppointment={async () => {
-                          try {
-                            await appointmentService.updateStatus(
-                              appointment._id,
-                              "In-Progress"
-                            );
-                            toast.success("Appointment started");
-                            fetchAppointments();
-                          } catch (error) {
-                            toast.error("Failed to start appointment");
-                          }
-                        }}
-                      />
-                    ));
-                  }
+                      }}
+                      onViewSummary={() => handleViewSummary(appointment._id)}
+                      onClick={() => handleViewDetails(appointment)}
+                    />
+                  ));
+                }
 
-                  return (
-                    <div key={slot.hour} className="flex gap-4 mb-4">
-                      <div className="min-w-[80px] text-right pt-1">
-                        <span className="text-sm text-darkerStroke">
-                          {slot.displayTime}
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="w-2 h-2 rounded-full bg-darkerStroke mt-2" />
-                        <div className="w-[1px] bg-darkerStroke h-16" />
-                      </div>
-                      <div className="flex-1 h-16 border-b border-dashed border-stroke" />
+                return (
+                  <div key={slot.hour} className="flex gap-4 mb-4">
+                    <div className="min-w-[80px] text-right pt-1">
+                      <span className="text-sm text-darkerStroke">
+                        {slot.displayTime}
+                      </span>
                     </div>
-                  );
-                })
-              ) : (
+                    <div className="flex flex-col items-center">
+                      <div className="w-2 h-2 rounded-full bg-darkerStroke mt-2" />
+                      <div className="w-[1px] bg-darkerStroke h-16" />
+                    </div>
+                    <div className="flex-1 h-16 border-b border-dashed border-stroke" />
+                  </div>
+                );
+              })}
+
+              {todayAppointments.length === 0 && (
                 <div className="text-center py-8 text-secondaryText">
                   <p>No appointments scheduled for today</p>
                   <p className="text-sm mt-2">

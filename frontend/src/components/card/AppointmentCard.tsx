@@ -20,6 +20,7 @@ interface AppointmentCardProps {
   doctorId: string;
   profilePic?: string;
   appointmentType: string;
+  appointmentId: string;
   instructionId?: string;
   summaryId?: string;
   notes?: string;
@@ -32,6 +33,7 @@ interface AppointmentCardProps {
   onReschedule?: () => void;
   onMessage?: () => void;
   onViewProfile?: () => void;
+  onClick?: () => void;
 }
 
 const AppointmentCard: React.FC<AppointmentCardProps> = ({
@@ -41,6 +43,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   doctorId,
   profilePic,
   appointmentType,
+  appointmentId,
   instructionId,
   summaryId,
   past,
@@ -53,6 +56,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   onReschedule,
   onMessage,
   onViewProfile,
+  onClick,
 }) => {
   // Determine actual status based on past flag and status prop
   const getActualStatus = () => {
@@ -127,11 +131,23 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     });
   };
 
+  const handleViewInstructions = () => {
+    window.open(
+      "https://www.nia.nih.gov/health/medical-care-and-appointments/how-prepare-doctors-appointment",
+      "_blank"
+    );
+  };
+
+  const handleViewSummary = () => {
+    window.location.href = `http://localhost:3000/medical-records/${appointmentId}`;
+  };
+
   return (
     <div
       className={`flex flex-col bg-foreground rounded-xl shadow-sm hover:shadow-md transition-all border border-stroke overflow-hidden ${
         width ? `w-${width}` : ""
       }`}
+      onClick={onClick}
     >
       <div
         className={`px-4 py-2 border-b ${getStatusColor()} flex items-center justify-between`}
@@ -149,14 +165,14 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <div className="flex flex-row gap-3">
           <SmallInfoCard
             icon={Heartbeat}
-            title="Type"
+            title="Symptoms"
             value={appointmentType}
             backgroundWhite={true}
             width="1/2"
           />
           <SmallInfoCard
             icon={Clock}
-            title={startTime && endTime ? "Duration" : "Date"}
+            title={startTime && endTime ? "Time" : "Date"}
             value={
               startTime && endTime
                 ? `${formatTime(startTime)} - ${formatTime(endTime)}`
@@ -180,14 +196,25 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           onViewProfile={onViewProfile}
         />
 
-        {(instructionId || summaryId) && (
-          <div className="flex flex-row gap-2 items-center cursor-pointer hover:text-primary transition-colors">
+        {actualStatus === "Scheduled" && (
+          <div
+            className="flex flex-row gap-2 items-center cursor-pointer hover:text-primary transition-colors"
+            onClick={handleViewInstructions}
+          >
             <PaperclipHorizontal size={20} className="text-primaryText" />
             <p className="text-sm underline">
-              {actualStatus !== "Completed"
-                ? "View Pre-Appointment Instructions"
-                : "View After Visit Summary"}
+              View Pre-Appointment Instructions
             </p>
+          </div>
+        )}
+
+        {actualStatus === "Completed" && (
+          <div
+            className="flex flex-row gap-2 items-center cursor-pointer hover:text-primary transition-colors"
+            onClick={handleViewSummary}
+          >
+            <PaperclipHorizontal size={20} className="text-primaryText" />
+            <p className="text-sm underline">View After Visit Summary</p>
           </div>
         )}
 
@@ -202,6 +229,19 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 <p className="text-sm text-secondaryText">{notes}</p>
               </div>
             </div>
+          </div>
+        )}
+
+        {actualStatus === "Scheduled" && !past && (
+          <div className="flex gap-2 pt-3 border-t border-gray-100">
+            {onCancel && (
+              <button
+                onClick={onCancel}
+                className="flex-1 text-xs py-2 px-3 bg-red-50 border border-error text-error rounded-lg hover:bg-red-100 transition-colors font-medium"
+              >
+                Cancel Appointment
+              </button>
+            )}
           </div>
         )}
 

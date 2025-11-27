@@ -34,6 +34,7 @@ import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoute
 import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
 import appointmentRoutes from "./routes/appointments/appointmentRoutes.js";
+import medOrderRoutes from "./routes/medications/medOrderRoutes.js";
 
 // Setup Express
 const app = express();
@@ -56,6 +57,8 @@ app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
 app.use("/api/tickets/bugTicket", bugTicketRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/medorders", medOrderRoutes);
+
 // Start server
 const server = http.createServer(app);
 socketServer.initialize(server);

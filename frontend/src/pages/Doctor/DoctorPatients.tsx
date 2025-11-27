@@ -5,6 +5,9 @@ import { Users } from "phosphor-react";
 import { User } from "api/types/user.types";
 import { Patient } from "api/types/patient.types";
 import PatientCard from "components/card/PatientCard";
+import { appointmentService } from "api/services/appointment.service";
+import { doctorService } from "api/services/doctor.service";
+import toast from "react-hot-toast";
 
 const DoctorPatientsPage: React.FC = () => {
   useRequireRole("Doctor");
@@ -15,87 +18,129 @@ const DoctorPatientsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<"name" | "recent" | "condition">("name");
+  const [doctorId, setDoctorId] = useState<string>("");
 
-  // Load patients
+  // Get doctor ID first
   useEffect(() => {
-    fetchPatients();
+    const fetchDoctorInfo = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        try {
+          const doctorData = await doctorService.getByUserId(user._id);
+          console.log("Doctor ID:", doctorData._id);
+          setDoctorId(doctorData._id);
+        } catch (error) {
+          console.error("Failed to get doctor info:", error);
+          toast.error("Failed to load doctor information");
+        }
+      }
+    };
+
+    fetchDoctorInfo();
   }, []);
 
-  const fetchPatients = async () => {
+  // Load patients from appointments when doctor ID is available
+  useEffect(() => {
+    if (doctorId) {
+      fetchPatientsFromAppointments();
+    }
+  }, [doctorId]);
+
+  const fetchPatientsFromAppointments = async () => {
+    if (!doctorId) return;
+
     try {
       setLoading(true);
-      // This would be your actual API call
-      // const response = await patientService.getMyPatients();
 
-      // Sample data for now - matching your Patient interface
-      const samplePatients: Patient[] = [
-        {
-          _id: "1",
-          user: {
-            _id: "user1",
-            firstName: "John",
-            lastName: "Doe",
-            email: "john.doe@email.com",
-            phoneNumber: "(555) 123-4567",
-            profilePic: undefined,
-            username: "johndoe",
-            role: "Patient",
-          } as User,
-          birthday: new Date("1980-05-15"),
-          address: "123 Main St, Springfield, IL",
-          bloodtype: "A+",
-          allergies: ["Penicillin", "Peanuts"],
-          medicalHistory: ["Hypertension", "Type 2 Diabetes"],
-          emergencyContact: [],
-        },
-        {
-          _id: "2",
-          user: {
-            _id: "user2",
-            firstName: "Jane",
-            lastName: "Smith",
-            email: "jane.smith@email.com",
-            phoneNumber: "(555) 987-6543",
-            profilePic: undefined,
-            username: "janesmith",
-            role: "Patient",
-          } as User,
-          birthday: new Date("1975-08-22"),
-          address: "456 Oak Ave, Springfield, IL",
-          bloodtype: "O+",
-          allergies: ["Latex", "Shellfish", "Aspirin"],
-          medicalHistory: ["Asthma", "Migraine"],
-          emergencyContact: [],
-        },
-        {
-          _id: "3",
-          user: {
-            _id: "user3",
-            firstName: "Robert",
-            lastName: "Johnson",
-            email: "robert.j@email.com",
-            phoneNumber: "(555) 456-7890",
-            profilePic: undefined,
-            username: "robertj",
-            role: "Patient",
-          } as User,
-          birthday: new Date("1990-12-10"),
-          address: "789 Elm St, Springfield, IL",
-          bloodtype: "B+",
-          allergies: [],
-          medicalHistory: [],
-          emergencyContact: [],
-        },
-      ];
+      // Fetch all appointments for this doctor
+      const response: any = await appointmentService.getDoctorAppointments(
+        doctorId
+      );
+      console.log("Doctor appointments:", response);
 
-      setPatients(samplePatients);
-      setFilteredPatients(samplePatients);
+      const appointmentsData = Array.isArray(response) ? response : [];
+
+      // Extract unique patients from appointments
+      const uniquePatientsMap = new Map<string, Patient>();
+
+      appointmentsData.forEach((appointment: any) => {
+        if (
+          appointment.patientID &&
+          typeof appointment.patientID === "object"
+        ) {
+          const patientData = appointment.patientID;
+          const patientId = patientData._id;
+
+          // Only add if we haven't seen this patient before
+          if (!uniquePatientsMap.has(patientId)) {
+            // Construct the Patient object
+            const patient: Patient = {
+              _id: patientId,
+              user:
+                patientData.user ||
+                ({
+                  _id: patientData.user?._id || patientId,
+                  firstName: patientData.user?.firstName || "Unknown",
+                  lastName: patientData.user?.lastName || "Patient",
+                  email: patientData.user?.email || "",
+                  phoneNumber: patientData.user?.phoneNumber || "",
+                  profilePic: patientData.user?.profilePic,
+                  username:
+                    patientData.user?.username || `patient_${patientId}`,
+                  role: "Patient",
+                } as User),
+              birthday: patientData.birthday,
+              address: patientData.address || "",
+              bloodtype: patientData.bloodtype || "",
+              allergies: patientData.allergies || [],
+              medicalHistory: patientData.medicalHistory || [],
+              emergencyContact: patientData.emergencyContact || [],
+            };
+
+            uniquePatientsMap.set(patientId, patient);
+          } else {
+            // Update appointment count and last appointment date
+            const existingPatient = uniquePatientsMap.get(patientId)!;
+            const appointmentDate = new Date(appointment.startTime);
+            if (
+              appointmentDate > (existingPatient as any).lastAppointmentDate
+            ) {
+              (existingPatient as any).lastAppointmentDate = appointmentDate;
+              (existingPatient as any).lastAppointmentType =
+                appointment.summary || "Consultation";
+            }
+            (existingPatient as any).totalAppointments =
+              ((existingPatient as any).totalAppointments || 0) + 1;
+          }
+        }
+      });
+
+      const uniquePatients = Array.from(uniquePatientsMap.values());
+      console.log(
+        `Found ${uniquePatients.length} unique patients from ${appointmentsData.length} appointments`
+      );
+
+      // Sort by last appointment date (most recent first) by default
+      uniquePatients.sort((a, b) => {
+        const dateA = (a as any).lastAppointmentDate || new Date(0);
+        const dateB = (b as any).lastAppointmentDate || new Date(0);
+        return dateB.getTime() - dateA.getTime();
+      });
+
+      setPatients(uniquePatients);
+      setFilteredPatients(uniquePatients);
     } catch (error) {
-      console.error("Error fetching patients:", error);
+      console.error("Error fetching patients from appointments:", error);
+      toast.error("Failed to load patients");
+      setPatients([]);
+      setFilteredPatients([]);
     } finally {
       setLoading(false);
     }
   };
+
+  // Filter patients based on search query
   useEffect(() => {
     if (!searchQuery) {
       setFilteredPatients(patients);
@@ -122,32 +167,68 @@ const DoctorPatientsPage: React.FC = () => {
         ) ||
         patient.medicalHistory?.some((condition: string) =>
           condition.toLowerCase().includes(query)
-        )
+        ) ||
+        (patient as any).lastAppointmentType?.toLowerCase().includes(query)
       );
     });
 
     setFilteredPatients(filtered);
   }, [searchQuery, patients]);
 
+  // Sort patients
+  useEffect(() => {
+    const sorted = [...filteredPatients];
+
+    switch (sortBy) {
+      case "name":
+        sorted.sort((a, b) => {
+          const nameA = `${(a.user as User).firstName} ${
+            (a.user as User).lastName
+          }`.toLowerCase();
+          const nameB = `${(b.user as User).firstName} ${
+            (b.user as User).lastName
+          }`.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+        break;
+      case "recent":
+        sorted.sort((a, b) => {
+          const dateA = (a as any).lastAppointmentDate || new Date(0);
+          const dateB = (b as any).lastAppointmentDate || new Date(0);
+          return dateB.getTime() - dateA.getTime();
+        });
+        break;
+      case "condition":
+        sorted.sort((a, b) => {
+          const conditionA = a.medicalHistory?.[0] || "";
+          const conditionB = b.medicalHistory?.[0] || "";
+          return conditionA.localeCompare(conditionB);
+        });
+        break;
+    }
+
+    setFilteredPatients(sorted);
+  }, [sortBy]);
+
   // Action handlers
   const handleViewProfile = (patient: Patient) => {
     console.log("View profile:", patient);
-    // Navigate to patient profile
+    window.location.href = `/patient/${patient._id}`;
   };
 
   const handleScheduleAppointment = (patient: Patient) => {
     console.log("Schedule appointment:", patient);
-    // Navigate to scheduling
+    window.location.href = `/schedule?patientId=${patient._id}`;
   };
 
   const handleViewRecords = (patient: Patient) => {
     console.log("View records:", patient);
-    // Navigate to medical records
+    window.location.href = `/medical-records?patientId=${patient._id}`;
   };
 
   const handleMessage = (patient: Patient) => {
     console.log("Message patient:", patient);
-    // Navigate to messages with this patient
+    window.location.href = `/messages?patientId=${patient._id}`;
   };
 
   if (loading) {
@@ -166,7 +247,11 @@ const DoctorPatientsPage: React.FC = () => {
             <div>
               <h1 className="text-3xl font-semibold mb-2">My Patients</h1>
               <p className="text-white/80">
-                Manage and view your patient records
+                {patients.length > 0
+                  ? `Managing ${patients.length} patient${
+                      patients.length !== 1 ? "s" : ""
+                    } from your appointments`
+                  : "Patients from your appointments will appear here"}
               </p>
             </div>
           </div>
@@ -180,11 +265,23 @@ const DoctorPatientsPage: React.FC = () => {
               value={searchQuery}
               onChange={setSearchQuery}
               onClear={() => setSearchQuery("")}
-              placeholder="Search patients by name, ID, or condition..."
+              placeholder="Search patients by name, condition, or appointment type..."
             />
           </div>
 
           <div className="flex gap-2">
+            {/* Sort dropdown */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-3 py-2 bg-white border border-stroke rounded-lg text-sm text-primaryText focus:outline-none focus:ring-2 focus:ring-primary/20"
+            >
+              <option value="recent">Most Recent</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="condition">Medical Condition</option>
+            </select>
+
+            {/* View mode toggle */}
             <div className="flex bg-white border border-stroke rounded-lg">
               <button
                 onClick={() => setViewMode("grid")}
@@ -193,6 +290,7 @@ const DoctorPatientsPage: React.FC = () => {
                     ? "bg-primary text-white"
                     : "text-secondaryText"
                 } rounded-l-lg transition-colors`}
+                title="Grid view"
               >
                 <svg
                   className="w-5 h-5"
@@ -209,6 +307,7 @@ const DoctorPatientsPage: React.FC = () => {
                     ? "bg-primary text-white"
                     : "text-secondaryText"
                 } rounded-r-lg transition-colors`}
+                title="List view"
               >
                 <svg
                   className="w-5 h-5"
@@ -250,14 +349,16 @@ const DoctorPatientsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <Users size={64} className="mx-auto text-secondaryText/30 mb-4" />
-            <p className="text-lg text-secondaryText">No patients found</p>
-            {searchQuery && (
-              <p className="text-sm text-secondaryText mt-2">
-                Try adjusting your search criteria
-              </p>
-            )}
+          <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-stroke p-8">
+            <Users size={64} className="mx-auto text-gray-300 mb-4" />
+            <p className="text-lg text-primaryText font-medium">
+              {searchQuery ? "No patients found" : "No patients yet"}
+            </p>
+            <p className="text-sm text-secondaryText mt-2">
+              {searchQuery
+                ? "Try adjusting your search criteria"
+                : "Patients will appear here after you have appointments with them"}
+            </p>
           </div>
         )}
       </div>

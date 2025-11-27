@@ -1,90 +1,48 @@
 import Availability from "../../models/doctors/Availability.js";
 import Doctor from "../../models/doctors/Doctor.js";
 
-export const createRecurringAvailability = async (req, res) => {
-  try {
-    const { doctorId } = req.params;
-    const { weeklySchedule } = req.body;
-
-    const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      return res.status(404).json({ error: "Doctor not found" });
-    }
-
-    // First, deactivate ALL existing recurring availabilities for this doctor
-    await Availability.updateMany(
-      {
-        doctor: doctorId,
-        type: "Recurring",
-      },
-      { isActive: false }
-    );
-
-    const createdAvailabilities = [];
-
-    // Only create new ones if there are any in the schedule
-    if (weeklySchedule && weeklySchedule.length > 0) {
-      for (const availabilityData of weeklySchedule) {
-        // Only process days that have time slots
-        if (
-          availabilityData.timeSlots &&
-          availabilityData.timeSlots.length > 0
-        ) {
-          // Check if this already exists (but inactive)
-          const existing = await Availability.findOne({
-            doctor: doctorId,
-            type: "Recurring",
-            dayOfWeek: availabilityData.dayOfWeek,
-          });
-
-          if (existing) {
-            // Reactivate and update existing
-            existing.timeSlots = availabilityData.timeSlots;
-            existing.isActive = true;
-            existing.updatedBy = req.user?._id;
-            await existing.save();
-            createdAvailabilities.push(existing);
-          } else {
-            // Create new
-            const availability = new Availability({
-              doctor: doctorId,
-              type: "Recurring",
-              dayOfWeek: availabilityData.dayOfWeek,
-              timeSlots: availabilityData.timeSlots,
-              isActive: true,
-              createdBy: req.user?._id,
-            });
-            await availability.save();
-            createdAvailabilities.push(availability);
-          }
-        }
-      }
-    }
-
-    // If no availabilities were created (all days unchecked), that's ok
-    // The deactivation above handles clearing everything
-
-    return res.status(201).json({
-      message:
-        weeklySchedule.length === 0
-          ? "All recurring availability cleared"
-          : "Recurring availability updated",
-      availabilities: createdAvailabilities,
-    });
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
-};
-
-// Set availability for a specific date (overrides recurring for that date)
+// Fixed setDateAvailability function
 export const setDateAvailability = async (req, res) => {
   try {
     const { doctorId } = req.params;
-    const { date, timeSlots } = req.body;
+    const { date, timeSlots: requestTimeSlots } = req.body; // Rename to avoid conflict
 
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
       return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    // Helper function to add one hour
+    const addOneHour = (time) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      const newHours = hours + 1;
+      return `${String(newHours).padStart(2, "0")}:${String(minutes).padStart(
+        2,
+        "0"
+      )}`;
+    };
+
+    // Process the time slots to ensure they're 1-hour slots
+    let processedTimeSlots = [];
+
+    if (requestTimeSlots && requestTimeSlots.length > 0) {
+      processedTimeSlots = requestTimeSlots.map((slot) => {
+        // If the slot already has correct endTime, use it
+        if (slot.endTime) {
+          return {
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            isBooked: slot.isBooked || false,
+          };
+        } else {
+          // Otherwise, calculate endTime as 1 hour after startTime
+          return {
+            startTime: slot.startTime,
+            endTime: addOneHour(slot.startTime),
+            isBooked: slot.isBooked || false,
+          };
+        }
+      });
     }
 
     // Parse the date as YYYY-MM-DD and create a date at noon to avoid timezone issues
@@ -113,7 +71,7 @@ export const setDateAvailability = async (req, res) => {
       doctor: doctorId,
       type: "Single",
       date: targetDate,
-      timeSlots: timeSlots || [], // Empty array blocks the date
+      timeSlots: processedTimeSlots, // Use the processed slots
       isActive: true,
       createdBy: req.user?._id,
     });
@@ -122,13 +80,104 @@ export const setDateAvailability = async (req, res) => {
 
     return res.status(201).json({
       message:
-        timeSlots && timeSlots.length > 0
+        processedTimeSlots.length > 0
           ? "Date availability set successfully"
           : "Date blocked successfully",
       availability,
       date: date,
     });
   } catch (err) {
+    console.error("Error in setDateAvailability:", err);
+    return res.status(400).json({ error: err.message });
+  }
+};
+
+// Updated createRecurringAvailability to handle 1-hour slots
+export const createRecurringAvailability = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { weeklySchedule } = req.body;
+
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    // Deactivate ALL existing recurring availabilities for this doctor
+    await Availability.updateMany(
+      {
+        doctor: doctorId,
+        type: "Recurring",
+      },
+      { isActive: false }
+    );
+
+    const createdAvailabilities = [];
+
+    // Only create new ones if there are any in the schedule
+    if (weeklySchedule && weeklySchedule.length > 0) {
+      for (const availabilityData of weeklySchedule) {
+        // Only process days that have time slots
+        if (
+          availabilityData.timeSlots &&
+          availabilityData.timeSlots.length > 0
+        ) {
+          // Ensure all slots are properly formatted with endTime
+          const processedSlots = availabilityData.timeSlots.map((slot) => {
+            if (!slot.endTime) {
+              // If no endTime, assume 1 hour duration
+              const [hours, minutes] = slot.startTime.split(":").map(Number);
+              const endHours = hours + 1;
+              return {
+                ...slot,
+                endTime: `${String(endHours).padStart(2, "0")}:${String(
+                  minutes
+                ).padStart(2, "0")}`,
+              };
+            }
+            return slot;
+          });
+
+          // Check if this already exists (but inactive)
+          const existing = await Availability.findOne({
+            doctor: doctorId,
+            type: "Recurring",
+            dayOfWeek: availabilityData.dayOfWeek,
+          });
+
+          if (existing) {
+            // Reactivate and update existing
+            existing.timeSlots = processedSlots;
+            existing.isActive = true;
+            existing.updatedBy = req.user?._id;
+            await existing.save();
+            createdAvailabilities.push(existing);
+          } else {
+            // Create new
+            const availability = new Availability({
+              doctor: doctorId,
+              type: "Recurring",
+              dayOfWeek: availabilityData.dayOfWeek,
+              timeSlots: processedSlots,
+              isActive: true,
+              createdBy: req.user?._id,
+            });
+            await availability.save();
+            createdAvailabilities.push(availability);
+          }
+        }
+      }
+    }
+
+    return res.status(201).json({
+      message:
+        weeklySchedule.length === 0
+          ? "All recurring availability cleared"
+          : "Recurring availability updated",
+      availabilities: createdAvailabilities,
+    });
+  } catch (err) {
+    console.error("Error in createRecurringAvailability:", err);
     return res.status(400).json({ error: err.message });
   }
 };

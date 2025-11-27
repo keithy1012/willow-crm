@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import AppointmentCard from "components/card/AppointmentCard";
-import Dropdown from "components/input/Dropdown";
+import CustomDropdown from "components/input/Dropdown";
 import { useRequireRole } from "hooks/useRequireRole";
 import { appointmentService } from "api/services/appointment.service";
 import { patientService } from "api/services/patient.service";
 import toast from "react-hot-toast";
 import { Calendar, Clock, CheckCircle, XCircle } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 
 const Appointments = () => {
+  const navigate = useNavigate();
   const [sortBy, setSortBy] = useState("All");
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +83,11 @@ const Appointments = () => {
     }
   };
 
+  // Handlers
+  const handleViewDetails = (appointment: any) => {
+    navigate(`/patient/appointment/${appointment._id}`);
+  };
+
   // Separate and sort appointments based on dropdown selection
   const getFilteredAppointments = () => {
     const today = new Date();
@@ -88,7 +95,7 @@ const Appointments = () => {
 
     let filtered = [...appointments];
 
-    if (sortBy === "Upcoming") {
+    if (sortBy === "Upcoming Appointments") {
       filtered = filtered.filter(
         (apt) =>
           new Date(apt.startTime) >= today &&
@@ -99,7 +106,7 @@ const Appointments = () => {
         (a, b) =>
           new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
       );
-    } else if (sortBy === "Past") {
+    } else if (sortBy === "Past Appointments") {
       filtered = filtered.filter(
         (apt) =>
           new Date(apt.startTime) < today ||
@@ -142,37 +149,30 @@ const Appointments = () => {
       apt.status === "Cancelled"
   );
 
-  // Group past appointments by time period
+  // Group past appointments by time period for timeline
   const groupPastAppointments = () => {
     const groups: { [key: string]: any[] } = {
-      "This Week": [],
-      "This Month": [],
-      "Last 3 Months": [],
-      "Last 6 Months": [],
+      "Past 6 Months": [],
+      "Past 1 Year": [],
       Older: [],
     };
 
     const now = new Date();
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
     const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+    const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
 
     pastAppointments.forEach((apt) => {
       const aptDate = new Date(apt.startTime);
-      if (aptDate >= weekAgo) {
-        groups["This Week"].push(apt);
-      } else if (aptDate >= monthAgo) {
-        groups["This Month"].push(apt);
-      } else if (aptDate >= threeMonthsAgo) {
-        groups["Last 3 Months"].push(apt);
-      } else if (aptDate >= sixMonthsAgo) {
-        groups["Last 6 Months"].push(apt);
+      if (aptDate >= sixMonthsAgo) {
+        groups["Past 6 Months"].push(apt);
+      } else if (aptDate >= yearAgo) {
+        groups["Past 1 Year"].push(apt);
       } else {
         groups["Older"].push(apt);
       }
     });
 
+    // Return only non-empty groups
     return Object.entries(groups).filter(([_, apts]) => apts.length > 0);
   };
 
@@ -193,8 +193,8 @@ const Appointments = () => {
 
   const displayAppointments =
     sortBy === "All" ? appointments : getFilteredAppointments();
-  const showUpcoming = sortBy === "Upcoming" || sortBy === "All";
-  const showPast = sortBy === "Past" || sortBy === "All";
+  const showUpcoming = sortBy === "Upcoming Appointments" || sortBy === "All";
+  const showPast = sortBy === "Past Appointments" || sortBy === "All";
 
   return (
     <div className="min-h-screen bg-background">
@@ -243,14 +243,12 @@ const Appointments = () => {
 
       <div className="px-16 py-8">
         <div className="mb-8 flex items-center justify-between">
-          <div className="w-64">
-            <label className="text-sm text-secondaryText mb-2 block">
-              Filter Appointments
-            </label>
-            <Dropdown
+          <div className="w-80">
+            <CustomDropdown
+              label="Sort By"
               value={sortBy}
               onChange={setSortBy}
-              options={["Upcoming", "Past", "All"]}
+              options={["All", "Upcoming Appointments", "Past Appointments"]}
               placeholder="Select filter"
             />
           </div>
@@ -304,15 +302,12 @@ const Appointments = () => {
                       startTime={appointment.startTime}
                       endTime={appointment.endTime}
                       onCancel={() => {
-                        // Handle cancel
                         console.log("Cancel appointment:", appointment._id);
                       }}
                       onReschedule={() => {
-                        // Handle reschedule
                         console.log("Reschedule appointment:", appointment._id);
                       }}
                       onMessage={() => {
-                        // Handle message
                         window.location.href = `/messages?doctorId=${
                           appointment.doctorID?._id || appointment.doctorID
                         }`;
@@ -323,6 +318,8 @@ const Appointments = () => {
                         )
                       }
                       width="full"
+                      appointmentId={appointment._id}
+                      onClick={() => handleViewDetails(appointment)}
                     />
                   ))}
                 </div>
@@ -331,71 +328,100 @@ const Appointments = () => {
 
             {showUpcoming &&
               upcomingAppointments.length === 0 &&
-              sortBy === "Upcoming" && (
+              sortBy === "Upcoming Appointments" && (
                 <div className="text-center py-8 bg-white rounded-xl shadow-sm border border-stroke">
                   <p className="text-secondaryText">No upcoming appointments</p>
                 </div>
               )}
 
+            {/* Past Appointments Section with Timeline */}
             {showPast && pastAppointments.length > 0 && (
-              <div className="space-y-8">
-                <h2 className="font-semibold text-xl text-primaryText flex items-center gap-2">
+              <div className="space-y-5">
+                <h2 className="font-semibold text-xl mb-6 text-primaryText flex items-center gap-2">
                   <Clock size={24} className="text-primary" />
                   Past Appointments
                 </h2>
 
-                {groupPastAppointments().map(([period, appointments]) => (
-                  <div key={period} className="space-y-4">
-                    <h3 className="font-medium text-lg text-primaryText border-b border-stroke pb-2">
-                      {period}
-                    </h3>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {appointments.map((appointment) => (
-                        <AppointmentCard
-                          key={appointment._id}
-                          dateOfAppointment={new Date(appointment.startTime)}
-                          doctorName={
-                            appointment.doctorID?.user?.firstName &&
-                            appointment.doctorID?.user?.lastName
-                              ? `Dr. ${appointment.doctorID.user.firstName} ${appointment.doctorID.user.lastName}`
-                              : "Doctor"
-                          }
-                          doctorUsername={
-                            appointment.doctorID?.user?.email?.split("@")[0] ||
-                            "doctor"
-                          }
-                          doctorId={
-                            appointment.doctorID?._id || appointment.doctorID
-                          }
-                          profilePic={appointment.doctorID?.user?.profilePic}
-                          appointmentType={
-                            appointment.summary || "Medical Consultation"
-                          }
-                          summaryId={appointment.summaryId || appointment._id}
-                          instructionId={appointment._id}
-                          notes={appointment.description}
-                          past={true}
-                          status={appointment.status || "Completed"}
-                          startTime={appointment.startTime}
-                          endTime={appointment.endTime}
-                          onViewProfile={() =>
-                            onViewProfile(
-                              appointment.doctorID?._id || appointment.doctorID
-                            )
-                          }
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                <div className="relative">
+                  {/* Timeline vertical line */}
+                  <div className="absolute left-2 top-0 bottom-0 w-[1px] bg-primaryText"></div>
+
+                  {groupPastAppointments().map(
+                    ([period, appointments], periodIndex) => (
+                      <div key={period} className="mb-12 relative">
+                        {/* Timeline dot */}
+                        <div className="absolute left-0 w-4 h-4 bg-primaryText rounded-full border-4 border-white shadow-sm"></div>
+
+                        {/* Period label */}
+                        <div className="ml-10 mb-6">
+                          <h3 className="font-medium text-lg text-primaryText">
+                            {period}
+                          </h3>
+                        </div>
+
+                        {/* Appointment cards in grid */}
+                        <div className="ml-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          {appointments.map((appointment) => (
+                            <AppointmentCard
+                              key={appointment._id}
+                              dateOfAppointment={
+                                new Date(appointment.startTime)
+                              }
+                              doctorName={
+                                appointment.doctorID?.user?.firstName &&
+                                appointment.doctorID?.user?.lastName
+                                  ? `Dr. ${appointment.doctorID.user.firstName} ${appointment.doctorID.user.lastName}`
+                                  : "Doctor"
+                              }
+                              doctorUsername={
+                                appointment.doctorID?.user?.email?.split(
+                                  "@"
+                                )[0] || "doctor"
+                              }
+                              doctorId={
+                                appointment.doctorID?._id ||
+                                appointment.doctorID
+                              }
+                              profilePic={
+                                appointment.doctorID?.user?.profilePic
+                              }
+                              appointmentType={
+                                appointment.summary || "Medical Consultation"
+                              }
+                              summaryId={
+                                appointment.summaryId || appointment._id
+                              }
+                              instructionId={appointment._id}
+                              notes={appointment.description}
+                              past={true}
+                              status={appointment.status || "Completed"}
+                              startTime={appointment.startTime}
+                              endTime={appointment.endTime}
+                              onViewProfile={() =>
+                                onViewProfile(
+                                  appointment.doctorID?._id ||
+                                    appointment.doctorID
+                                )
+                              }
+                              appointmentId={appointment._id}
+                              onClick={() => handleViewDetails(appointment)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             )}
 
-            {showPast && pastAppointments.length === 0 && sortBy === "Past" && (
-              <div className="text-center py-8 bg-white rounded-xl shadow-sm border border-stroke">
-                <p className="text-secondaryText">No past appointments</p>
-              </div>
-            )}
+            {showPast &&
+              pastAppointments.length === 0 &&
+              sortBy === "Past Appointments" && (
+                <div className="text-center py-8 bg-white rounded-xl shadow-sm border border-stroke">
+                  <p className="text-secondaryText">No past appointments</p>
+                </div>
+              )}
           </>
         )}
       </div>
