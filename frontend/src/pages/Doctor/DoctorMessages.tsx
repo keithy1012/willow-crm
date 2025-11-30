@@ -2,6 +2,7 @@ import React from "react";
 import BaseMessages from "components/messages/BaseMessages";
 import { useRequireRole } from "hooks/useRequireRole";
 import PrimaryButton from "components/buttons/PrimaryButton";
+import { useNavigate } from "react-router-dom";
 
 const DoctorMessages: React.FC = () => {
   const [filterMode, setFilterMode] = React.useState<
@@ -9,7 +10,13 @@ const DoctorMessages: React.FC = () => {
   >("all");
 
   useRequireRole("Doctor");
-
+  const navigate = useNavigate();
+  const handleViewProfile = (userId: string) => {
+    // For doctors viewing profiles, need to determine if it's a patient or doctor
+    // For now, navigate to patient profile page
+    // You might need to check the user's role first
+    navigate(`/patient/${userId}`);
+  };
   const getFilters = () => {
     switch (filterMode) {
       case "patients":
@@ -63,6 +70,7 @@ const DoctorMessages: React.FC = () => {
       showOnlineStatus={true}
       conversationFilters={getFilters()}
       customActions={customActions}
+      onViewProfile={handleViewProfile}
     />
   );
 };

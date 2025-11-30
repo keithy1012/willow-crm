@@ -52,7 +52,7 @@ export const appointmentService = {
   testEmail: (data: any) =>
     apiClient.post('/appointments/test-email', data),
 
-   updateAppointmentDocuments: (appointmentId: string, documents: AppointmentDocument) =>
+    updateAppointmentDocuments: (appointmentId: string, documents: AppointmentDocument) =>
     apiClient.put(`/appointments/${appointmentId}/documents`, documents),
 
   // Get appointment documents
@@ -72,4 +72,23 @@ export const appointmentService = {
   // Download specific document
   downloadDocument: (appointmentId: string, documentType: 'afterVisitSummary' | 'notesAndInstructions') =>
     apiClient.get(`/appointments/${appointmentId}/documents/${documentType}`),
+
+  cancelWithReason: async (
+    appointmentId: string, 
+    reason: string, 
+    cancelledBy: "patient" | "doctor"
+  ) => {
+    return await apiClient.post(
+      `/appointments/${appointmentId}/cancel-with-reason`,
+      { reason, cancelledBy }
+    );
+  },
+
+  // Mark as no-show with reason
+  markNoShowWithReason: async (appointmentId: string, reason: string) => {
+    return await apiClient.post(
+      `/appointments/${appointmentId}/no-show-with-reason`,
+      { reason }
+    );
+  },
 };

@@ -1,4 +1,3 @@
-// routes/patientRoutes.js
 import express from "express";
 import {
   createPatient,
@@ -7,8 +6,9 @@ import {
   updatePatient,
   deletePatient,
   getInsuranceCards,
-  searchPatientsByName, // Add this import
-} from "../../controllers/patients/patientController.js"
+  searchPatientsByName,
+  getPatientByPatientId,
+} from "../../controllers/patients/patientController.js";
 
 const router = express.Router();
 
@@ -35,5 +35,7 @@ router.delete("/:id", deletePatient);
 
 // Gets a patient's insurance cards
 router.get("/getInsurance/:id", getInsuranceCards);
+
+router.get("/patient/:id", getPatientByPatientId);
 
 export default router;

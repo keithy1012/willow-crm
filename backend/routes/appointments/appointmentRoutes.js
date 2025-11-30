@@ -11,6 +11,8 @@ import {
   getAppointmentDocuments,
   notifyPatientOfDocument,
   downloadDocument,
+  cancelAppointmentWithReason,
+  markNoShowWithReason,
 } from "../../controllers/appointments/appointmentController.js";
 import { sendAppointmentConfirmation } from "../../utils/emailService.js";
 
@@ -24,13 +26,15 @@ router.get("/doctor/:doctorId", authenticate, getDoctorAppointments);
 router.get("/patient/:patientId", authenticate, getPatientAppointments);
 router.put("/:appointmentId/status", authenticate, updateAppointmentStatus);
 
-// NEW DOCUMENT ROUTES
 // Upload/update appointment documents (PDFs)
 router.put(
   "/:appointmentId/documents",
   authenticate,
   updateAppointmentDocuments
 );
+
+router.post("/:appointmentId/cancel-with-reason", cancelAppointmentWithReason);
+router.post("/:appointmentId/no-show-with-reason", markNoShowWithReason);
 
 // Get appointment documents info
 router.get("/:appointmentId/documents", authenticate, getAppointmentDocuments);

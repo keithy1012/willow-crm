@@ -44,7 +44,7 @@ import { AuthProvider, useAuth } from "contexts/AuthContext";
 import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import DoctorDashboard from "pages/Doctor/DoctorDashboard";
 import DoctorMessages from "pages/Doctor/DoctorMessages";
-import DoctorPatientsPage from "pages/Doctor/DoctorPatients";
+import DoctorPatientsPage from "pages/Doctor/Patients/DoctorPatients";
 import DoctorAppointments from "pages/Doctor/Appointments/DoctorAppointments";
 import PatientProfile from "pages/Patients/Profile";
 import PatientEditRequest from "pages/Patients/PatientEditRequest";
@@ -58,8 +58,10 @@ import ITProfile from "pages/IT/Profile";
 import ViewInvoices from "pages/Patients/ViewInvoices";
 import Logout from "components/sidebar/logout";
 import AppointmentDetails from "pages/Doctor/Appointments/[id]";
-import DoctorProfile from "pages/Doctor/Profile";
+import DoctorProfile from "pages/Doctor/Profile/Profile";
 import PatientAppointmentView from "pages/Patients/Appointments/[id]";
+import DoctorPatientProfile from "pages/Doctor/Patients/[id]";
+import PublicDoctorProfile from "pages/Doctor/Profile/PublicProfile";
 
 const PatientLayout: React.FC = () => {
   return (
@@ -289,6 +291,7 @@ const AppRoutes: React.FC = () => {
               path="/patient/appointment/:appointmentId"
               element={<PatientAppointmentView />}
             />
+            <Route path="/doctor/:doctorId" element={<PublicDoctorProfile />} />
           </Route>
 
           {/* Operations Routes */}
@@ -317,6 +320,12 @@ const AppRoutes: React.FC = () => {
               path="/doctor/appointment/:appointmentId"
               element={<AppointmentDetails />}
             />
+            <Route
+              path="/patient/:patientId"
+              element={<DoctorPatientProfile />}
+            />
+            <Route path="/doctor-bug-report" element={<BugReportPage />} />
+            <Route path="/doctor-help-support" element={<HelpSupportPage />} />
             <Route path="/doctor-profile" element={<DoctorProfile />} />
           </Route>
           {/* IT Routes */}

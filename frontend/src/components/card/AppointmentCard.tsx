@@ -32,7 +32,7 @@ interface AppointmentCardProps {
   onCancel?: () => void;
   onReschedule?: () => void;
   onMessage?: () => void;
-  onViewProfile?: () => void;
+  onViewProfile?: (doctorId: string) => void;
   onClick?: () => void;
 }
 
@@ -186,15 +186,19 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           />
         </div>
 
-        <ProfileHeaderCard
-          name={doctorName}
-          username={doctorUsername}
-          userId={doctorId}
-          message={actualStatus === "Scheduled" && onMessage ? true : false}
-          profilePic={profilePic}
-          onMessage={onMessage}
-          onViewProfile={onViewProfile}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ProfileHeaderCard
+            name={doctorName}
+            username={doctorUsername}
+            userId={doctorId}
+            message={actualStatus === "Scheduled" && onMessage ? true : false}
+            profilePic={profilePic}
+            onMessage={onMessage}
+            onViewProfile={
+              onViewProfile ? () => onViewProfile(doctorId) : undefined
+            }
+          />
+        </div>
 
         {actualStatus === "Scheduled" && (
           <div

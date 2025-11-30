@@ -212,7 +212,10 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
               </div>
             )}
 
-            <div className="flex gap-2 pt-2 border-t border-gray-100">
+            <div
+              className="flex gap-2 pt-2 border-t border-gray-100"
+              onClick={(e) => e.stopPropagation()}
+            >
               {status === "Scheduled" && (
                 <>
                   <PrimaryButton
@@ -337,7 +340,10 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
 
         {/* Action buttons for grid view */}
         {status === "Scheduled" && (
-          <div className="flex gap-2 pt-3 border-t border-gray-100">
+          <div
+            className="flex gap-2 pt-3 border-t border-gray-100"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={onComplete}
               className="flex-1 text-xs py-2 px-3 bg-green-50 text-green-600 border-[0.5px] border-success rounded-lg hover:bg-green-100 transition-colors flex items-center justify-center gap-1"

@@ -7,6 +7,7 @@ import { patientService } from "api/services/patient.service";
 import toast from "react-hot-toast";
 import { Calendar, Clock, CheckCircle, XCircle } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import CancelAppointmentModal from "components/modal/CancelAppointmentModal";
 
 const Appointments = () => {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [patientId, setPatientId] = useState<string>("");
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [processingCancel, setProcessingCancel] = useState(false);
 
   useRequireRole("Patient");
 
@@ -82,6 +86,37 @@ const Appointments = () => {
       setLoading(false);
     }
   };
+  const handleCancelAppointment = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setIsCancelModalOpen(true);
+  };
+
+  const handleConfirmCancellation = async (
+    reason: string,
+    type: "cancel" | "no-show"
+  ) => {
+    if (!selectedAppointment) return;
+
+    setProcessingCancel(true);
+    try {
+      await appointmentService.cancelWithReason(
+        selectedAppointment._id,
+        reason,
+        "patient"
+      );
+      toast.success("Appointment cancelled and doctor notified");
+
+      // Refresh appointments
+      await fetchAppointments();
+      setIsCancelModalOpen(false);
+      setSelectedAppointment(null);
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      toast.error("Failed to cancel appointment. Please try again.");
+    } finally {
+      setProcessingCancel(false);
+    }
+  };
 
   // Handlers
   const handleViewDetails = (appointment: any) => {
@@ -128,7 +163,7 @@ const Appointments = () => {
   };
 
   const onViewProfile = (doctorId: string) => {
-    window.location.href = `/doctor/${doctorId}`;
+    navigate(`/doctor/${doctorId}`);
   };
 
   // Get upcoming and past appointments
@@ -301,9 +336,7 @@ const Appointments = () => {
                       status={appointment.status || "Scheduled"}
                       startTime={appointment.startTime}
                       endTime={appointment.endTime}
-                      onCancel={() => {
-                        console.log("Cancel appointment:", appointment._id);
-                      }}
+                      onCancel={() => handleCancelAppointment(appointment)}
                       onReschedule={() => {
                         console.log("Reschedule appointment:", appointment._id);
                       }}
@@ -425,6 +458,48 @@ const Appointments = () => {
           </>
         )}
       </div>
+      <CancelAppointmentModal
+        isOpen={isCancelModalOpen}
+        onClose={() => {
+          if (!processingCancel) {
+            setIsCancelModalOpen(false);
+            setSelectedAppointment(null);
+          }
+        }}
+        onConfirm={handleConfirmCancellation}
+        type="cancel"
+        appointmentDate={
+          selectedAppointment
+            ? new Date(selectedAppointment.startTime).toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              )
+            : ""
+        }
+        appointmentTime={
+          selectedAppointment
+            ? new Date(selectedAppointment.startTime).toLocaleTimeString(
+                "en-US",
+                {
+                  hour: "numeric",
+                  minute: "2-digit",
+                }
+              )
+            : ""
+        }
+        doctorName={
+          selectedAppointment?.doctorID?.user?.firstName &&
+          selectedAppointment?.doctorID?.user?.lastName
+            ? `Dr. ${selectedAppointment.doctorID.user.firstName} ${selectedAppointment.doctorID.user.lastName}`
+            : "Doctor"
+        }
+        isLoading={processingCancel}
+      />
     </div>
   );
 };

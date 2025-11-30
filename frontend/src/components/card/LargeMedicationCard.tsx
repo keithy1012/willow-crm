@@ -15,6 +15,7 @@ interface LargeMedicationCardProps {
   pharmacyDetails: string;
   onRefillRequest: (medicationId: string) => void;
   onDelete: (medicationId: string) => void;
+  isPatient?: boolean;
 }
 
 const LargeMedicationCard: React.FC<LargeMedicationCardProps> = ({
@@ -27,6 +28,7 @@ const LargeMedicationCard: React.FC<LargeMedicationCardProps> = ({
   pharmacyDetails,
   onRefillRequest,
   onDelete,
+  isPatient,
 }) => {
   const [isRefillModalOpen, setIsRefillModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -96,20 +98,24 @@ const LargeMedicationCard: React.FC<LargeMedicationCardProps> = ({
           />
         </div>
         <div className="border-b border-secondaryText"></div>
-        <div className="flex flex-row w-full gap-4 justify-end">
-          <PrimaryButton
-            text={"Delete Medication"}
-            variant={"outline"}
-            size={"small"}
-            onClick={handleDeleteClick}
-          />
-          <PrimaryButton
-            text={"Request Refill"}
-            variant={"primary"}
-            size={"small"}
-            onClick={handleRefillClick}
-          />
-        </div>
+        {isPatient ? (
+          <div className="flex flex-row w-full gap-4 justify-end">
+            <PrimaryButton
+              text={"Delete Medication"}
+              variant={"outline"}
+              size={"small"}
+              onClick={handleDeleteClick}
+            />
+            <PrimaryButton
+              text={"Request Refill"}
+              variant={"primary"}
+              size={"small"}
+              onClick={handleRefillClick}
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
 
       <RefillConfirmationModal

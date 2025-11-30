@@ -28,6 +28,7 @@ interface BaseMessagesProps {
   };
   onConversationSelect?: (conversationId: string) => void;
   customActions?: React.ReactNode;
+  onViewProfile?: (userId: string) => void;
 }
 
 const BaseMessages: React.FC<BaseMessagesProps> = ({
@@ -38,6 +39,7 @@ const BaseMessages: React.FC<BaseMessagesProps> = ({
   conversationFilters,
   onConversationSelect,
   customActions,
+  onViewProfile,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -361,12 +363,19 @@ const BaseMessages: React.FC<BaseMessagesProps> = ({
         {activeConversation && activeRecipient ? (
           <>
             <div className="px-6 pt-6 mb-3 flex-shrink-0">
-              <ProfileHeaderCard
-                name={activeRecipient.name}
-                username={activeRecipient.username}
-                userId={activeRecipient.id}
-                profilePic={activeRecipient.avatar}
-              />
+              <div className="px-6 pt-6 mb-3 flex-shrink-0">
+                <ProfileHeaderCard
+                  name={activeRecipient.name}
+                  username={activeRecipient.username}
+                  userId={activeRecipient.id}
+                  profilePic={activeRecipient.avatar}
+                  onViewProfile={() => {
+                    if (onViewProfile) {
+                      onViewProfile(activeRecipient.id);
+                    }
+                  }}
+                />
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 space-y-4">

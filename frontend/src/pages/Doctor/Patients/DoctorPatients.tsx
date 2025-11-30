@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRequireRole } from "hooks/useRequireRole";
 import SmallSearchBar from "components/input/SmallSearchBar";
 import { Users } from "phosphor-react";
@@ -11,6 +12,7 @@ import toast from "react-hot-toast";
 
 const DoctorPatientsPage: React.FC = () => {
   useRequireRole("Doctor");
+  const navigate = useNavigate();
 
   const [patients, setPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
@@ -210,25 +212,25 @@ const DoctorPatientsPage: React.FC = () => {
     setFilteredPatients(sorted);
   }, [sortBy]);
 
-  // Action handlers
+  // Action handlers - Updated to use navigate
   const handleViewProfile = (patient: Patient) => {
     console.log("View profile:", patient);
-    window.location.href = `/patient/${patient._id}`;
+    navigate(`/patient/${patient._id}`);
   };
 
   const handleScheduleAppointment = (patient: Patient) => {
     console.log("Schedule appointment:", patient);
-    window.location.href = `/schedule?patientId=${patient._id}`;
+    navigate(`/schedule?patientId=${patient._id}`);
   };
 
   const handleViewRecords = (patient: Patient) => {
     console.log("View records:", patient);
-    window.location.href = `/medical-records?patientId=${patient._id}`;
+    navigate(`/medical-records?patientId=${patient._id}`);
   };
 
   const handleMessage = (patient: Patient) => {
     console.log("Message patient:", patient);
-    window.location.href = `/messages?patientId=${patient._id}`;
+    navigate(`/messages?patientId=${patient._id}`);
   };
 
   if (loading) {
@@ -270,17 +272,6 @@ const DoctorPatientsPage: React.FC = () => {
           </div>
 
           <div className="flex gap-2">
-            {/* Sort dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-3 py-2 bg-white border border-stroke rounded-lg text-sm text-primaryText focus:outline-none focus:ring-2 focus:ring-primary/20"
-            >
-              <option value="recent">Most Recent</option>
-              <option value="name">Name (A-Z)</option>
-              <option value="condition">Medical Condition</option>
-            </select>
-
             {/* View mode toggle */}
             <div className="flex bg-white border border-stroke rounded-lg">
               <button

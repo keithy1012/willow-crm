@@ -4,6 +4,15 @@ import Doctor from "../../models/doctors/Doctor.js";
 import Patient from "../../models/patients/Patient.js";
 import { sendAppointmentConfirmation } from "../../utils/emailService.js";
 import { sendDocumentNotification } from "../../utils/emailService.js";
+import nodemailer from "nodemailer";
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
 // Helper functions
 const formatDate = (date) => {
@@ -756,5 +765,261 @@ export const downloadDocument = async (req, res) => {
   } catch (err) {
     console.error("Error downloading document:", err);
     return res.status(500).json({ error: err.message });
+  }
+};
+
+// Cancel appointment with reason and email notification
+export const cancelAppointmentWithReason = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { reason, cancelledBy } = req.body; // cancelledBy: "patient" or "doctor"
+
+    const appointment = await Appointment.findById(appointmentId)
+      .populate({
+        path: "patientID",
+        populate: { path: "user" },
+      })
+      .populate({
+        path: "doctorID",
+        populate: { path: "user" },
+      });
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    // Update appointment status
+    appointment.status = "Cancelled";
+    appointment.cancellationReason = reason;
+    appointment.cancelledBy = cancelledBy;
+    appointment.cancelledAt = new Date();
+    await appointment.save();
+
+    // Get patient and doctor details
+    const patient = appointment.patientID;
+    const doctor = appointment.doctorID;
+    const patientUser = patient.user;
+    const doctorUser = doctor.user;
+
+    const appointmentDate = new Date(appointment.startTime).toLocaleDateString(
+      "en-US",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+    const appointmentTime = new Date(appointment.startTime).toLocaleTimeString(
+      "en-US",
+      {
+        hour: "numeric",
+        minute: "2-digit",
+      }
+    );
+
+    // Send email to the other party
+    const recipientEmail =
+      cancelledBy === "patient" ? doctorUser.email : patientUser.email;
+    const recipientName =
+      cancelledBy === "patient"
+        ? `Dr. ${doctorUser.firstName} ${doctorUser.lastName}`
+        : `${patientUser.firstName} ${patientUser.lastName}`;
+    const cancellerName =
+      cancelledBy === "patient"
+        ? `${patientUser.firstName} ${patientUser.lastName}`
+        : `Dr. ${doctorUser.firstName} ${doctorUser.lastName}`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: recipientEmail,
+      subject: `Appointment Cancelled - ${appointmentDate}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #5B7B9D 0%, #6886AC 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">Appointment Cancelled</h1>
+          </div>
+          
+          <div style="background-color: #fff; padding: 30px; border: 1px solid #e5e7eb; border-top: none;">
+            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+              Dear ${recipientName},
+            </p>
+            
+            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+              ${cancellerName} has cancelled the following appointment:
+            </p>
+
+            <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 10px 0; color: #555;"><strong>Date:</strong> ${appointmentDate}</p>
+              <p style="margin: 10px 0; color: #555;"><strong>Time:</strong> ${appointmentTime}</p>
+              <p style="margin: 10px 0; color: #555;"><strong>Type:</strong> ${
+                appointment.summary || "Medical Consultation"
+              }</p>
+            </div>
+
+            <div style="background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+              <p style="margin: 0; color: #92400e;"><strong>Reason:</strong></p>
+              <p style="margin: 10px 0 0 0; color: #92400e;">${reason}</p>
+            </div>
+
+            ${
+              cancelledBy === "patient"
+                ? `
+              <p style="font-size: 14px; color: #666; margin-top: 20px;">
+                If you need to reschedule, please contact the patient or use the Willow CRM portal.
+              </p>
+            `
+                : `
+              <p style="font-size: 14px; color: #666; margin-top: 20px;">
+                If you would like to reschedule, please book another appointment through the Willow CRM portal.
+              </p>
+            `
+            }
+          </div>
+
+          <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-radius: 0 0 10px 10px;">
+            <p style="color: #666; font-size: 12px; margin: 0;">
+              This is an automated message from Willow CRM. Please do not reply to this email.
+            </p>
+          </div>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment cancelled and notification sent",
+      appointment,
+    });
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to cancel appointment",
+      error: error.message,
+    });
+  }
+};
+
+// Mark appointment as no-show with reason and email notification
+export const markNoShowWithReason = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { reason } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId)
+      .populate({
+        path: "patientID",
+        populate: { path: "user" },
+      })
+      .populate({
+        path: "doctorID",
+        populate: { path: "user" },
+      });
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    // Update appointment status
+    appointment.status = "No-Show";
+    appointment.noShowReason = reason;
+    appointment.markedNoShowAt = new Date();
+    await appointment.save();
+
+    // Get patient and doctor details
+    const patient = appointment.patientID;
+    const doctor = appointment.doctorID;
+    const patientUser = patient.user;
+    const doctorUser = doctor.user;
+
+    const appointmentDate = new Date(appointment.startTime).toLocaleDateString(
+      "en-US",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+    const appointmentTime = new Date(appointment.startTime).toLocaleTimeString(
+      "en-US",
+      {
+        hour: "numeric",
+        minute: "2-digit",
+      }
+    );
+
+    // Send email to patient
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: patientUser.email,
+      subject: `Missed Appointment - ${appointmentDate}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #5B7B9D 0%, #6886AC 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">Missed Appointment</h1>
+          </div>
+          
+          <div style="background-color: #fff; padding: 30px; border: 1px solid #e5e7eb; border-top: none;">
+            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+              Dear ${patientUser.firstName} ${patientUser.lastName},
+            </p>
+            
+            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+              We noticed you missed your scheduled appointment with Dr. ${
+                doctorUser.firstName
+              } ${doctorUser.lastName}.
+            </p>
+
+            <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 10px 0; color: #555;"><strong>Date:</strong> ${appointmentDate}</p>
+              <p style="margin: 10px 0; color: #555;"><strong>Time:</strong> ${appointmentTime}</p>
+              <p style="margin: 10px 0; color: #555;"><strong>Type:</strong> ${
+                appointment.summary || "Medical Consultation"
+              }</p>
+            </div>
+
+            <div style="background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+              <p style="margin: 0; color: #92400e;"><strong>Reason Recorded:</strong></p>
+              <p style="margin: 10px 0 0 0; color: #92400e;">${reason}</p>
+            </div>
+
+            <p style="font-size: 14px; color: #666; margin-top: 20px;">
+              If you need to reschedule, please book another appointment through the Willow CRM portal or contact our office.
+            </p>
+
+            <div style="background-color: #fee2e2; padding: 15px; border-radius: 8px; margin-top: 20px;">
+              <p style="margin: 0; color: #991b1b; font-size: 13px;">
+                <strong>Important:</strong> Multiple no-shows may affect your ability to schedule future appointments.
+              </p>
+            </div>
+          </div>
+
+          <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-radius: 0 0 10px 10px;">
+            <p style="color: #666; font-size: 12px; margin: 0;">
+              This is an automated message from Willow CRM. Please do not reply to this email.
+            </p>
+          </div>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment marked as no-show and notification sent",
+      appointment,
+    });
+  } catch (error) {
+    console.error("Error marking no-show:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to mark as no-show",
+      error: error.message,
+    });
   }
 };

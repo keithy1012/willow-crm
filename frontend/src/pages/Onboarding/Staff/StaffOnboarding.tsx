@@ -36,7 +36,7 @@ const StaffOnboarding: React.FC = () => {
     try {
       setLoading(true);
       const response = await createFn(basePayload);
-      const { token, user } = response.data || {};
+      const { token, user } = response || {};
 
       if (token && user) login(token, user);
 

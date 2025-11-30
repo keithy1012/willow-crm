@@ -8,6 +8,7 @@ import { Calendar, Clock, CheckCircle, Warning } from "phosphor-react";
 import { appointmentService } from "api/services/appointment.service";
 import { doctorService } from "api/services/doctor.service";
 import toast from "react-hot-toast";
+import CancelAppointmentModal from "components/modal/CancelAppointmentModal";
 
 const DoctorAppointments: React.FC = () => {
   useRequireRole("Doctor");
@@ -19,6 +20,11 @@ const DoctorAppointments: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [doctorId, setDoctorId] = useState<string>("");
   const [todayAppointments, setTodayAppointments] = useState<any[]>([]);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelType, setCancelType] = useState<"cancel" | "no-show">("cancel");
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [processingCancel, setProcessingCancel] = useState(false);
+
   const navigate = useNavigate();
 
   // Get doctor ID first
@@ -239,17 +245,6 @@ const DoctorAppointments: React.FC = () => {
     window.location.href = `/patient/${patientId}`;
   };
 
-  const handleCancelAppointment = async (appointmentId: string) => {
-    try {
-      await appointmentService.cancel(appointmentId);
-      toast.success("Appointment cancelled successfully");
-      fetchAppointments();
-    } catch (error) {
-      console.error("Failed to cancel appointment:", error);
-      toast.error("Failed to cancel appointment");
-    }
-  };
-
   const handleCompleteAppointment = async (appointmentId: string) => {
     try {
       await appointmentService.updateStatus(appointmentId, "Completed");
@@ -261,17 +256,6 @@ const DoctorAppointments: React.FC = () => {
     }
   };
 
-  const handleMarkNoShow = async (appointmentId: string) => {
-    try {
-      await appointmentService.updateStatus(appointmentId, "No-Show");
-      toast.success("Appointment marked as no-show");
-      fetchAppointments();
-    } catch (error) {
-      console.error("Failed to update appointment:", error);
-      toast.error("Failed to update appointment");
-    }
-  };
-
   const handleStartAppointment = async (appointmentId: string) => {
     try {
       await appointmentService.updateStatus(appointmentId, "In-Progress");
@@ -280,6 +264,55 @@ const DoctorAppointments: React.FC = () => {
     } catch (error) {
       console.error("Failed to start appointment:", error);
       toast.error("Failed to start appointment");
+    }
+  };
+
+  const handleCancelAppointment = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setCancelType("cancel");
+    setIsCancelModalOpen(true);
+  };
+
+  // Replace the handleMarkNoShow function
+  const handleMarkNoShow = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setCancelType("no-show");
+    setIsCancelModalOpen(true);
+  };
+
+  // Add this new handler for confirming cancellation/no-show
+  const handleConfirmCancellation = async (
+    reason: string,
+    type: "cancel" | "no-show"
+  ) => {
+    if (!selectedAppointment) return;
+
+    setProcessingCancel(true);
+    try {
+      if (type === "cancel") {
+        await appointmentService.cancelWithReason(
+          selectedAppointment._id,
+          reason,
+          "doctor"
+        );
+        toast.success("Appointment cancelled and patient notified");
+      } else {
+        await appointmentService.markNoShowWithReason(
+          selectedAppointment._id,
+          reason
+        );
+        toast.success("Appointment marked as no-show and patient notified");
+      }
+
+      // Refresh appointments
+      await fetchAppointments();
+      setIsCancelModalOpen(false);
+      setSelectedAppointment(null);
+    } catch (error) {
+      console.error("Error processing cancellation:", error);
+      toast.error("Failed to process. Please try again.");
+    } finally {
+      setProcessingCancel(false);
     }
   };
 
@@ -435,10 +468,8 @@ const DoctorAppointments: React.FC = () => {
                           onComplete={() =>
                             handleCompleteAppointment(appointment._id)
                           }
-                          onCancel={() =>
-                            handleCancelAppointment(appointment._id)
-                          }
-                          onMarkNoShow={() => handleMarkNoShow(appointment._id)}
+                          onCancel={() => handleCancelAppointment(appointment)}
+                          onMarkNoShow={() => handleMarkNoShow(appointment)}
                           onStartAppointment={() =>
                             handleStartAppointment(appointment._id)
                           }
@@ -537,10 +568,8 @@ const DoctorAppointments: React.FC = () => {
                           onComplete={() =>
                             handleCompleteAppointment(appointment._id)
                           }
-                          onCancel={() =>
-                            handleCancelAppointment(appointment._id)
-                          }
-                          onMarkNoShow={() => handleMarkNoShow(appointment._id)}
+                          onCancel={() => handleCancelAppointment(appointment)}
+                          onMarkNoShow={() => handleMarkNoShow(appointment)}
                           isTimeline={false}
                           onClick={() => handleViewDetails(appointment)}
                         />
@@ -601,6 +630,48 @@ const DoctorAppointments: React.FC = () => {
           </>
         )}
       </div>
+      <CancelAppointmentModal
+        isOpen={isCancelModalOpen}
+        onClose={() => {
+          if (!processingCancel) {
+            setIsCancelModalOpen(false);
+            setSelectedAppointment(null);
+          }
+        }}
+        onConfirm={handleConfirmCancellation}
+        type={cancelType}
+        appointmentDate={
+          selectedAppointment
+            ? new Date(selectedAppointment.startTime).toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              )
+            : ""
+        }
+        appointmentTime={
+          selectedAppointment
+            ? new Date(selectedAppointment.startTime).toLocaleTimeString(
+                "en-US",
+                {
+                  hour: "numeric",
+                  minute: "2-digit",
+                }
+              )
+            : ""
+        }
+        patientName={
+          selectedAppointment?.patientID?.user?.firstName &&
+          selectedAppointment?.patientID?.user?.lastName
+            ? `${selectedAppointment.patientID.user.firstName} ${selectedAppointment.patientID.user.lastName}`
+            : "Patient"
+        }
+        isLoading={processingCancel}
+      />
     </div>
   );
 };

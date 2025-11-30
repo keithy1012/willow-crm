@@ -5,10 +5,10 @@ dotenv.config();
 
 // Create transporter for sending emails
 const transporter = nodemailer.createTransport({
-  service: "gmail", // You can use other services like SendGrid, AWS SES, etc.
+  service: "gmail", 
   auth: {
-    user: process.env.EMAIL_USER, // Your email address
-    pass: process.env.EMAIL_PASSWORD, // App-specific password for Gmail
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 

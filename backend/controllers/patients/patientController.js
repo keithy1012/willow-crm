@@ -250,3 +250,23 @@ export const searchPatientsByName = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+// Get single patient by patient ID (not user ID)
+export const getPatientByPatientId = async (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const patient = await Patient.findById(patientId).populate([
+      {
+        path: "user",
+        select:
+          "firstName lastName email username gender phoneNumber profilePic role",
+      },
+      { path: "emergencyContact", select: "name phoneNumber relationship" },
+    ]);
+    if (!patient) return res.status(404).json({ error: "Patient not found" });
+    res.status(200).json(patient);
+  } catch (err) {
+    console.error("Error fetching patient:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
