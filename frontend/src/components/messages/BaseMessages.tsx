@@ -191,21 +191,20 @@ const BaseMessages: React.FC<BaseMessagesProps> = ({
     setIsCreatingConversation(true);
 
     try {
-      if (isConnected && createConversation) {
-        const newConversation = await createConversation(userId);
-        if (newConversation) {
-          selectConversation(newConversation.id);
-          setShowUserSearch(false);
-        }
-      } else {
-        const response = await messageService.conversations.create(userId);
-        if (response.conversation) {
-          selectConversation(response.conversation.id);
-          setShowUserSearch(false);
-        }
+      if (!isConnected || !createConversation) {
+        console.error("WebSocket not connected");
+        alert("Unable to create conversation. Please check your connection.");
+        return;
+      }
+
+      const newConversation = await createConversation(userId);
+      if (newConversation) {
+        selectConversation(newConversation.id);
+        setShowUserSearch(false);
       }
     } catch (error) {
       console.error("Error creating conversation:", error);
+      alert("Failed to create conversation. Please try again.");
     } finally {
       setIsCreatingConversation(false);
     }

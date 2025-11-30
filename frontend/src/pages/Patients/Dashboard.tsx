@@ -1,35 +1,44 @@
 import React, { useEffect, useState } from "react";
 import DoctorSearchBar from "../../components/input/SearchBar";
-import LongTextArea from "../../components/input/LongTextArea";
 import MedicationCard from "../../components/card/MedicationCard";
 import UpcomingAppointmentCard from "../../components/card/UpcomingAppointmentCard";
 import DoctorSearchResults from "../../components/dashboard/DoctorSearchResults";
 import AppointmentBookingModal from "../../components/modal/BookingModal";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-
 import { useRequireRole } from "hooks/useRequireRole";
 import { useAuth } from "contexts/AuthContext";
-
-import { availabilityService } from "api/services/availability.service";
-import { appointmentService } from "api/services/appointment.service";
-import { patientService } from "api/services/patient.service";
-import { userService } from "api/services/user.service";
-import toast from "react-hot-toast";
-import { AvailableDoctorResult } from "api/types/availability.types";
+import LongTextArea from "../../components/input/LongTextArea";
+import ChatModal from "components/modal/ChatsModal";
 import { MedorderResponse } from "api/types/medorder.types";
-import { medorderService } from "api/services/medorder.service";
-
-interface TimeSlot {
-  startTime: string;
-  endTime: string;
-  isBooked: boolean;
-  _id?: string;
-}
+import { AvailableDoctorResult, TimeSlot } from "api/types/availability.types";
+import toast from "react-hot-toast";
+import { patientService, medorderService, availabilityService } from "api";
+import { appointmentService } from "api/services/appointment.service";
 
 const Dashboard: React.FC = () => {
   // ROLE ENFORCEMENT + AUTH
   const user = useRequireRole("Patient");
   const { user: authUser } = useAuth();
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchDate, setSearchDate] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [specialtyFilter, setSpecialtyFilter] = useState("");
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<{
+    doctorId: string;
+    doctorName: string;
+    timeSlot: TimeSlot;
+    date: string;
+  } | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<
+    { sender: "user" | "bot"; text: string }[]
+  >([]);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   // State
   const [patientId, setPatientId] = useState("");
@@ -37,28 +46,10 @@ const Dashboard: React.FC = () => {
   const [isTestingEmail, setIsTestingEmail] = useState(false);
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
-
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchName, setSearchName] = useState("");
-  const [searchDate, setSearchDate] = useState("");
   const [medications, setMedications] = useState<MedorderResponse[]>([]);
   const [loadingMedications, setLoadingMedications] = useState(true);
-  const [searchResults, setSearchResults] = useState<AvailableDoctorResult[]>(
-    []
-  );
-  const [searchError, setSearchError] = useState<string | null>(null);
-
-  const [specialtyFilter, setSpecialtyFilter] = useState("");
-
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
-
-  const [selectedBooking, setSelectedBooking] = useState<{
-    doctorId: string;
-    doctorName: string;
-    timeSlot: TimeSlot;
-    date: string;
-  } | null>(null);
 
   // PATIENT ID FETCH
   useEffect(() => {
@@ -401,59 +392,68 @@ const Dashboard: React.FC = () => {
             // Filter out the booked slot or update the larger slot
             return {
               ...r,
-              timeSlots: r.timeSlots.reduce((slots, slot) => {
-                // If this is the exact slot that was booked, remove it
-                if (slot.startTime === startTime && slot.endTime === endTime) {
-                  return slots; // Don't include this slot
-                }
-
-                // If this is a larger slot containing the booked time
-                const [slotStartH, slotStartM] = slot.startTime
-                  .split(":")
-                  .map(Number);
-                const [slotEndH, slotEndM] = slot.endTime
-                  .split(":")
-                  .map(Number);
-                const [bookStartH, bookStartM] = startTime
-                  .split(":")
-                  .map(Number);
-                const [bookEndH, bookEndM] = endTime.split(":").map(Number);
-
-                const slotStartMin = slotStartH * 60 + slotStartM;
-                const slotEndMin = slotEndH * 60 + slotEndM;
-                const bookStartMin = bookStartH * 60 + bookStartM;
-                const bookEndMin = bookEndH * 60 + bookEndM;
-
-                // If the booked time is within this slot, split it
-                if (bookStartMin >= slotStartMin && bookEndMin <= slotEndMin) {
-                  const newSlots = [];
-
-                  // Add slot before booked time if there's space
-                  if (slotStartMin < bookStartMin) {
-                    newSlots.push({
-                      ...slot,
-                      startTime: slot.startTime,
-                      endTime: startTime,
-                      isBooked: false,
-                    });
+              timeSlots: r.timeSlots.reduce(
+                (slots: any, slot: { startTime: string; endTime: string }) => {
+                  // If this is the exact slot that was booked, remove it
+                  if (
+                    slot.startTime === startTime &&
+                    slot.endTime === endTime
+                  ) {
+                    return slots; // Don't include this slot
                   }
 
-                  // Add slot after booked time if there's space
-                  if (bookEndMin < slotEndMin) {
-                    newSlots.push({
-                      ...slot,
-                      startTime: endTime,
-                      endTime: slot.endTime,
-                      isBooked: false,
-                    });
+                  // If this is a larger slot containing the booked time
+                  const [slotStartH, slotStartM] = slot.startTime
+                    .split(":")
+                    .map(Number);
+                  const [slotEndH, slotEndM] = slot.endTime
+                    .split(":")
+                    .map(Number);
+                  const [bookStartH, bookStartM] = startTime
+                    .split(":")
+                    .map(Number);
+                  const [bookEndH, bookEndM] = endTime.split(":").map(Number);
+
+                  const slotStartMin = slotStartH * 60 + slotStartM;
+                  const slotEndMin = slotEndH * 60 + slotEndM;
+                  const bookStartMin = bookStartH * 60 + bookStartM;
+                  const bookEndMin = bookEndH * 60 + bookEndM;
+
+                  // If the booked time is within this slot, split it
+                  if (
+                    bookStartMin >= slotStartMin &&
+                    bookEndMin <= slotEndMin
+                  ) {
+                    const newSlots = [];
+
+                    // Add slot before booked time if there's space
+                    if (slotStartMin < bookStartMin) {
+                      newSlots.push({
+                        ...slot,
+                        startTime: slot.startTime,
+                        endTime: startTime,
+                        isBooked: false,
+                      });
+                    }
+
+                    // Add slot after booked time if there's space
+                    if (bookEndMin < slotEndMin) {
+                      newSlots.push({
+                        ...slot,
+                        startTime: endTime,
+                        endTime: slot.endTime,
+                        isBooked: false,
+                      });
+                    }
+
+                    return [...slots, ...newSlots];
                   }
 
-                  return [...slots, ...newSlots];
-                }
-
-                // Otherwise, keep the slot as is
-                return [...slots, slot];
-              }, [] as typeof r.timeSlots),
+                  // Otherwise, keep the slot as is
+                  return [...slots, slot];
+                },
+                [] as typeof r.timeSlots
+              ),
             };
           }
           return r;
@@ -496,8 +496,39 @@ const Dashboard: React.FC = () => {
     setSearchDate("");
   };
 
-  const handleAskQuestion = (q: string) => {
-    console.log("AI Question:", q);
+  const handleAskQuestion = async (newMessage: string) => {
+    const updatedMessages: { sender: "user" | "bot"; text: string }[] = [
+      ...chatMessages,
+      { sender: "user", text: newMessage },
+    ];
+
+    setIsBotTyping(true);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updatedMessages }), // send full context
+      });
+
+      const data = await res.json();
+      setChatMessages([
+        ...updatedMessages,
+        { sender: "bot", text: data.answer },
+      ]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsBotTyping(false);
+    }
+  };
+
+  const handleSendChat = async () => {
+    const trimmed = chatInput.trim();
+    if (!trimmed || isBotTyping) return;
+    // send and let handleAskQuestion update chatMessages
+    await handleAskQuestion(trimmed);
+    setChatInput("");
   };
 
   const formatDate = (dateStr: string) => {
@@ -605,13 +636,48 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-9 gap-8">
               {/* LEFT SIDE */}
               <div className="lg:col-span-6">
-                <h2 className="text-xl font-md text-primaryText mb-2">
-                  Ask me a question
-                </h2>
-                <p className="text-sm text-secondaryText mb-4">
-                  This is your AI chatbot to help answer questions on your
-                  appointments.
-                </p>
+                <div className="mb-4">
+                  <div className="mb-6">
+                    <h2 className="flex justify-start text-xl font-md text-primaryText mb-2">
+                      Ask me a question
+                    </h2>
+                    <p className="flex justify-start text-sm text-secondaryText mb-4">
+                      This is your AI chatbot to help answer questions on your
+                      appointments.
+                    </p>
+
+                    <div className="flex gap-3">
+                      <LongTextArea
+                        value={chatInput}
+                        onChange={(text) => setChatInput(text)}
+                        placeholder="Type your question here..."
+                        className="flex-1"
+                      />
+
+                      <PrimaryButton
+                        text={isBotTyping ? "Sending..." : "Submit"}
+                        variant="primary"
+                        size="small"
+                        disabled={isBotTyping}
+                        onClick={async () => {
+                          if (!chatInput.trim()) return;
+
+                          await handleSendChat();
+                          setChatModalOpen(true);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <ChatModal
+                  isOpen={chatModalOpen}
+                  onClose={() => setChatModalOpen(false)}
+                  chatMessages={chatMessages}
+                  chatInput={chatInput}
+                  setChatInput={setChatInput}
+                  onSend={handleSendChat}
+                  isBotTyping={isBotTyping}
+                />
 
                 <LongTextArea
                   placeholder="Ask a question here..."
