@@ -36,3 +36,4 @@ export interface UserSearchResult {
   isOnline: boolean;
   lastActive?: Date;
 }
+

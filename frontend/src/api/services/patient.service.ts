@@ -24,8 +24,13 @@ export const patientService = {
   getAll: () => 
     apiClient.get<Patient[]>('/patients'),
   
+  // Get by User ID (original)
   getById: (id: string) => 
     apiClient.get<Patient>(`/patients/${id}`),
+  
+  // NEW: Get by Patient ID
+  getByPatientId: (patientId: string) => 
+    apiClient.get<Patient>(`/patients/patient/${patientId}`),
   
   update: (id: string, data: Partial<Patient>) => 
     apiClient.put<Patient>(`/patients/${id}`, data),

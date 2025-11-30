@@ -100,10 +100,12 @@ export const createPatient = async (req, res) => {
 // Get all patients
 export const getAllPatients = async (req, res) => {
   try {
-    const patients = await Patient.find().populate(
-      "user",
-      "firstName lastName email username gender phoneNumber profilePic role"
-    ).populate("emergencyContact", "name phoneNumber relationship");
+    const patients = await Patient.find()
+      .populate(
+        "user",
+        "firstName lastName email username gender phoneNumber profilePic role"
+      )
+      .populate("emergencyContact", "name phoneNumber relationship");
     res.status(200).json(patients);
   } catch (err) {
     console.error("Error fetching patients:", err);
@@ -116,8 +118,12 @@ export const getPatientById = async (req, res) => {
   try {
     const userId = req.params.id || req.params.userId;
     const patient = await Patient.findOne({ user: userId }).populate([
-      { path: 'user', select: 'firstName lastName email username gender phoneNumber profilePic role' },
-      { path: 'emergencyContact', select: 'name phoneNumber relationship' }
+      {
+        path: "user",
+        select:
+          "firstName lastName email username gender phoneNumber profilePic role",
+      },
+      { path: "emergencyContact", select: "name phoneNumber relationship" },
     ]);
     if (!patient) return res.status(404).json({ error: "Patient not found" });
     res.status(200).json(patient);
@@ -227,7 +233,7 @@ export const searchPatientsByName = async (req, res) => {
       const firstName = patient.user.firstName.toLowerCase();
       const lastName = patient.user.lastName.toLowerCase();
       const searchTerm = name.toLowerCase();
-      
+
       return (
         fullName.includes(searchTerm) ||
         firstName.includes(searchTerm) ||
@@ -242,5 +248,25 @@ export const searchPatientsByName = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+};
+
+// Get single patient by patient ID (not user ID)
+export const getPatientByPatientId = async (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const patient = await Patient.findById(patientId).populate([
+      {
+        path: "user",
+        select:
+          "firstName lastName email username gender phoneNumber profilePic role",
+      },
+      { path: "emergencyContact", select: "name phoneNumber relationship" },
+    ]);
+    if (!patient) return res.status(404).json({ error: "Patient not found" });
+    res.status(200).json(patient);
+  } catch (err) {
+    console.error("Error fetching patient:", err);
+    res.status(500).json({ error: err.message });
   }
 };

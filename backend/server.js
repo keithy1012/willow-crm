@@ -33,6 +33,9 @@ import patientRequestChangeRoutes from "./routes/tickets/patientRequestChangeRou
 import doctorRequestChangeRoutes from "./routes/tickets/doctorRequestChangeRoutes.js";
 import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
+import appointmentRoutes from "./routes/appointments/appointmentRoutes.js";
+import medOrderRoutes from "./routes/medications/medOrderRoutes.js";
+
 import chatRoutes from "./routes/chat/chatRoutes.js";
 // Setup Express
 const app = express();
@@ -54,6 +57,8 @@ app.use("/api/tickets/patientChange", patientRequestChangeRoutes);
 app.use("/api/tickets/doctorChange", doctorRequestChangeRoutes);
 app.use("/api/tickets/bugTicket", bugTicketRoutes);
 app.use("/api/availability", availabilityRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/medorders", medOrderRoutes);
 app.use("/api/chat", chatRoutes);
 
 // Start server

@@ -40,6 +40,24 @@ const PatientCard: React.FC<PatientCardProps> = ({
     return age;
   };
 
+  // Handle card click
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't trigger if clicking on a button
+    if ((e.target as HTMLElement).closest("button")) {
+      return;
+    }
+    onViewProfile(patient);
+  };
+
+  // Handle button clicks with event propagation prevention
+  const handleViewProfileClick = () => {
+    onViewProfile(patient);
+  };
+
+  const handleMessageClick = () => {
+    onMessage(patient);
+  };
+
   if (!user) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-stroke p-5">
@@ -49,7 +67,10 @@ const PatientCard: React.FC<PatientCardProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-stroke hover:shadow-md transition-shadow">
+    <div
+      className="bg-white rounded-xl shadow-sm border border-stroke hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="p-5">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -157,10 +178,13 @@ const PatientCard: React.FC<PatientCardProps> = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div
+          className="grid grid-cols-2 gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           <PrimaryButton
             text="View Profile"
-            onClick={() => onViewProfile(patient)}
+            onClick={handleViewProfileClick}
             variant="outline"
             size="small"
             toggleable={false}
@@ -168,7 +192,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
           />
           <PrimaryButton
             text="Message"
-            onClick={() => onMessage(patient)}
+            onClick={handleMessageClick}
             variant="primary"
             size="small"
             toggleable={false}

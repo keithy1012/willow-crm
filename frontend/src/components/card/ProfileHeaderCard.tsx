@@ -8,6 +8,8 @@ interface ProfileHeaderCardProps {
   profilePic?: string;
   userId: string;
   message?: boolean;
+  onMessage?: () => void;
+  onViewProfile?: () => void;
 }
 
 const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
@@ -16,7 +18,25 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
   profilePic,
   userId,
   message,
+  onMessage,
+  onViewProfile,
 }) => {
+  const handleViewProfile = () => {
+    if (onViewProfile) {
+      onViewProfile();
+    } else {
+      window.location.href = `/profile/${userId}`;
+    }
+  };
+
+  const handleMessage = () => {
+    if (onMessage) {
+      onMessage();
+    } else {
+      window.location.href = `/messages?userId=${userId}`;
+    }
+  };
+
   return (
     <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-stroke">
       <div className="flex items-center space-x-3">
@@ -26,14 +46,20 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
           <p className="text-xs text-secondaryText">@{username}</p>
         </div>
       </div>
-      <div className="space-x-4">
+      <div className="flex gap-2">
         <PrimaryButton
+          onClick={handleViewProfile}
           text="View Profile"
           variant={message ? "outline" : "primary"}
-          size="small"
+          size="xs"
         />
         {message && (
-          <PrimaryButton text="Message" variant="primary" size="small" />
+          <PrimaryButton
+            onClick={handleMessage}
+            text="Message"
+            variant="primary"
+            size="xs"
+          />
         )}
       </div>
     </div>

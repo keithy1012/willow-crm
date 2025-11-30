@@ -3,7 +3,7 @@ import "./App.css";
 import PatientSidebar from "./components/sidebar/PatientSidebar";
 import Dashboard from "./pages/Patients/Dashboard";
 import Messages from "./pages/Patients/Messages";
-import Appointments from "./pages/Patients/Appointments";
+import Appointments from "./pages/Patients/Appointments/Appointments";
 import MedicalRecords from "./pages/Patients/MedicalRecords";
 import Medications from "./pages/Patients/Medications";
 import Insurance from "./pages/Patients/Insurance";
@@ -44,8 +44,8 @@ import { AuthProvider, useAuth } from "contexts/AuthContext";
 import DoctorSidebar from "components/sidebar/DoctorSidebar";
 import DoctorDashboard from "pages/Doctor/DoctorDashboard";
 import DoctorMessages from "pages/Doctor/DoctorMessages";
-import DoctorPatientsPage from "pages/Doctor/DoctorPatients";
-import DoctorAppointments from "pages/Doctor/DoctorAppointments";
+import DoctorPatientsPage from "pages/Doctor/Patients/DoctorPatients";
+import DoctorAppointments from "pages/Doctor/Appointments/DoctorAppointments";
 import PatientProfile from "pages/Patients/Profile";
 import PatientEditRequest from "pages/Patients/PatientEditRequest";
 // Layout Components
@@ -57,6 +57,11 @@ import FinanceProfile from "pages/Finance/Profile";
 import ITProfile from "pages/IT/Profile";
 import ViewInvoices from "pages/Patients/ViewInvoices";
 import Logout from "components/sidebar/logout";
+import AppointmentDetails from "pages/Doctor/Appointments/[id]";
+import DoctorProfile from "pages/Doctor/Profile/Profile";
+import PatientAppointmentView from "pages/Patients/Appointments/[id]";
+import DoctorPatientProfile from "pages/Doctor/Patients/[id]";
+import PublicDoctorProfile from "pages/Doctor/Profile/PublicProfile";
 
 const PatientLayout: React.FC = () => {
   return (
@@ -282,6 +287,11 @@ const AppRoutes: React.FC = () => {
               element={<PatientEditRequest />}
             />
             <Route path="/view-invoices" element={<ViewInvoices />} />
+            <Route
+              path="/patient/appointment/:appointmentId"
+              element={<PatientAppointmentView />}
+            />
+            <Route path="/doctor/:doctorId" element={<PublicDoctorProfile />} />
           </Route>
 
           {/* Operations Routes */}
@@ -306,6 +316,17 @@ const AppRoutes: React.FC = () => {
               path="/doctorappointments"
               element={<DoctorAppointments />}
             />
+            <Route
+              path="/doctor/appointment/:appointmentId"
+              element={<AppointmentDetails />}
+            />
+            <Route
+              path="/patient/:patientId"
+              element={<DoctorPatientProfile />}
+            />
+            <Route path="/doctor-bug-report" element={<BugReportPage />} />
+            <Route path="/doctor-help-support" element={<HelpSupportPage />} />
+            <Route path="/doctor-profile" element={<DoctorProfile />} />
           </Route>
           {/* IT Routes */}
           <Route element={<ItsLayout />}>
