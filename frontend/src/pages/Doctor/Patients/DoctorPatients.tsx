@@ -229,8 +229,7 @@ const DoctorPatientsPage: React.FC = () => {
   };
 
   const handleMessage = (patient: Patient) => {
-    console.log("Message patient:", patient);
-    navigate(`/messages?patientId=${patient._id}`);
+    navigate(`/doctormessages?patientId=${patient._id}`);
   };
 
   if (loading) {

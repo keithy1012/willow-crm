@@ -94,7 +94,7 @@ const PatientProfile: React.FC = () => {
   }, [patientId]);
 
   const handleMessagePatient = () => {
-    navigate(`/messages?patientId=${patientId}`);
+    navigate(`/doctormessages?patientId=${patientId}`);
   };
 
   const handleScheduleAppointment = () => {
