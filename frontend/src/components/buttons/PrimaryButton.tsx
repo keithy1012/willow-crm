@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 interface ButtonProps {
   text: string;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void; // Changed this line
   variant: "primary" | "outline" | "secondary";
   size: "xs" | "small" | "medium" | "large";
   className?: string;
@@ -37,13 +37,13 @@ const PrimaryButton: React.FC<ButtonProps> = ({
     }
   }, [selected, controlled]);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
 
     if (!controlled && toggleable) {
       setIsSelected(!isSelected);
     }
-    if (onClick) onClick();
+    if (onClick) onClick(e);
   };
 
   const baseStyles =

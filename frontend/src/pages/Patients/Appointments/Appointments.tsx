@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Calendar, Clock, CheckCircle, XCircle } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import CancelAppointmentModal from "components/modal/CancelAppointmentModal";
+import { userService } from "api/services/user.service";
 
 const Appointments = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Appointments = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
   const [processingCancel, setProcessingCancel] = useState(false);
-
+  const [doctorId, setDoctorId] = useState<string>("");
   useRequireRole("Patient");
 
   // Get patient ID
@@ -162,8 +163,8 @@ const Appointments = () => {
     return filtered;
   };
 
-  const onViewProfile = (doctorId: string) => {
-    navigate(`/doctor/${doctorId}`);
+  const onViewProfile = (userId: string) => {
+    navigate(`/doctor/${userId}`);
   };
 
   // Get upcoming and past appointments
@@ -309,52 +310,60 @@ const Appointments = () => {
                 </h2>
 
                 <div className="flex flex-col gap-4">
-                  {upcomingAppointments.map((appointment) => (
-                    <AppointmentCard
-                      key={appointment._id}
-                      dateOfAppointment={new Date(appointment.startTime)}
-                      doctorName={
-                        appointment.doctorID?.user?.firstName &&
-                        appointment.doctorID?.user?.lastName
-                          ? `Dr. ${appointment.doctorID.user.firstName} ${appointment.doctorID.user.lastName}`
-                          : "Doctor"
-                      }
-                      doctorUsername={
-                        appointment.doctorID?.user?.email?.split("@")[0] ||
-                        "doctor"
-                      }
-                      doctorId={
-                        appointment.doctorID?._id || appointment.doctorID
-                      }
-                      profilePic={appointment.doctorID?.user?.profilePic}
-                      appointmentType={
-                        appointment.summary || "Medical Consultation"
-                      }
-                      instructionId={appointment._id}
-                      notes={appointment.description}
-                      past={false}
-                      status={appointment.status || "Scheduled"}
-                      startTime={appointment.startTime}
-                      endTime={appointment.endTime}
-                      onCancel={() => handleCancelAppointment(appointment)}
-                      onReschedule={() => {
-                        console.log("Reschedule appointment:", appointment._id);
-                      }}
-                      onMessage={() => {
-                        window.location.href = `/messages?doctorId=${
-                          appointment.doctorID?._id || appointment.doctorID
-                        }`;
-                      }}
-                      onViewProfile={() =>
-                        onViewProfile(
-                          appointment.doctorID?._id || appointment.doctorID
-                        )
-                      }
-                      width="full"
-                      appointmentId={appointment._id}
-                      onClick={() => handleViewDetails(appointment)}
-                    />
-                  ))}
+                  {upcomingAppointments.map((appointment) => {
+                    console.log("Full appointment:", appointment);
+                    console.log("doctorID object:", appointment.doctorID);
+                    console.log("doctorID._id:", appointment.doctorID?._id);
+                    console.log("doctorID.user:", appointment.doctorID?.user);
+                    return (
+                      <AppointmentCard
+                        key={appointment._id}
+                        dateOfAppointment={new Date(appointment.startTime)}
+                        doctorName={
+                          appointment.doctorID?.user?.firstName &&
+                          appointment.doctorID?.user?.lastName
+                            ? `Dr. ${appointment.doctorID.user.firstName} ${appointment.doctorID.user.lastName}`
+                            : "Doctor"
+                        }
+                        doctorUsername={
+                          appointment.doctorID?.user?.email?.split("@")[0] ||
+                          "doctor"
+                        }
+                        doctorId={
+                          appointment.doctorID?.user?._id ||
+                          appointment.doctorID
+                        }
+                        profilePic={appointment.doctorID?.user?.profilePic}
+                        appointmentType={
+                          appointment.summary || "Medical Consultation"
+                        }
+                        instructionId={appointment._id}
+                        notes={appointment.description}
+                        past={false}
+                        status={appointment.status || "Scheduled"}
+                        startTime={appointment.startTime}
+                        endTime={appointment.endTime}
+                        onCancel={() => handleCancelAppointment(appointment)}
+                        onReschedule={() => {
+                          console.log(
+                            "Reschedule appointment:",
+                            appointment._id
+                          );
+                        }}
+                        onMessage={() => {
+                          navigate(
+                            `/messages?doctorId=${
+                              appointment.doctorID?._id || appointment.doctorID
+                            }`
+                          );
+                        }}
+                        onViewProfile={onViewProfile}
+                        width="full"
+                        appointmentId={appointment._id}
+                        onClick={() => handleViewDetails(appointment)}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -412,7 +421,7 @@ const Appointments = () => {
                                 )[0] || "doctor"
                               }
                               doctorId={
-                                appointment.doctorID?._id ||
+                                appointment.doctorID?.user?._id ||
                                 appointment.doctorID
                               }
                               profilePic={
@@ -430,12 +439,7 @@ const Appointments = () => {
                               status={appointment.status || "Completed"}
                               startTime={appointment.startTime}
                               endTime={appointment.endTime}
-                              onViewProfile={() =>
-                                onViewProfile(
-                                  appointment.doctorID?._id ||
-                                    appointment.doctorID
-                                )
-                              }
+                              onViewProfile={onViewProfile}
                               appointmentId={appointment._id}
                               onClick={() => handleViewDetails(appointment)}
                             />

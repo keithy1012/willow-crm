@@ -14,9 +14,11 @@ import { AvailableDoctorResult, TimeSlot } from "api/types/availability.types";
 import toast from "react-hot-toast";
 import { patientService, medorderService, availabilityService } from "api";
 import { appointmentService } from "api/services/appointment.service";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   // ROLE ENFORCEMENT + AUTH
+  const navigate = useNavigate();
   const user = useRequireRole("Patient");
   const { user: authUser } = useAuth();
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -485,7 +487,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleMessageDoctor = (doctorId: string) => {
-    window.location.href = `/messages?doctorId=${doctorId}`;
+    navigate(`/messages?doctorId=${doctorId}`);
   };
 
   const handleBackToDashboard = () => {
@@ -724,9 +726,7 @@ const Dashboard: React.FC = () => {
                     <div className="text-right text-sm font-sm mt-4">
                       {medications.length > 3 && (
                         <button
-                          onClick={() =>
-                            (window.location.href = "/medications")
-                          }
+                          onClick={() => navigate("/medications")}
                           className="text-secondaryText hover:text-primaryText transition-colors"
                         >
                           See {medications.length - 3} More
@@ -797,7 +797,7 @@ const Dashboard: React.FC = () => {
                 <div className="text-right text-sm font-sm mt-4">
                   {upcomingAppointments.length > 3 && (
                     <button
-                      onClick={() => (window.location.href = "/appointments")}
+                      onClick={() => navigate("/appointments")}
                       className="text-secondaryText hover:text-primaryText transition-colors"
                     >
                       See {upcomingAppointments.length - 3} More

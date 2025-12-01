@@ -238,11 +238,11 @@ const DoctorAppointments: React.FC = () => {
   };
 
   const handleMessagePatient = (patientId: string) => {
-    window.location.href = `/messages?patientId=${patientId}`;
+    navigate(`/doctormessages?patientId=${patientId}`);
   };
 
   const handleViewPatientProfile = (patientId: string) => {
-    window.location.href = `/patient/${patientId}`;
+    navigate(`/patient/${patientId}`);
   };
 
   const handleCompleteAppointment = async (appointmentId: string) => {

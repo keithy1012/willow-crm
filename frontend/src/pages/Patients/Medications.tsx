@@ -150,6 +150,7 @@ const Medications: React.FC = () => {
                 pharmacyDetails="Willow CRM Pharmacy"
                 onRefillRequest={handleRefillRequest}
                 onDelete={handleDelete}
+                isPatient={true}
               />
             ))}
           </div>

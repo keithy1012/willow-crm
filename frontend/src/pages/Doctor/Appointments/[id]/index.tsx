@@ -12,7 +12,7 @@ import { appointmentService } from "api/services/appointment.service";
 import { EnhancedAppointment } from "api/types/appointment.types";
 import { User } from "api/types/user.types";
 import { userService } from "api/services/user.service";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Patient } from "api/services/patient_expanded.service";
 import ProfileAvatar from "components/avatar/Avatar";
 import SmallInfoCard from "components/card/SmallInfoCard";
@@ -28,6 +28,7 @@ import toast from "react-hot-toast";
 import { medorderService } from "api/services/medorder.service";
 import PrescribeMedicationModal from "components/modal/RefillModal";
 import { doctorService } from "api/services/doctor.service";
+import CancelAppointmentModal from "components/modal/CancelAppointmentModal";
 
 const AppointmentDetails: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();
@@ -58,8 +59,14 @@ const AppointmentDetails: React.FC = () => {
   const [afterVisitUploaded, setAfterVisitUploaded] = useState(false);
   const [notesUploaded, setNotesUploaded] = useState(false);
   const [isPrescribeModalOpen, setIsPrescribeModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelType, setCancelType] = useState<"cancel" | "no-show">("cancel");
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [processingCancel, setProcessingCancel] = useState(false);
 
+  const navigate = useNavigate();
   const MAX_FILE_SIZE = 16 * 1024 * 1024; // 16 MB
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -255,11 +262,15 @@ const AppointmentDetails: React.FC = () => {
   };
 
   const handleMessagePatient = (patientId: string) => {
-    window.location.href = `/messages?patientId=${patientId}`;
+    navigate(`/doctormessages?patientId=${patientId}`);
   };
 
   const handleViewPatientProfile = (patientId: string) => {
-    window.location.href = `/patient/${patientId}`;
+    navigate(`/patient/${patientId}`);
+  };
+
+  const handleViewSummary = (appointmentId: string) => {
+    navigate(`/doctor/appointment/${appointmentId}`);
   };
 
   const updateAppointmentStatus = async (
@@ -294,11 +305,52 @@ const AppointmentDetails: React.FC = () => {
   };
 
   const handleMarkNoShow = (appointmentId: string) => {
-    updateAppointmentStatus(appointmentId, "No-Show");
+    console.log("Opening no-show modal for:", appointmentId);
+    setSelectedAppointment(appointment);
+    setCancelType("no-show");
+    setIsCancelModalOpen(true);
   };
 
   const handleCancelAppointment = (appointmentId: string) => {
-    updateAppointmentStatus(appointmentId, "Cancelled");
+    console.log("Opening cancel modal for:", appointmentId);
+    setSelectedAppointment(appointment);
+    setCancelType("cancel");
+    setIsCancelModalOpen(true);
+  };
+  const handleConfirmCancellation = async (
+    reason: string,
+    type: "cancel" | "no-show"
+  ) => {
+    if (!appointmentId) return;
+
+    setProcessingCancel(true);
+    try {
+      if (type === "cancel") {
+        await appointmentService.cancelWithReason(
+          appointmentId,
+          reason,
+          "doctor"
+        );
+        toast.success("Appointment cancelled and patient notified");
+        setAppointment((prev) =>
+          prev ? { ...prev, status: "Cancelled" } : prev
+        );
+      } else {
+        // Handle no-show
+        await appointmentService.markNoShowWithReason(appointmentId, reason);
+        toast.success("Appointment marked as no-show and patient notified");
+        setAppointment((prev) =>
+          prev ? { ...prev, status: "No-Show" } : prev
+        );
+      }
+
+      setIsCancelModalOpen(false);
+    } catch (error) {
+      console.error("Error processing appointment:", error);
+      toast.error("Failed to process appointment. Please try again.");
+    } finally {
+      setProcessingCancel(false);
+    }
   };
 
   const handlePrescribe = async (prescriptionData: any) => {
@@ -335,7 +387,7 @@ const AppointmentDetails: React.FC = () => {
     <div className="p-12 flex flex-col gap-8">
       <div
         className="flex flex-row items-center gap-2 cursor-pointer"
-        onClick={() => window.history.back()}
+        onClick={() => navigate(-1)}
       >
         <CaretLeft size={24} className="text-primaryText" />
         <h1 className="text-2xl font-semibold text-primaryText">
@@ -661,6 +713,40 @@ const AppointmentDetails: React.FC = () => {
           />
         </div>
       </div>
+      <CancelAppointmentModal
+        isOpen={isCancelModalOpen}
+        onClose={() => {
+          if (!processingCancel) {
+            setIsCancelModalOpen(false);
+          }
+        }}
+        onConfirm={handleConfirmCancellation}
+        type={cancelType}
+        appointmentDate={
+          appointment
+            ? new Date(appointment.startTime).toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : ""
+        }
+        appointmentTime={
+          appointment
+            ? new Date(appointment.startTime).toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+              })
+            : ""
+        }
+        patientName={
+          patient?.user?.firstName && patient?.user?.lastName
+            ? `${patient.user.firstName} ${patient.user.lastName}`
+            : "Patient"
+        }
+        isLoading={processingCancel}
+      />
     </div>
   );
 };

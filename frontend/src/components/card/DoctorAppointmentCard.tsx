@@ -12,6 +12,7 @@ import {
   XCircle,
   Warning,
 } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 
 interface DoctorAppointmentCardProps {
   startTime: Date | string;
@@ -25,7 +26,7 @@ interface DoctorAppointmentCardProps {
   appointmentId: string;
   status: "Scheduled" | "In-Progress" | "Completed" | "Cancelled" | "No-Show";
   isCurrentAppointment?: boolean;
-  isTimeline?: boolean; // For today's timeline view
+  isTimeline?: boolean;
   onViewDetails?: () => void;
   onMessage?: () => void;
   onViewProfile?: () => void;
@@ -62,6 +63,7 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
 }) => {
   const startDate = startTime instanceof Date ? startTime : new Date(startTime);
   const endDate = endTime instanceof Date ? endTime : new Date(endTime);
+  const navigate = useNavigate();
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], {
@@ -74,7 +76,6 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
     const diffMs = endDate.getTime() - startDate.getTime();
     const diffMins = Math.round(diffMs / 60000);
 
-    // Check for unreasonable durations
     if (diffMins > 180) {
       console.warn(
         `Appointment ${appointmentId} has unusual duration: ${diffMins} minutes`
@@ -122,11 +123,12 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
     }
   };
 
-  const handleViewSummary = () => {
+  const handleViewSummary = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (onViewSummary) {
       onViewSummary();
     } else {
-      window.location.href = `http://localhost:3000/medical-records/${appointmentId}`;
+      navigate(`/medical-records/${appointmentId}`);
     }
   };
 
@@ -176,15 +178,17 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
               width="full"
             />
 
-            <ProfileHeaderCard
-              name={patientName}
-              username={patientUsername || "Username"}
-              userId={patientId}
-              message={status === "Scheduled" || status === "In-Progress"}
-              onMessage={onMessage}
-              onViewProfile={onViewProfile}
-              profilePic={patientProfilePic}
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <ProfileHeaderCard
+                name={patientName}
+                username={patientUsername || "Username"}
+                userId={patientId}
+                message={status === "Scheduled" || status === "In-Progress"}
+                onMessage={onMessage}
+                onViewProfile={onViewProfile}
+                profilePic={patientProfilePic}
+              />
+            </div>
 
             {appointmentDescription && (
               <div className="bg-gray-50 rounded-lg p-3">
@@ -223,18 +227,27 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
                     variant="primary"
                     size="small"
                     className="flex-1 bg-success hover:bg-success border-success border"
-                    onClick={onStartAppointment}
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      onStartAppointment?.();
+                    }}
                   />
                   <div className="flex gap-1">
                     <button
-                      onClick={onMarkNoShow}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onMarkNoShow?.();
+                      }}
                       className="text-xs py-1.5 px-2 bg-yellow-50 border-[0.5px] border-yellow-600 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors"
                       title="Mark as No-Show"
                     >
                       <Warning size={14} />
                     </button>
                     <button
-                      onClick={onCancel}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCancel?.();
+                      }}
                       className="text-xs py-1.5 px-2 bg-red-50 border-[0.5px] border-error text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                       title="Cancel"
                     >
@@ -249,7 +262,10 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
                   variant="primary"
                   size="small"
                   className="flex-1 bg-success hover:bg-success border-success"
-                  onClick={onComplete}
+                  onClick={(e) => {
+                    e?.stopPropagation();
+                    onComplete?.();
+                  }}
                 />
               )}
             </div>
@@ -301,15 +317,17 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
           />
         </div>
 
-        <ProfileHeaderCard
-          name={patientName}
-          username={patientUsername || "Username"}
-          userId={patientId}
-          message={status === "Scheduled" || status === "In-Progress"}
-          onMessage={onMessage}
-          onViewProfile={onViewProfile}
-          profilePic={patientProfilePic}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ProfileHeaderCard
+            name={patientName}
+            username={patientUsername || "Username"}
+            userId={patientId}
+            message={status === "Scheduled" || status === "In-Progress"}
+            onMessage={onMessage}
+            onViewProfile={onViewProfile}
+            profilePic={patientProfilePic}
+          />
+        </div>
 
         {appointmentDescription && (
           <div className="bg-gray-50 rounded-lg p-3">
@@ -327,7 +345,6 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
           </div>
         )}
 
-        {/* After Visit Summary Link for Completed appointments */}
         {status === "Completed" && (
           <div
             className="flex flex-row gap-2 items-center cursor-pointer hover:text-primary transition-colors"
@@ -338,28 +355,36 @@ const DoctorAppointmentCard: React.FC<DoctorAppointmentCardProps> = ({
           </div>
         )}
 
-        {/* Action buttons for grid view */}
         {status === "Scheduled" && (
           <div
             className="flex gap-2 pt-3 border-t border-gray-100"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              onClick={onComplete}
+              onClick={(e) => {
+                e.stopPropagation();
+                onComplete?.();
+              }}
               className="flex-1 text-xs py-2 px-3 bg-green-50 text-green-600 border-[0.5px] border-success rounded-lg hover:bg-green-100 transition-colors flex items-center justify-center gap-1"
             >
               <CheckCircle size={14} />
               Complete
             </button>
             <button
-              onClick={onMarkNoShow}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMarkNoShow?.();
+              }}
               className="flex-1 text-xs py-2 px-3 bg-yellow-50 text-yellow-600 border-[0.5px] border-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors flex items-center justify-center gap-1"
             >
               <Warning size={14} />
               No-Show
             </button>
             <button
-              onClick={onCancel}
+              onClick={(e) => {
+                e.stopPropagation();
+                onCancel?.();
+              }}
               className="flex-1 text-xs py-2 px-3 bg-red-50 text-red-600 rounded-lg border-[0.5px] border-error hover:bg-red-100 transition-colors flex items-center justify-center gap-1"
             >
               <XCircle size={14} />

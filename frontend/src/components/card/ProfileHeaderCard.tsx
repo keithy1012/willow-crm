@@ -1,6 +1,7 @@
 import ProfileAvatar from "components/avatar/Avatar";
 import PrimaryButton from "components/buttons/PrimaryButton";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileHeaderCardProps {
   name: string;
@@ -21,19 +22,23 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
   onMessage,
   onViewProfile,
 }) => {
-  const handleViewProfile = () => {
+  const navigate = useNavigate();
+
+  const handleViewProfile = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.stopPropagation();
     if (onViewProfile) {
       onViewProfile();
     } else {
-      window.location.href = `/profile/${userId}`;
+      navigate(`/profile/${userId}`);
     }
   };
 
-  const handleMessage = () => {
+  const handleMessage = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.stopPropagation();
     if (onMessage) {
       onMessage();
     } else {
-      window.location.href = `/messages?userId=${userId}`;
+      navigate(`/messages?userId=${userId}`);
     }
   };
 
@@ -48,14 +53,20 @@ const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
       </div>
       <div className="flex gap-2">
         <PrimaryButton
-          onClick={handleViewProfile}
+          onClick={(e) => {
+            e?.stopPropagation();
+            handleViewProfile(e);
+          }}
           text="View Profile"
           variant={message ? "outline" : "primary"}
           size="xs"
         />
         {message && (
           <PrimaryButton
-            onClick={handleMessage}
+            onClick={(e) => {
+              e?.stopPropagation();
+              handleMessage(e);
+            }}
             text="Message"
             variant="primary"
             size="xs"

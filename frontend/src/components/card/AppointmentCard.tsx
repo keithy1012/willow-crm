@@ -12,6 +12,7 @@ import {
   XCircle,
   Warning,
 } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 
 interface AppointmentCardProps {
   dateOfAppointment: Date;
@@ -58,6 +59,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   onViewProfile,
   onClick,
 }) => {
+  const navigate = useNavigate();
+
   // Determine actual status based on past flag and status prop
   const getActualStatus = () => {
     if (status) return status;
@@ -139,7 +142,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   };
 
   const handleViewSummary = () => {
-    window.location.href = `http://localhost:3000/medical-records/${appointmentId}`;
+    navigate(`/medical-records/${appointmentId}`);
   };
 
   return (
@@ -190,13 +193,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <ProfileHeaderCard
             name={doctorName}
             username={doctorUsername}
-            userId={doctorId}
+            userId={doctorId} 
             message={actualStatus === "Scheduled" && onMessage ? true : false}
             profilePic={profilePic}
             onMessage={onMessage}
             onViewProfile={
               onViewProfile ? () => onViewProfile(doctorId) : undefined
-            }
+            } 
           />
         </div>
 
