@@ -5,25 +5,36 @@ export interface Participant {
   name: string;
   username: string;
   avatar?: string;
-  role?: string;
+  role: string;
+  publicKey?: string; // Add for E2EE
+}
+
+export interface EncryptedContent {
+  ciphertext: string;
+  ephemeralPublicKey: string;
+  nonce: string;
 }
 
 export interface Message {
   id: string;
   conversationId: string;
   sender: Participant;
-  content: string;
+  content: string; // Decrypted content for display
+  encryptedContent?: EncryptedContent; // Raw encrypted data
   timestamp: string;
   read: boolean;
+  delivered?: boolean;
 }
 
 export interface Conversation {
   id: string;
   participants: Participant[];
-  lastMessage?: Message;
-  updatedAt: string;
-  createdAt: string;
+  lastMessage?: {
+    content: string;
+    timestamp: string;
+  } | null;
   unreadCount: number;
+  updatedAt: string;
 }
 
 export interface CreateConversationResponse {

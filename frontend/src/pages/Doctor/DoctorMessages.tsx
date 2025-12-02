@@ -3,8 +3,11 @@ import BaseMessages from "components/messages/BaseMessages";
 import { useRequireRole } from "hooks/useRequireRole";
 import PrimaryButton from "components/buttons/PrimaryButton";
 import { useNavigate } from "react-router-dom";
+import { useSessionTimeout } from "hooks/useTimeoutSession";
 
 const DoctorMessages: React.FC = () => {
+  useSessionTimeout(15);
+
   const [filterMode, setFilterMode] = React.useState<
     "all" | "patients" | "doctors"
   >("all");

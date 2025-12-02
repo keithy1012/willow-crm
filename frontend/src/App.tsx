@@ -62,6 +62,7 @@ import DoctorProfile from "pages/Doctor/Profile/Profile";
 import PatientAppointmentView from "pages/Patients/Appointments/[id]";
 import DoctorPatientProfile from "pages/Doctor/Patients/[id]";
 import PublicDoctorProfile from "pages/Doctor/Profile/PublicProfile";
+import { encryptionService } from "api/services/encryption.service";
 
 const PatientLayout: React.FC = () => {
   return (
@@ -138,6 +139,7 @@ const Logout: React.FC = () => {
         await logout();
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+
         // Redirect to login
         window.location.href = "/login";
       } catch (error) {
