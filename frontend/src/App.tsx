@@ -34,6 +34,7 @@ import StaffOnboarding from "./pages/Onboarding/Staff/StaffOnboarding";
 import DoctorOnboarding from "./pages/Onboarding/Staff/DoctorOnboarding";
 import Login from "./pages/Login/LoginScreen";
 import ForgotPassword from "./pages/Login/ForgotPassword";
+import ResetPassword from "pages/Login/ResetPassword";
 import Error from "./pages/Error/ErrorPage";
 import OpsDoctorDashboard from "pages/Operations/DoctorDashboard";
 import OpsPatientDashboard from "pages/Operations/PatientDashboard";
@@ -56,7 +57,6 @@ import OpsProfile from "pages/Operations/Profile";
 import FinanceProfile from "pages/Finance/Profile";
 import ITProfile from "pages/IT/Profile";
 import ViewInvoices from "pages/Patients/ViewInvoices";
-import Logout from "components/sidebar/logout";
 import AppointmentDetails from "pages/Doctor/Appointments/[id]";
 import DoctorProfile from "pages/Doctor/Profile/Profile";
 import PatientAppointmentView from "pages/Patients/Appointments/[id]";
@@ -128,22 +128,37 @@ const FinanceLayout: React.FC = () => {
   );
 };
 
-// Helper function to get default route based on user role
-const getDefaultRoute = (role: string): string => {
-  switch (role) {
-    case "Patient":
-      return "/patientdashboard";
-    case "Doctor":
-      return "/doctordashboard";
-    case "Ops":
-      return "/opsdashboard/doctors";
-    case "IT":
-      return "/itdashboard";
-    case "Finance":
-      return "/financedashboard";
-    default:
-      return "/login";
-  }
+// Logout Component
+const Logout: React.FC = () => {
+  const { logout } = useAuth();
+
+  React.useEffect(() => {
+    const performLogout = async () => {
+      try {
+        await logout();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // Redirect to login
+        window.location.href = "/login";
+      } catch (error) {
+        console.error("Logout error:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+    };
+
+    performLogout();
+  }, [logout]);
+
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-gray-500">Logging out...</p>
+      </div>
+    </div>
+  );
 };
 
 const RoleLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -244,6 +259,8 @@ const AppRoutes: React.FC = () => {
           <Route path="/staffonboarding" element={<StaffOnboarding />} />
           <Route path="/doctoronboarding" element={<DoctorOnboarding />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/error" element={<Error />} />
           {/* Redirect everything else to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
@@ -270,6 +287,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Patient routes */}
           <Route element={<PatientLayout />}>

@@ -9,8 +9,12 @@ const BottomLeftBlob = "/onboarding_blob_bottom_left.svg";
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-
   const [errors, setErrors] = useState<{ email?: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const validate = () => {
     const errs: { email?: string } = {};
@@ -26,22 +30,38 @@ const ForgotPassword: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    /* TODO: Change this API call
+
+    setIsLoading(true);
+    setSubmitMessage(null);
+
     try {
-        await fetch("/api/auth/request-reset", {
+      const response = await fetch("/api/auth/request-reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
-        });
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to send reset link");
+      }
+
+      setSubmitMessage({
+        type: "success",
+        text: "If an account exists for this email, a reset link has been sent.",
+      });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (err) {
-        console.error(err);
+      console.error(err);
+      setSubmitMessage({
+        type: "error",
+        text: "An error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    */
-
-    alert("If an account exists for this email, a reset link has been sent.");
-
-    navigate("/");
   };
 
   return (
@@ -81,13 +101,27 @@ const ForgotPassword: React.FC = () => {
           )}
         </div>
 
+        {/* Message feedback */}
+        {submitMessage && (
+          <div
+            className={`p-3 rounded-lg text-sm font-medium ${
+              submitMessage.type === "success"
+                ? "bg-green-50 text-green-700 border border-green-200"
+                : "bg-red-50 text-red-700 border border-red-200"
+            }`}
+          >
+            {submitMessage.text}
+          </div>
+        )}
+
         {/* Submit */}
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton
-            text="Send Reset Link"
+            text={isLoading ? "Sending..." : "Send Reset Link"}
             variant="primary"
             size="small"
             onClick={handleSubmit}
+            disabled={isLoading}
           />
         </div>
       </div>

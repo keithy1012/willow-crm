@@ -1,16 +1,26 @@
 import nodemailer from "nodemailer";
+
 import dotenv from "dotenv";
 
 dotenv.config();
 
-// Create transporter for sending emails
-const transporter = nodemailer.createTransport({
-  service: "gmail", 
-  auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+let transporter = null;
+
+const getTransporter = () => {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      port: 587,
+      host: "smtp.gmail.com",
+      secure: false,
+    });
+  }
+  return transporter;
+};
 
 // Generic send email function
 export const sendEmail = async ({ to, subject, html, text }) => {
@@ -24,15 +34,32 @@ export const sendEmail = async ({ to, subject, html, text }) => {
     html: html,
     text: text || "Please view this email in an HTML-capable email client.",
   };
-
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await getTransporter().sendMail(mailOptions);
     console.log("Email sent successfully:", info.messageId);
     return info;
   } catch (error) {
     console.error("Error sending email:", error);
     throw error;
   }
+};
+
+export const sendResetEmail = async (email, resetUrl, firstName) => {
+  const emailHTML = `
+        <h2>Password Reset Request</h2>
+        <p>Hi ${firstName},</p>
+        <p>We received a request to reset your password. Click the link below to proceed:</p>
+        <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+        <p>Best regards,<br>Willow CRM Team</p>
+      `;
+
+  return sendEmail({
+    to: email,
+    subject: `Password Reset Request - Willow CRM`,
+    html: emailHTML,
+  });
 };
 
 // Document notification email
@@ -283,7 +310,7 @@ export const sendAppointmentConfirmation = async ({
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await getTransporter().sendMail(mailOptions);
     console.log("Email sent successfully:", info.messageId);
     return info;
   } catch (error) {
@@ -365,7 +392,7 @@ export const sendAppointmentCancellation = async ({
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await getTransporter().sendMail(mailOptions);
     return info;
   } catch (error) {
     console.error("Error sending cancellation email:", error);
