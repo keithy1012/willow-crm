@@ -277,13 +277,9 @@ export const sendAppointmentConfirmation = async ({
     </html>
   `;
 
-  const mailOptions = {
-    from: {
-      name: "Willow CRM",
-      address: process.env.EMAIL_USER,
-    },
+  return sendEmail({
     to: patientEmail,
-    subject: `Appointment Confirmation - ${appointmentDate}`,
+    subject: `Appointment Confirmation - Willow CRM`,
     html: emailHTML,
     text: `
       Appointment Confirmation
@@ -307,16 +303,7 @@ export const sendAppointmentConfirmation = async ({
       Best regards,
       Willow CRM Medical Team
     `,
-  };
-
-  try {
-    const info = await getTransporter().sendMail(mailOptions);
-    console.log("Email sent successfully:", info.messageId);
-    return info;
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw error;
-  }
+  });
 };
 
 // Send appointment cancellation email
@@ -381,21 +368,9 @@ export const sendAppointmentCancellation = async ({
     </html>
   `;
 
-  const mailOptions = {
-    from: {
-      name: "Willow CRM",
-      address: process.env.EMAIL_USER,
-    },
+  return sendEmail({
     to: patientEmail,
-    subject: `Appointment Cancelled - ${appointmentDate}`,
+    subject: `Appointment Cancellation - Willow CRM`,
     html: emailHTML,
-  };
-
-  try {
-    const info = await getTransporter().sendMail(mailOptions);
-    return info;
-  } catch (error) {
-    console.error("Error sending cancellation email:", error);
-    throw error;
-  }
+  });
 };
