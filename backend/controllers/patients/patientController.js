@@ -5,7 +5,7 @@ import Patient from "../../models/patients/Patient.js";
 import User from "../../models/users/User.js";
 import EmergencyContact from "../../models/patients/EmergencyContact.js";
 import { generateToken } from "../../middleware/authentication.js";
-
+import { logEvent } from "../../utils/logger.js";
 // Create new patient
 export const createPatient = async (req, res) => {
   try {
@@ -29,6 +29,11 @@ export const createPatient = async (req, res) => {
       insuranceCardFront,
       insuranceCardBack,
     } = req.body;
+    logEvent(
+      "Patient",
+      `Create patient initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}`,
+      req.user?._id
+    );
 
     // Function to save base64 image as Buffer
     const convertBase64ToBuffer = (base64String) => {
@@ -56,13 +61,22 @@ export const createPatient = async (req, res) => {
     });
 
     await newUser.save();
-
+    logEvent(
+      "Patient",
+      `User account created - User ID: ${newUser._id}, Email: ${email}`,
+      req.user?._id
+    );
     // Create emergency contact
     const emergencyContact = await EmergencyContact.create({
       name: ec_name,
       phoneNumber: ec_phone,
       relationship: ec_relationship,
     });
+    logEvent(
+      "Patient",
+      `Emergency contact created - EC ID: ${emergencyContact._id}, Name: ${ec_name}, Relationship: ${ec_relationship}`,
+      req.user?._id
+    );
 
     // Create patient linked to user and emergency contact
     const newPatient = await Patient.create({
@@ -77,6 +91,12 @@ export const createPatient = async (req, res) => {
       insuranceCardBack: backBuffer,
     });
 
+    logEvent(
+      "Patient",
+      `Patient created successfully - Patient ID: ${newPatient._id}, User ID: ${newUser._id}, Email: ${email}, Name: ${firstName} ${lastName}, Blood Type: ${bloodtype}`,
+      req.user?._id
+    );
+
     // Generate JWT token for authentication
     const token = generateToken(newUser._id);
 
@@ -90,7 +110,11 @@ export const createPatient = async (req, res) => {
       emergencyContact,
     });
   } catch (error) {
-    console.error("Error creating patient:", error.message);
+    logEvent(
+      "Patient",
+      `Create patient error - Email: ${req.body?.email}, Error: ${error.message}`,
+      req.user?._id
+    );
     res
       .status(500)
       .json({ error: "Internal server error", details: error.message });
@@ -100,15 +124,28 @@ export const createPatient = async (req, res) => {
 // Get all patients
 export const getAllPatients = async (req, res) => {
   try {
+    logEvent("Patient", "Get all patients initiated", req.user?._id);
+
     const patients = await Patient.find()
       .populate(
         "user",
         "firstName lastName email username gender phoneNumber profilePic role"
       )
       .populate("emergencyContact", "name phoneNumber relationship");
+
+    logEvent(
+      "Patient",
+      `All patients retrieved - Count: ${patients.length}`,
+      req.user?._id
+    );
+
     res.status(200).json(patients);
   } catch (err) {
-    console.error("Error fetching patients:", err);
+    logEvent(
+      "Patient",
+      `Get all patients error - Error: ${err.message}`,
+      req.user?._id
+    );
     res.status(500).json({ error: err.message });
   }
 };
@@ -117,6 +154,12 @@ export const getAllPatients = async (req, res) => {
 export const getPatientById = async (req, res) => {
   try {
     const userId = req.params.id || req.params.userId;
+
+    logEvent(
+      "Patient",
+      `Get patient by user ID initiated - User ID: ${userId}`,
+      req.user?._id
+    );
     const patient = await Patient.findOne({ user: userId }).populate([
       {
         path: "user",
@@ -125,10 +168,29 @@ export const getPatientById = async (req, res) => {
       },
       { path: "emergencyContact", select: "name phoneNumber relationship" },
     ]);
-    if (!patient) return res.status(404).json({ error: "Patient not found" });
+    if (!patient) {
+      logEvent(
+        "Patient",
+        `Get patient failed - User ID ${userId} not found`,
+        req.user?._id
+      );
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    logEvent(
+      "Patient",
+      `Patient retrieved - Patient ID: ${patient._id}, User ID: ${userId}, Email: ${patient.user?.email}`,
+      req.user?._id
+    );
     res.status(200).json(patient);
   } catch (err) {
-    console.error("Error fetching patient:", err);
+    logEvent(
+      "Patient",
+      `Get patient error - User ID: ${
+        req.params?.id || req.params?.userId
+      }, Error: ${err.message}`,
+      req.user?._id
+    );
     res.status(500).json({ error: err.message });
   }
 };
@@ -137,16 +199,42 @@ export const getPatientById = async (req, res) => {
 export const updatePatient = async (req, res) => {
   try {
     const userId = req.params.id || req.params.userId;
+    logEvent(
+      "Patient",
+      `Update patient initiated - User ID: ${userId}, Updates: ${JSON.stringify(
+        req.body
+      )}`,
+      req.user?._id
+    );
     const updatedPatient = await Patient.findOneAndUpdate(
       { user: userId },
       req.body,
       { new: true, runValidators: true }
     );
-    if (!updatedPatient)
+
+    if (!updatedPatient) {
+      logEvent(
+        "Patient",
+        `Update patient failed - User ID ${userId} not found`,
+        req.user?._id
+      );
       return res.status(404).json({ error: "Patient not found" });
+    }
+
+    logEvent(
+      "Patient",
+      `Patient updated successfully - Patient ID: ${updatedPatient._id}, User ID: ${userId}`,
+      req.user?._id
+    );
     res.status(200).json(updatedPatient);
   } catch (err) {
-    console.error("Error updating patient:", err);
+    logEvent(
+      "Patient",
+      `Update patient error - User ID: ${
+        req.params?.id || req.params?.userId
+      }, Error: ${err.message}`,
+      req.user?._id
+    );
     res.status(400).json({ error: err.message });
   }
 };
@@ -155,18 +243,40 @@ export const updatePatient = async (req, res) => {
 export const deletePatient = async (req, res) => {
   try {
     const userId = req.params.id || req.params.userId;
+    logEvent(
+      "Patient",
+      `Delete patient initiated - User ID: ${userId}`,
+      req.user?._id
+    );
     const deletedPatient = await Patient.findOneAndDelete({ user: userId });
 
-    if (!deletedPatient)
+    if (!deletedPatient) {
+      logEvent(
+        "Patient",
+        `Delete patient failed - User ID ${userId} not found`,
+        req.user?._id
+      );
       return res.status(404).json({ error: "Patient not found" });
-
+    }
     // Delete associated user and emergency contact
     await User.findByIdAndDelete(deletedPatient.user);
     await EmergencyContact.findByIdAndDelete(deletedPatient.emergencyContact);
 
+    logEvent(
+      "Patient",
+      `Patient deleted successfully - Patient ID: ${patientId}, User ID: ${userId}, Associated user and emergency contact also deleted`,
+      req.user?._id
+    );
+
     res.status(200).json({ message: "Patient deleted successfully" });
   } catch (err) {
-    console.error("Error deleting patient:", err);
+    logEvent(
+      "Patient",
+      `Delete patient error - User ID: ${
+        req.params?.id || req.params?.userId
+      }, Error: ${err.message}`,
+      req.user?._id
+    );
     res.status(500).json({ error: err.message });
   }
 };
@@ -175,22 +285,24 @@ export const deletePatient = async (req, res) => {
 export const getInsuranceCards = async (req, res) => {
   try {
     const { id } = req.params;
-
-    console.log("Fetching insurance cards for user ID:", id);
+    logEvent(
+      "Patient",
+      `Get insurance cards initiated - User ID: ${id}`,
+      req.user?._id
+    );
 
     // Find patient by user ID
     const patient = await Patient.findOne({ user: id });
 
     if (!patient) {
-      console.log("No patient found for user ID:", id);
+      logEvent(
+        "Patient",
+        `Get insurance cards failed - User ID ${id} not found`,
+        req.user?._id
+      );
       return res.status(404).json({ error: "Patient not found" });
     }
 
-    console.log("Patient found:", patient._id);
-    console.log("Has front card:", !!patient.insuranceCardFront);
-    console.log("Has back card:", !!patient.insuranceCardBack);
-
-    // Convert buffers to base64 strings if they exist
     const insuranceCardFront = patient.insuranceCardFront
       ? `data:image/png;base64,${patient.insuranceCardFront.toString("base64")}`
       : null;
@@ -199,13 +311,25 @@ export const getInsuranceCards = async (req, res) => {
       ? `data:image/png;base64,${patient.insuranceCardBack.toString("base64")}`
       : null;
 
+    logEvent(
+      "Patient",
+      `Insurance cards retrieved - Patient ID: ${
+        patient._id
+      }, User ID: ${id}, Has Front: ${!!insuranceCardFront}, Has Back: ${!!insuranceCardBack}`,
+      req.user?._id
+    );
+
     res.json({
       success: true,
       insuranceCardFront,
       insuranceCardBack,
     });
   } catch (err) {
-    console.error("Error fetching insurance cards:", err.message);
+    logEvent(
+      "Patient",
+      `Get insurance cards error - User ID: ${req.params?.id}, Error: ${err.message}`,
+      req.user?._id
+    );
     res
       .status(500)
       .json({ error: "Internal server error", details: err.message });
@@ -216,8 +340,17 @@ export const getInsuranceCards = async (req, res) => {
 export const searchPatientsByName = async (req, res) => {
   try {
     const { name } = req.query;
-
+    logEvent(
+      "Patient",
+      `Search patients by name initiated - Search term: ${name}`,
+      req.user?._id
+    );
     if (!name) {
+      logEvent(
+        "Patient",
+        "Search patients failed - Name parameter is required",
+        req.user?._id
+      );
       return res.status(400).json({ error: "Name parameter is required" });
     }
 
@@ -241,12 +374,22 @@ export const searchPatientsByName = async (req, res) => {
       );
     });
 
+    logEvent(
+      "Patient",
+      `Search patients completed - Search term: ${name}, Results: ${filteredPatients.length}`,
+      req.user?._id
+    );
     return res.json({
       searchTerm: name,
       count: filteredPatients.length,
       patients: filteredPatients,
     });
   } catch (err) {
+    logEvent(
+      "Patient",
+      `Search patients error - Search term: ${req.query?.name}, Error: ${err.message}`,
+      req.user?._id
+    );
     return res.status(500).json({ error: err.message });
   }
 };
@@ -255,6 +398,12 @@ export const searchPatientsByName = async (req, res) => {
 export const getPatientByPatientId = async (req, res) => {
   try {
     const patientId = req.params.id;
+    logEvent(
+      "Patient",
+      `Get patient by patient ID initiated - Patient ID: ${patientId}`,
+      req.user?._id
+    );
+
     const patient = await Patient.findById(patientId).populate([
       {
         path: "user",
@@ -263,10 +412,26 @@ export const getPatientByPatientId = async (req, res) => {
       },
       { path: "emergencyContact", select: "name phoneNumber relationship" },
     ]);
-    if (!patient) return res.status(404).json({ error: "Patient not found" });
+    if (!patient) {
+      logEvent(
+        "Patient",
+        `Get patient failed - Patient ID ${patientId} not found`,
+        req.user?._id
+      );
+      logEvent(
+        "Patient",
+        `Patient retrieved by patient ID - Patient ID: ${patientId}, User ID: ${patient.user?._id}, Email: ${patient.user?.email}`,
+        req.user?._id
+      );
+      return res.status(404).json({ error: "Patient not found" });
+    }
     res.status(200).json(patient);
   } catch (err) {
-    console.error("Error fetching patient:", err);
+    logEvent(
+      "Patient",
+      `Get patient by patient ID error - Patient ID: ${req.params?.id}, Error: ${err.message}`,
+      req.user?._id
+    );
     res.status(500).json({ error: err.message });
   }
 };
