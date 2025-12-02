@@ -4,8 +4,8 @@ import { useRequireRole } from "hooks/useRequireRole";
 import { useAuth } from "contexts/AuthContext";
 import PrimaryButton from "components/buttons/PrimaryButton";
 import SmallSearchBar from "components/input/SmallSearchBar";
+import CustomDropdown from "components/input/Dropdown";
 import PatientInvoiceDetailsModal from "components/modal/PatientInvoiceDetailsModal";
-import { Funnel } from "phosphor-react";
 import { financeService } from "api/services/finance.service";
 import { patientService } from "api/services/patient.service";
 import { Invoice } from "api/types/finance.types";
@@ -17,7 +17,7 @@ const ViewInvoices: React.FC = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("All Status");
   const [patientId, setPatientId] = useState<string | null>(null);
   const user = useRequireRole("Patient", true);
   const { user: authUser } = useAuth();
@@ -29,7 +29,7 @@ const ViewInvoices: React.FC = () => {
         console.log("No authUser ID found");
         return;
       }
-      
+
       try {
         const patientData = await patientService.getById(authUser._id);
         console.log("Patient data:", patientData);
@@ -48,9 +48,9 @@ const ViewInvoices: React.FC = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       if (!patientId) return;
-      
+
       console.log("Fetching invoices for patient ID:", patientId);
-      
+
       try {
         const data = await financeService.getPatientInvoices(patientId);
         console.log("Invoices received:", data);
@@ -73,15 +73,16 @@ const ViewInvoices: React.FC = () => {
 
     // Search filter
     if (searchQuery) {
-      filtered = filtered.filter(
-        (invoice) =>
-          invoice.doctorName.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter((invoice) =>
+        invoice.doctorName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Status filter
-    if (statusFilter !== "all") {
-      filtered = filtered.filter((invoice) => invoice.status === statusFilter);
+    if (statusFilter !== "All Status") {
+      filtered = filtered.filter(
+        (invoice) => invoice.status === statusFilter.toLowerCase()
+      );
     }
 
     setFilteredInvoices(filtered);
@@ -110,7 +111,7 @@ const ViewInvoices: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-foreground">
       {/* Content Area */}
       <div className="p-8">
         <div className="mb-6">
@@ -132,22 +133,13 @@ const ViewInvoices: React.FC = () => {
               onClear={handleClearSearch}
             />
           </div>
-          <div className="relative">
-            <Funnel
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            />
-            <select
+          <div className="w-64">
+            <CustomDropdown
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-white"
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="sent">Sent</option>
-              <option value="paid">Paid</option>
-              <option value="overdue">Overdue</option>
-            </select>
+              onChange={setStatusFilter}
+              options={["All Status", "Pending", "Sent", "Paid", "Overdue"]}
+              placeholder="Filter by status"
+            />
           </div>
         </div>
 
@@ -210,12 +202,12 @@ const ViewInvoices: React.FC = () => {
                 </svg>
               </div>
               <p className="text-gray-800 font-medium text-lg">
-                {searchQuery || statusFilter !== "all"
+                {searchQuery || statusFilter !== "All Status"
                   ? "No invoices found"
                   : "No invoices yet!"}
               </p>
               <p className="text-gray-500 text-sm mt-2">
-                {searchQuery || statusFilter !== "all"
+                {searchQuery || statusFilter !== "All Status"
                   ? "Try adjusting your search or filters"
                   : "You don't have any invoices at the moment"}
               </p>

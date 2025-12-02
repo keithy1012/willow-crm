@@ -525,12 +525,12 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleSendChat = async () => {
-    const trimmed = chatInput.trim();
+  const handleSendChat = async (messageText?: string) => {
+    const trimmed = (messageText || chatInput).trim();
     if (!trimmed || isBotTyping) return;
-    // send and let handleAskQuestion update chatMessages
+
     await handleAskQuestion(trimmed);
-    setChatInput("");
+    setChatInput(""); 
   };
 
   const formatDate = (dateStr: string) => {
@@ -648,27 +648,16 @@ const Dashboard: React.FC = () => {
                       appointments.
                     </p>
 
-                    <div className="flex gap-3">
-                      <LongTextArea
-                        value={chatInput}
-                        onChange={(text) => setChatInput(text)}
-                        placeholder="Type your question here..."
-                        className="flex-1"
-                      />
-
-                      <PrimaryButton
-                        text={isBotTyping ? "Sending..." : "Submit"}
-                        variant="primary"
-                        size="small"
-                        disabled={isBotTyping}
-                        onClick={async () => {
-                          if (!chatInput.trim()) return;
-
-                          await handleSendChat();
-                          setChatModalOpen(true);
-                        }}
-                      />
-                    </div>
+                    <LongTextArea
+                      placeholder="Ask a question here..."
+                      buttonText={isBotTyping ? "Sending..." : "Submit"}
+                      onSubmit={async (text) => {
+                        if (!text.trim() || isBotTyping) return;
+                        await handleAskQuestion(text);
+                        setChatModalOpen(true);
+                      }}
+                      button={true}
+                    />
                   </div>
                 </div>
                 <ChatModal
@@ -681,20 +670,11 @@ const Dashboard: React.FC = () => {
                   isBotTyping={isBotTyping}
                 />
 
-                <LongTextArea
-                  placeholder="Ask a question here..."
-                  buttonText="Send"
-                  onSubmit={handleAskQuestion}
-                  button={true}
-                />
-
                 {/* MEDICATIONS */}
                 <h2 className="mt-10 text-xl font-md text-primaryText mb-2">
                   My Medications
                 </h2>
-                <p className="text-sm text-secondaryText mb-4">
-                  Preview your medications here.
-                </p>
+                <p className="text-sm text-secondaryText mb-4"></p>
 
                 {loadingMedications ? (
                   <div className="flex justify-center py-8">

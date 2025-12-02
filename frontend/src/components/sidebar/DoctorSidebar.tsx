@@ -55,7 +55,6 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = ({}) => {
 
   const bottomItems = [
     { text: "Bug Report", icon: Bug, path: "/doctor-bug-report" },
-    { text: "Help / Support", icon: Question, path: "/doctor-help-support" },
     { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 

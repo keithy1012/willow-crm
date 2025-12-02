@@ -2,7 +2,7 @@ import { WebSocketServer } from "ws";
 import Conversation from "../models/messaging/Conversation.js";
 import Message from "../models/messaging/Message.js";
 import User from "../models/users/User.js";
-// Import your existing auth verification
+import AuditLog from "../models/messaging/AuditLog.js";
 import { verifyToken } from "../middleware/authentication.js";
 
 class SocketServer {
@@ -19,7 +19,10 @@ class SocketServer {
     });
 
     this.wss.on("connection", (ws, req) => {
+      // Store IP address for audit logging
+      ws.ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
       ws.isAlive = true;
+
       ws.on("pong", () => {
         ws.isAlive = true;
       });
@@ -52,6 +55,10 @@ class SocketServer {
         await this.handleAuth(ws, message.token);
         break;
 
+      case "register-public-key":
+        await this.handleRegisterPublicKey(ws, message.data);
+        break;
+
       case "get-conversations":
         await this.handleGetConversations(ws);
         break;
@@ -81,6 +88,22 @@ class SocketServer {
     }
   }
 
+  // HIPAA Audit Logging
+  async logAuditEvent(userId, action, resourceType, resourceId, metadata = {}) {
+    try {
+      await AuditLog.create({
+        userId,
+        action,
+        resourceType,
+        resourceId,
+        metadata,
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      console.error("Failed to log audit event:", error);
+    }
+  }
+
   async handleAuth(ws, token) {
     try {
       if (!token || token.trim() === "") {
@@ -94,11 +117,16 @@ class SocketServer {
         return;
       }
 
-      // Use your existing verifyToken function instead of duplicating JWT logic
       let decoded;
       try {
         decoded = verifyToken(token);
       } catch (error) {
+        // HIPAA: Log failed login attempt
+        await this.logAuditEvent(null, "FAILED_LOGIN", "USER", null, {
+          reason: error.name,
+          ipAddress: ws.ipAddress,
+        });
+
         if (error.name === "TokenExpiredError") {
           ws.send(
             JSON.stringify({
@@ -120,9 +148,8 @@ class SocketServer {
 
       const userId = decoded.id;
 
-      // Get user from database
       const user = await User.findById(userId).select(
-        "firstName lastName email username profilePic role isOnline"
+        "firstName lastName email username profilePic role isOnline publicKey"
       );
 
       if (!user) {
@@ -144,9 +171,9 @@ class SocketServer {
         username: user.username,
         avatar: user.profilePic,
         role: user.role,
+        publicKey: user.publicKey,
       };
 
-      // Store in clients map
       this.clients.set(ws.userId, ws);
 
       if (!this.userSockets.has(ws.userId)) {
@@ -154,13 +181,16 @@ class SocketServer {
       }
       this.userSockets.get(ws.userId).add(ws);
 
-      // Update user online status
       await User.findByIdAndUpdate(user._id, {
         isOnline: true,
         lastActive: new Date(),
       });
 
-      // Send success response
+      // HIPAA: Log successful login
+      await this.logAuditEvent(userId, "LOGIN", "USER", userId, {
+        ipAddress: ws.ipAddress,
+      });
+
       ws.send(
         JSON.stringify({
           type: "auth-success",
@@ -168,13 +198,8 @@ class SocketServer {
         })
       );
 
-      // Load conversations
       await this.handleGetConversations(ws);
-
-      // Send online users
       this.sendOnlineUsers(ws);
-
-      // Broadcast user status
       this.broadcastUserStatus(ws.userId, "online");
     } catch (error) {
       console.error("WebSocket auth error:", error);
@@ -188,6 +213,45 @@ class SocketServer {
     }
   }
 
+  async handleRegisterPublicKey(ws, data) {
+    if (!ws.userId) {
+      this.sendError(ws, "Not authenticated");
+      return;
+    }
+
+    try {
+      const { publicKey } = data;
+
+      if (!publicKey || publicKey.length < 20) {
+        this.sendError(ws, "Invalid public key");
+        return;
+      }
+
+      await User.findByIdAndUpdate(ws.userId, {
+        publicKey: publicKey,
+        keyRotatedAt: new Date(),
+      });
+
+      // Update ws.user to include publicKey
+      ws.user.publicKey = publicKey;
+
+      console.log(`✅ Public key registered for user ${ws.userId}`);
+
+      ws.send(
+        JSON.stringify({
+          type: "public-key-registered",
+          success: true,
+        })
+      );
+
+      // HIPAA: Log key registration
+      await this.logAuditEvent(ws.userId, "KEY_REGISTERED", "USER", ws.userId);
+    } catch (error) {
+      console.error("Error registering public key:", error);
+      this.sendError(ws, "Failed to register public key");
+    }
+  }
+
   async handleGetConversations(ws) {
     if (!ws.userId) {
       this.sendError(ws, "Not authenticated");
@@ -198,8 +262,17 @@ class SocketServer {
       const conversations = await Conversation.find({
         participants: ws.userId,
       })
-        .populate("participants", "firstName lastName username profilePic role")
-        .populate("lastMessage")
+        .populate(
+          "participants",
+          "firstName lastName username profilePic role publicKey"
+        )
+        .populate({
+          path: "lastMessage",
+          populate: {
+            path: "sender",
+            select: "firstName lastName _id",
+          },
+        })
         .sort("-updatedAt");
 
       const transformedConversations = await Promise.all(
@@ -208,9 +281,32 @@ class SocketServer {
             (p) => p && p._id && p._id.toString() !== ws.userId
           );
 
-          // Skip this conversation if other participant doesn't exist
           if (!otherParticipant) {
             return null;
+          }
+
+          // Handle last message preview
+          let lastMessageContent = null;
+          if (conv.lastMessage) {
+            // Determine which encrypted version to use
+            const lastMsg = conv.lastMessage;
+            let encryptedContent = lastMsg.encryptedContent;
+
+            // If I'm the sender, use my copy
+            if (
+              lastMsg.sender &&
+              lastMsg.sender._id.toString() === ws.userId &&
+              lastMsg.encryptedContentSender
+            ) {
+              encryptedContent = lastMsg.encryptedContentSender;
+            }
+
+            // Send encrypted content - let frontend decrypt it
+            lastMessageContent = {
+              encryptedContent: encryptedContent,
+              timestamp: conv.lastMessage.createdAt,
+              senderId: lastMsg.sender?._id?.toString(),
+            };
           }
 
           return {
@@ -223,21 +319,16 @@ class SocketServer {
                 username: otherParticipant.username,
                 avatar: otherParticipant.profilePic,
                 role: otherParticipant.role,
+                publicKey: otherParticipant.publicKey,
               },
             ],
-            lastMessage: conv.lastMessage
-              ? {
-                  content: conv.lastMessage.content,
-                  timestamp: conv.lastMessage.createdAt,
-                }
-              : null,
+            lastMessage: lastMessageContent,
             unreadCount: 0,
             updatedAt: conv.updatedAt,
           };
         })
       );
 
-      // Filter out null conversations
       const validConversations = transformedConversations.filter(
         (c) => c !== null
       );
@@ -283,16 +374,31 @@ class SocketServer {
         return;
       }
 
-      // Get messages with populated sender information
       const messages = await Message.find({
         conversation: conversationId,
       })
-        .populate("sender", "firstName lastName username profilePic role")
+        .populate(
+          "sender",
+          "firstName lastName username profilePic role publicKey"
+        )
         .sort("createdAt")
-        .limit(50);
+        .limit(100);
 
       const transformedMessages = messages.map((msg) => {
         const sender = msg.sender;
+
+        // Determine which encrypted version to send
+        // If I'm the sender, send encryptedContentSender (if exists), otherwise encryptedContent
+        let encryptedContent = msg.encryptedContent;
+
+        if (sender._id.toString() === ws.userId && msg.encryptedContentSender) {
+          // I'm the sender and there's a copy encrypted for me
+          encryptedContent = msg.encryptedContentSender;
+          console.log(`📨 Sending sender's copy for message ${msg._id}`);
+        } else if (sender._id.toString() === ws.userId) {
+          // I'm the sender but no sender copy exists
+          console.log(`⚠️ No sender copy exists for message ${msg._id}`);
+        }
 
         return {
           id: msg._id.toString(),
@@ -304,7 +410,7 @@ class SocketServer {
             avatar: sender.profilePic,
             role: sender.role,
           },
-          content: msg.content,
+          encryptedContent: encryptedContent,
           timestamp: msg.createdAt,
           read: msg.read || false,
           delivered: msg.delivered || true,
@@ -317,6 +423,17 @@ class SocketServer {
           messages: transformedMessages,
         })
       );
+
+      // HIPAA: Log message access
+      await this.logAuditEvent(
+        ws.userId,
+        "MESSAGES_ACCESSED",
+        "CONVERSATION",
+        conversationId,
+        {
+          messageCount: transformedMessages.length,
+        }
+      );
     } catch (error) {
       console.error("Error fetching messages:", error);
       ws.send(
@@ -327,28 +444,59 @@ class SocketServer {
       );
     }
   }
-
   async handleSendMessage(ws, data) {
     if (!ws.userId) {
       this.sendError(ws, "Not authenticated");
       return;
     }
 
-    const { conversationId, content, tempId } = data;
+    const { conversationId, encryptedContent, encryptedContentSender, tempId } =
+      data;
+
+    // Validate encrypted content for recipient
+    if (
+      !encryptedContent ||
+      !encryptedContent.ciphertext ||
+      !encryptedContent.ephemeralPublicKey ||
+      !encryptedContent.nonce
+    ) {
+      this.sendError(ws, "Invalid encrypted message format");
+      return;
+    }
 
     try {
-      // Save to database
-      const message = new Message({
+      // Save encrypted message (server never sees plaintext!)
+      const messageData = {
         conversation: conversationId,
         sender: ws.userId,
-        content: content,
+        encryptedContent: {
+          ciphertext: encryptedContent.ciphertext,
+          ephemeralPublicKey: encryptedContent.ephemeralPublicKey,
+          nonce: encryptedContent.nonce,
+        },
         delivered: true,
         read: false,
-      });
+        sentFromIP: ws.ipAddress,
+        deliveredAt: new Date(),
+      };
 
+      // If sender encrypted a copy for themselves, store it too
+      if (
+        encryptedContentSender &&
+        encryptedContentSender.ciphertext &&
+        encryptedContentSender.ephemeralPublicKey &&
+        encryptedContentSender.nonce
+      ) {
+        messageData.encryptedContentSender = {
+          ciphertext: encryptedContentSender.ciphertext,
+          ephemeralPublicKey: encryptedContentSender.ephemeralPublicKey,
+          nonce: encryptedContentSender.nonce,
+        };
+      }
+
+      const message = new Message(messageData);
       await message.save();
 
-      // Update conversation
       await Conversation.findByIdAndUpdate(conversationId, {
         lastMessage: message._id,
         updatedAt: new Date(),
@@ -358,7 +506,8 @@ class SocketServer {
         id: message._id.toString(),
         conversationId: conversationId,
         sender: ws.user,
-        content: content,
+        encryptedContent: message.encryptedContent,
+        encryptedContentSender: message.encryptedContentSender, // Include sender's copy if exists
         timestamp: message.createdAt.toISOString(),
         read: false,
         delivered: true,
@@ -390,6 +539,19 @@ class SocketServer {
           );
         }
       }
+
+      // HIPAA: Log message sent
+      await this.logAuditEvent(
+        ws.userId,
+        "MESSAGE_SENT",
+        "MESSAGE",
+        message._id,
+        {
+          conversationId,
+          recipientId: recipientId?.toString(),
+          encrypted: true,
+        }
+      );
     } catch (error) {
       console.error("Error sending message:", error);
       this.sendError(ws, "Failed to send message");
@@ -428,9 +590,8 @@ class SocketServer {
     }
 
     try {
-      // Check if recipient exists first
       const otherUser = await User.findById(recipientId).select(
-        "firstName lastName username profilePic role"
+        "firstName lastName username profilePic role publicKey"
       );
 
       if (!otherUser) {
@@ -438,14 +599,12 @@ class SocketServer {
         return;
       }
 
-      // Find or create conversation
       let conversation = await Conversation.findOne({
         participants: { $all: [ws.userId, recipientId] },
         type: "direct",
       });
 
       if (!conversation) {
-        // Create new conversation
         conversation = new Conversation({
           participants: [ws.userId, recipientId],
           type: "direct",
@@ -453,9 +612,19 @@ class SocketServer {
           isActive: true,
         });
         await conversation.save();
+
+        // HIPAA: Log conversation creation
+        await this.logAuditEvent(
+          ws.userId,
+          "CONVERSATION_CREATED",
+          "CONVERSATION",
+          conversation._id,
+          {
+            recipientId,
+          }
+        );
       }
 
-      // Send response with conversation data
       const responsePayload = {
         type: "conversation-created",
         conversation: {
@@ -468,6 +637,7 @@ class SocketServer {
               username: otherUser.username,
               avatar: otherUser.profilePic,
               role: otherUser.role,
+              publicKey: otherUser.publicKey,
             },
           ],
           lastMessage: null,
@@ -477,8 +647,6 @@ class SocketServer {
       };
 
       ws.send(JSON.stringify(responsePayload));
-
-      // Also update the conversation list
       await this.handleGetConversations(ws);
     } catch (error) {
       console.error("Error handling conversation:", error);
@@ -489,6 +657,11 @@ class SocketServer {
   handleDisconnect(ws) {
     if (!ws.userId) return;
 
+    // HIPAA: Log logout
+    this.logAuditEvent(ws.userId, "LOGOUT", "USER", ws.userId, {
+      ipAddress: ws.ipAddress,
+    });
+
     this.clients.delete(ws.userId);
 
     const userSockets = this.userSockets.get(ws.userId);
@@ -497,13 +670,11 @@ class SocketServer {
       if (userSockets.size === 0) {
         this.userSockets.delete(ws.userId);
 
-        // Update user offline status
         User.findByIdAndUpdate(ws.userId, {
           isOnline: false,
           lastActive: new Date(),
         }).exec();
 
-        // Broadcast offline status
         this.broadcastUserStatus(ws.userId, "offline");
       }
     }

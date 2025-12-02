@@ -52,6 +52,7 @@ export default function ChatBox({
       </div>
 
       {/* Input area */}
+
       <form onSubmit={handleSubmit} className="p-3 flex gap-2">
         <textarea
           className="flex-1 border rounded-lg p-2"

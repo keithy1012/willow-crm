@@ -48,7 +48,6 @@ const OpsSidebar: React.FC<OpsSidebarProps> = () => {
 
   const bottomItems = [
     { text: "Bug Report", icon: Bug, path: "/bug-report" },
-    { text: "Help / Support", icon: Question, path: "/help-support" },
     { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 

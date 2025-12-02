@@ -10,6 +10,7 @@ import { useWebSocket } from "../../contexts/WebSocketContext";
 import { messageService } from "api/services/message.service";
 import { UserSearchResult } from "api/types/user.types";
 import { Participant } from "api/types/message.types";
+import EncryptionBadge from "./EncryptionBadge";
 const EmptyMessages = "/EmptyMessages.png";
 
 interface ConversationGroup {
@@ -294,6 +295,7 @@ const BaseMessages: React.FC<BaseMessagesProps> = ({
           <div className="flex flex-row justify-between items-center">
             <div className="flex items-center gap-2">
               <h2 className="text-xl">{getTitle()}</h2>
+              <EncryptionBadge />
               {!isConnected && (
                 <span className="text-xs text-error bg-error/10 px-2 py-1 rounded">
                   Disconnected
@@ -301,7 +303,6 @@ const BaseMessages: React.FC<BaseMessagesProps> = ({
               )}
             </div>
             <div className="flex items-center gap-2">
-              {customActions}
               {allowNewConversations && (
                 <NotePencil
                   size={24}
@@ -319,6 +320,7 @@ const BaseMessages: React.FC<BaseMessagesProps> = ({
           onClear={handleSearchClear}
           placeholder="Search conversations..."
         />
+        {customActions}
 
         <div className="flex-1 overflow-y-auto space-y-3">
           {conversationGroups.length > 0 ? (

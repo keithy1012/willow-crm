@@ -18,6 +18,30 @@ const userSchema = new mongoose.Schema(
       enum: ["Doctor", "Patient", "Ops", "IT", "Finance"],
       required: true,
     },
+    publicKey: {
+      type: String,
+      required: false,
+    },
+
+    keyRotatedAt: {
+      type: Date,
+      default: Date.now,
+    },
+
+    // HIPAA Compliance
+    lastPasswordChange: {
+      type: Date,
+      default: Date.now,
+    },
+
+    failedLoginAttempts: {
+      type: Number,
+      default: 0,
+    },
+
+    accountLockedUntil: {
+      type: Date,
+    },
 
     // Add these fields for messaging functionality:
     isOnline: {
