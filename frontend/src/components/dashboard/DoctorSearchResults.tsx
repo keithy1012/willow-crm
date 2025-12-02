@@ -2,6 +2,8 @@ import React from "react";
 import DoctorResultCard from "../card/DoctorResultCard";
 import BookingButton from "../buttons/BookingButton";
 import { AvailableDoctorResult } from "api/types/availability.types";
+import { useNavigate } from "react-router-dom";
+
 const noResultsImage = "/533.Checking-The-Calendar.png";
 
 interface TimeSlot {
@@ -19,6 +21,7 @@ interface DoctorSearchResultsProps {
   onSpecialtyChange?: (specialty: string) => void;
   onBookAppointment?: (doctorId: string, timeSlot: TimeSlot) => void;
   onMessageDoctor?: (doctorId: string) => void;
+  onViewProfile?: (doctorId: string) => void;
 }
 
 const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
@@ -29,7 +32,10 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
   onSpecialtyChange,
   onBookAppointment,
   onMessageDoctor,
+  onViewProfile,
 }) => {
+  const navigate = useNavigate();
+
   // Format the date for display
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
@@ -221,9 +227,16 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
                             phd={result.doctor.education || ""}
                             profilePicUrl={user.profilePic}
                             onMessageDoctor={() =>
-                              onMessageDoctor &&
-                              onMessageDoctor(result.doctor._id)
+                              onMessageDoctor?.(result.doctor._id)
                             }
+                            onViewProfile={() => {
+                              const userIdToNavigate = user._id;
+                              if (onViewProfile) {
+                                onViewProfile(userIdToNavigate);
+                              } else {
+                                navigate(`/doctor/${userIdToNavigate}`);
+                              }
+                            }}
                           />
                         </div>
 
