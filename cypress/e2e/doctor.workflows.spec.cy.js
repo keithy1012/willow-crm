@@ -156,9 +156,12 @@ describe('Doctor Workflows - Appointment lifecycle', () => {
                       failOnStatusCode: false,
                     }).then((aptResp) => {
                       cy.log('Appointment response:', aptResp.status, aptResp.body);
-                      
-                      if (aptResp.status === 404) {
-                        cy.log('Appointment endpoint might use different structure');
+
+                      // Try to extract appointment id from response
+                      let appointmentId = aptResp.body?.appointment?._id || aptResp.body?._id || aptResp.body?.appointmentId;
+
+                      if ((aptResp.status === 404 || !appointmentId)) {
+                        cy.log('Appointment endpoint might use different structure or returned no id; trying alternative payload');
                         // Try alternative payload
                         const altPayload = {
                           doctorID: doctorId,
@@ -167,7 +170,7 @@ describe('Doctor Workflows - Appointment lifecycle', () => {
                           time: start.toISOString().split('T')[1].substring(0, 5),
                           reason: 'E2E Test Appointment',
                         };
-                        
+
                         return cy.request({
                           method: 'POST',
                           url: `${API_BASE}/appointments`,
@@ -176,22 +179,23 @@ describe('Doctor Workflows - Appointment lifecycle', () => {
                           failOnStatusCode: false,
                         }).then((altResp) => {
                           cy.log('Alternative appointment response:', altResp.status, altResp.body);
-                          
-                          if (altResp.status !== 200 && altResp.status !== 201) {
-                            // Skip the rest of the test if appointment creation fails
-                            cy.log('Unable to create appointment, skipping UI verification');
+                          appointmentId = altResp.body?.appointment?._id || altResp.body?._id || altResp.body?.appointmentId;
+
+                          if (!appointmentId) {
+                            cy.log('Unable to create appointment or extract id, skipping UI verification');
                             return;
                           }
-                          
-                          verifyAppointmentUI(doctorToken, doctorUser);
+
+                          // Proceed with UI verification + backend assertions
+                          verifyAppointmentUI(doctorToken, doctorUser, appointmentId);
                         });
                       }
-                      
+
                       expect(aptResp.status).to.be.oneOf([200, 201]);
-                      verifyAppointmentUI(doctorToken, doctorUser);
+                      verifyAppointmentUI(doctorToken, doctorUser, appointmentId);
                     });
 
-                    function verifyAppointmentUI(doctorToken, doctorUser) {
+                    function verifyAppointmentUI(doctorToken, doctorUser, appointmentId) {
                       // Visit frontend as doctor
                       cy.window().then((win) => {
                         win.localStorage.clear();
@@ -211,21 +215,75 @@ describe('Doctor Workflows - Appointment lifecycle', () => {
                       cy.get('body', { timeout: 10000 }).then(($body) => {
                         if ($body.text().includes('E2E') || $body.text().includes('Test')) {
                           cy.log('Appointment found on page');
-                          
-                          // Look for action buttons
-                          if ($body.text().includes('Start')) {
-                            cy.contains('button', 'Start', { timeout: 5000 }).first().click();
-                            cy.wait(1000);
-                            
-                            if ($body.text().includes('Complete')) {
-                              cy.contains('button', 'Complete', { timeout: 5000 }).first().click();
-                              cy.wait(1000);
-                            }
-                          }
+
+                          // Look for Start button and click it if present
+                          cy.contains('button', /Start Appointment|Start/, { timeout: 5000 })
+                            .then(($startBtn) => {
+                              if ($startBtn && $startBtn.length) {
+                                cy.wrap($startBtn).first().click();
+
+                                // Poll backend until status becomes In-Progress
+                                pollAppointmentStatus(appointmentId, 'In-Progress', 8, 1000).then((res) => {
+                                  expect(res.body.status).to.eq('In-Progress');
+                                  cy.log('Appointment status is In-Progress');
+
+                                  // Now click Complete (may be labelled differently in timeline)
+                                  cy.contains('button', /Complete Appointment|Complete/, { timeout: 5000 })
+                                    .then(($completeBtn) => {
+                                      if ($completeBtn && $completeBtn.length) {
+                                        cy.wrap($completeBtn).first().click();
+
+                                        // Poll for Completed
+                                        pollAppointmentStatus(appointmentId, 'Completed', 8, 1000).then((res2) => {
+                                          expect(res2.body.status).to.eq('Completed');
+                                          cy.log('Appointment status is Completed');
+
+                                          // Cleanup: cancel appointment to restore state (use cancel route)
+                                          cy.request({
+                                            method: 'PUT',
+                                            url: `${API_BASE}/appointments/${appointmentId}/cancel`,
+                                            headers: { Authorization: `Bearer ${doctorToken}` },
+                                            failOnStatusCode: false,
+                                          }).then((cancelResp) => {
+                                            cy.log('Cleanup cancel response', cancelResp.status);
+                                          });
+                                        });
+                                      } else {
+                                        cy.log('Complete button not found after starting');
+                                      }
+                                    });
+                                });
+                              } else {
+                                cy.log('Start button not found');
+                              }
+                            })
+                            .catch(() => cy.log('Start button not present'));
                         } else {
                           cy.log('Appointment not visible on doctor dashboard - may need different flow');
                         }
                       });
+                    }
+
+                    // Poll the appointment GET endpoint until expected status or attempts exhausted
+                    function pollAppointmentStatus(appointmentId, expectedStatus, attemptsLeft = 5, delayMs = 1000) {
+                      const makeRequest = () => {
+                        return cy.request({
+                          method: 'GET',
+                          url: `${API_BASE}/appointments/${appointmentId}`,
+                          failOnStatusCode: false,
+                        }).then((resp) => {
+                          if (resp.status === 200 && resp.body.status === expectedStatus) {
+                            return cy.wrap(resp);
+                          }
+                          if (attemptsLeft <= 1) {
+                            return cy.wrap(resp);
+                          }
+                          cy.wait(delayMs);
+                          attemptsLeft -= 1;
+                          return makeRequest();
+                        });
+                      };
+                      return makeRequest();
                     }
                   });
                 });
