@@ -1,15 +1,18 @@
 // routes/opsMemberRoutes.js
-
 import express from "express";
+import { authenticate } from "../../middleware/authentication.js";
 import {
   createOpsMember,
   getAllOpsMembers,
   getOpsMemberById,
   deleteOpsMember,
-  updateOpsMember
+  updateOpsMember,
 } from "../../controllers/ops/opsMemberController.js";
 
 const router = express.Router();
+
+// Apply authenticate middleware to all routes
+router.use(authenticate);
 
 // Creates an OpsMember
 router.post("/", createOpsMember);

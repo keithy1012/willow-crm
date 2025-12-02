@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticate } from "../../middleware/authentication.js";
 import {
   createPatient,
   getAllPatients,
@@ -12,6 +13,9 @@ import {
 
 const router = express.Router();
 
+// Apply authenticate middleware to all routes
+router.use(authenticate);
+
 // Creates a new patient
 router.post("/", createPatient);
 
@@ -24,18 +28,16 @@ router.get("/search", searchPatientsByName);
 // Gets insurance card images by ID
 router.get("/:id/insuranceCards", getInsuranceCards);
 
-// Gets a patient by a specific ID
+// Gets a patient by user ID
 router.get("/:id", getPatientById);
 
-// Updates a patient by a specific ID
+// Updates a patient by user ID
 router.put("/:id", updatePatient);
 
-// Deletes a patient by a delete ID
+// Deletes a patient by user ID
 router.delete("/:id", deletePatient);
 
-// Gets a patient's insurance cards
-router.get("/getInsurance/:id", getInsuranceCards);
-
+// Gets a patient by patient ID (not user ID)
 router.get("/patient/:id", getPatientByPatientId);
 
 export default router;

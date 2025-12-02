@@ -1,4 +1,3 @@
-// routes/doctorTicketRoutes.js
 import express from "express";
 import {
   submitDoctorTicket,

@@ -2,7 +2,7 @@ import { chatBot } from "../../models/chat/chatBot.js";
 import { logEvent, getClientIp } from "../../utils/logger.js";
 export const chatController = {
   async sendMessage(req, res) {
-    ip = getClientIp(req);
+    const ip = getClientIp(req);
     try {
       const { messages } = req.body;
 

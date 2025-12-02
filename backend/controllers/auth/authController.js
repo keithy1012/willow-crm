@@ -5,7 +5,7 @@ import { logEvent, getClientIp } from "../../utils/logger.js";
 
 export const authController = {
   async requestPasswordReset(req, res) {
-    ip = getClientIp(req);
+    const ip = getClientIp(req);
     try {
       const { email } = req.body;
 
@@ -89,7 +89,7 @@ export const authController = {
   },
 
   async resetPassword(req, res) {
-    ip = getClientIp(req);
+    const ip = getClientIp(req);
     try {
       const { token, newPassword } = req.body;
 

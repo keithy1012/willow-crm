@@ -4,7 +4,7 @@ import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Fixed setDateAvailability function
 export const setDateAvailability = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date, timeSlots: requestTimeSlots } = req.body; // Rename to avoid conflict
@@ -261,7 +261,7 @@ export const createRecurringAvailability = async (req, res) => {
 
 // Update getDoctorAllAvailabilities to not require authentication
 export const getDoctorAllAvailabilities = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
 
@@ -304,7 +304,7 @@ export const getDoctorAllAvailabilities = async (req, res) => {
 
 // Remove all availability for a specific date
 export const removeAvailabilityForDate = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date } = req.body;
@@ -359,7 +359,7 @@ export const removeAvailabilityForDate = async (req, res) => {
 
 // Remove a specific time slot
 export const removeTimeSlot = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { availabilityId, slotIndex } = req.params;
 
@@ -402,7 +402,7 @@ export const removeTimeSlot = async (req, res) => {
 
 // Get doctor's availability for a specific date
 export const getDoctorAvailabilityForDate = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date } = req.query;
@@ -519,7 +519,7 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
 // Search doctors available on a specific date and optionally at a specific time
 // In availabilityController.js - Complete updated searchDoctorsByDateTime function
 export const searchDoctorsByDateTime = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { date, name } = req.query;
     logEvent(
@@ -772,7 +772,7 @@ export const searchDoctorsByDateTime = async (req, res) => {
 };
 
 export const getDoctorAvailabilityForDateRange = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { startDate, endDate } = req.query;

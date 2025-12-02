@@ -146,7 +146,6 @@ export const getMedordersByPatient = async (req, res) => {
     const medorders = await Medorder.find({ patientID })
       .populate("doctorID", "name email specialty")
       .sort({ prescribedOn: -1 });
-
     logEvent(
       "Medorder",
       `Medication orders retrieved for patient - Patient: ${patientID}, Count: ${medorders.length}`,

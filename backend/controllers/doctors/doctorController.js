@@ -3,7 +3,7 @@ import User from "../../models/users/User.js";
 import { logEvent, getClientIp } from "../../utils/logger.js";
 
 export const createDoctor = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { email, username, firstName, lastName, speciality } = req.body;
 
@@ -72,7 +72,7 @@ export const createDoctor = async (req, res) => {
 
 // search doctors by name only
 export const searchDoctorsByName = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { name } = req.query;
 
@@ -143,7 +143,7 @@ export const searchDoctorsByName = async (req, res) => {
 
 // Get All Doctors
 export const getAllDoctors = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     logEvent("Doctor", "Get all doctors initiated", req.user?._id, ip);
 
@@ -173,7 +173,7 @@ export const getAllDoctors = async (req, res) => {
 
 // Get all doctors by speciality
 export const getDoctorsBySpeciality = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { speciality } = req.params;
 
@@ -222,7 +222,7 @@ export const getDoctorsBySpeciality = async (req, res) => {
 
 // Creates a Doctor from the Doctor Acocunt Creation Ticket
 export const createDoctorFromData = async (doctorData) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   // Create a user entry first
   try {
     logEvent(
@@ -279,7 +279,7 @@ export const createDoctorFromData = async (doctorData) => {
 
 // backend/controllers/doctors/doctorController.js
 export const getDoctorByUserId = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { userId } = req.params;
     logEvent(

@@ -4,7 +4,7 @@ import { generateToken } from "../../middleware/authentication.js";
 import { getClientIp, logEvent } from "../../utils/logger.js";
 // Create new Finance member
 export const createFinanceMember = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const {
       firstName,
@@ -75,7 +75,7 @@ export const createFinanceMember = async (req, res) => {
 
 // Get all Finance members
 export const getAllFinanceMembers = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     logEvent("Finance", "Get all finance members initiated", req.user?._id, ip);
 
@@ -106,7 +106,7 @@ export const getAllFinanceMembers = async (req, res) => {
 
 // Get Finance member by ID
 export const getFinanceMemberById = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const financeMember = await FinanceMember.findById(req.params.id).populate(
       "user",
@@ -144,7 +144,7 @@ export const getFinanceMemberById = async (req, res) => {
 
 // Update Finance member
 export const updateFinanceMember = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const financeMember = await FinanceMember.findById(req.params.id);
     if (!financeMember) {
@@ -198,7 +198,7 @@ export const updateFinanceMember = async (req, res) => {
 
 // Delete Finance member
 export const deleteFinanceMember = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
     logEvent(

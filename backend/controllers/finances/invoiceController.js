@@ -3,7 +3,7 @@ import Patient from "../../models/patients/Patient.js";
 import { logEvent, getClientIp } from "../../utils/logger.js";
 // Get invoices for a specific patient
 export const getPatientInvoices = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { patientId } = req.params;
     logEvent(
@@ -37,7 +37,7 @@ export const getPatientInvoices = async (req, res) => {
 
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     logEvent("Invoice", "Get all invoices initiated", req.user?._id, ip);
 
@@ -65,7 +65,7 @@ export const getAllInvoices = async (req, res) => {
 
 // Create new invoice
 export const createInvoice = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { patientId, doctorName, appointmentDate, amount, description } =
       req.body;
@@ -139,7 +139,7 @@ export const createInvoice = async (req, res) => {
 
 // Send invoice to external billing system
 export const sendInvoiceToExternal = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
     logEvent(
@@ -187,7 +187,7 @@ export const sendInvoiceToExternal = async (req, res) => {
 
 // Update invoice status
 export const updateInvoiceStatus = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
     const { status } = req.body;

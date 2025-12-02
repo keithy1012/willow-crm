@@ -29,7 +29,7 @@ const formatTime = (time) => {
 
 // Book an appointment
 export const bookAppointment = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const {
       doctorId,
@@ -372,7 +372,7 @@ export const bookAppointment = async (req, res) => {
 
 // Cancel an appointment
 export const cancelAppointment = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const appointment = await Appointment.findById(appointmentId);
@@ -458,7 +458,7 @@ export const cancelAppointment = async (req, res) => {
 
 // Get appointments for a doctor
 export const getDoctorAppointments = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date, status } = req.query;
@@ -519,7 +519,7 @@ export const getDoctorAppointments = async (req, res) => {
 
 // Get appointments for a patient
 export const getPatientAppointments = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { patientId } = req.params;
     const { upcoming } = req.query;
@@ -568,7 +568,7 @@ export const getPatientAppointments = async (req, res) => {
 
 // Update appointment status
 export const updateAppointmentStatus = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { status } = req.body;
@@ -648,7 +648,7 @@ export const updateAppointmentStatus = async (req, res) => {
 // Get appointment by ID
 // Updated getAppointmentById to include document info but not the full base64 data by default
 export const getAppointmentById = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { includeDocuments } = req.query; // Optional query param to include full documents
@@ -797,7 +797,7 @@ export const notifyPatientOfDocument = async (req, res) => {
 
 // Fixed updateAppointmentDocuments function for your appointmentController.js
 export const updateAppointmentDocuments = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const {
@@ -880,7 +880,7 @@ export const updateAppointmentDocuments = async (req, res) => {
 
 // Also fix getAppointmentDocuments to properly select the fields
 export const getAppointmentDocuments = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { includeData } = req.query; // Optional query param to include base64 data
@@ -946,7 +946,7 @@ export const getAppointmentDocuments = async (req, res) => {
 
 // Fix downloadDocument to properly select the document field
 export const downloadDocument = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId, documentType } = req.params;
 
@@ -997,7 +997,7 @@ export const downloadDocument = async (req, res) => {
 };
 
 export const cancelAppointmentWithReason = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { reason, cancelledBy } = req.body;
@@ -1137,7 +1137,7 @@ export const cancelAppointmentWithReason = async (req, res) => {
 
 // Mark appointment as no-show with reason and email notification
 export const markNoShowWithReason = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { reason } = req.body;

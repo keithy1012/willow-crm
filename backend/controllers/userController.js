@@ -188,7 +188,7 @@ export const login = async (req, res) => {
 
 // Get current user profile (protected)
 export const getCurrentUser = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   try {
     logEvent(
       "User",
@@ -229,7 +229,7 @@ export const getCurrentUser = async (req, res) => {
 
 // GET /api/users/email-check?email=...
 export const checkEmail = async (req, res) => {
-  ip = getClientIp(req);
+  const ip = getClientIp(req);
   const email = req.query.email;
   logEvent(
     "User",
@@ -281,7 +281,7 @@ export const checkEmail = async (req, res) => {
 // GET /api/users/search?query=... - Search for users
 export const searchUsers = async (req, res) => {
   try {
-    ip = getClientIp(req);
+    const ip = getClientIp(req);
     const { query } = req.query;
     const currentUserId = req.user?._id || req.userId;
 
@@ -381,7 +381,7 @@ export const searchUsers = async (req, res) => {
 
 export const searchUsersByRole = async (req, res) => {
   try {
-    ip = getClientIp(req);
+    const ip = getClientIp(req);
     const { role, query } = req.query;
     const currentUserId = req.user?._id || req.userId;
     logEvent(
@@ -469,7 +469,7 @@ export const searchUsersByRole = async (req, res) => {
 // GET /api/users/:id - Get a specific user by ID
 export const getUserById = async (req, res) => {
   try {
-    ip = getClientIp(req);
+    const ip = getClientIp(req);
     const { id } = req.params;
     logEvent(
       "User",
