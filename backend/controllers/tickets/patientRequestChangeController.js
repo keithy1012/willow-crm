@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
 import PatientRequestTicket from "../../models/tickets/PatientRequestTicket.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Create new patient request change ticket
 export const createChangeTicket = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     logEvent(
       "PatientRequestTicket",
       `Create change ticket initiated - Requested By: ${req.user._id}, Type: ${
         req.body.requestType || "N/A"
       }`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = new PatientRequestTicket({
@@ -22,7 +24,8 @@ export const createChangeTicket = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Change ticket created successfully - Ticket ID: ${ticket._id}, Requested By: ${req.user._id}, Status: Pending`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.status(201).json({ message: "Ticket submitted successfully", ticket });
@@ -30,18 +33,22 @@ export const createChangeTicket = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Create change ticket error - Requested By: ${req.user?._id}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(400).json({ error: err.message });
   }
 };
+
 // Gets all pending patient change request tickets
 export const getPendingTickets = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     logEvent(
       "PatientRequestTicket",
       "Get pending change tickets initiated",
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const tickets = await PatientRequestTicket.find({ status: "Pending" });
@@ -49,7 +56,8 @@ export const getPendingTickets = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Pending change tickets retrieved - Count: ${tickets.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.json(tickets);
@@ -57,7 +65,8 @@ export const getPendingTickets = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Get pending change tickets error - Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -65,13 +74,15 @@ export const getPendingTickets = async (req, res) => {
 
 // Get a specific ticket by id
 export const getTicketByID = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
 
     logEvent(
       "PatientRequestTicket",
       `Get ticket by ID initiated - Ticket ID: ${id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = await PatientRequestTicket.findById({ _id: id });
@@ -80,7 +91,8 @@ export const getTicketByID = async (req, res) => {
       logEvent(
         "PatientRequestTicket",
         `Get ticket failed - Ticket ID ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Ticket not found" });
     }
@@ -88,7 +100,8 @@ export const getTicketByID = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Ticket retrieved - Ticket ID: ${id}, Status: ${ticket.status}, Requested By: ${ticket.requestedBy}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json(ticket);
@@ -96,7 +109,8 @@ export const getTicketByID = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Get ticket error - Ticket ID: ${req.params?.id}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -104,13 +118,15 @@ export const getTicketByID = async (req, res) => {
 
 // Get all tickets in Progress by a Ops member by id
 export const getInProgressTicketsByOpsId = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { opsId } = req.params;
 
     logEvent(
       "PatientRequestTicket",
       `Get in-progress tickets by Ops ID initiated - Ops Member: ${opsId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const opsObjectId = new mongoose.Types.ObjectId(opsId);
@@ -123,7 +139,8 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
       logEvent(
         "PatientRequestTicket",
         `Get in-progress tickets failed - Ops Member ${opsId} has no tickets`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Tickets not found" });
     }
@@ -131,7 +148,8 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `In-progress tickets retrieved - Ops Member: ${opsId}, Count: ${tickets.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json(tickets);
@@ -139,7 +157,8 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Get in-progress tickets error - Ops Member: ${req.params?.opsId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -147,13 +166,15 @@ export const getInProgressTicketsByOpsId = async (req, res) => {
 
 // Get all tickets (disregard status) by a Ops member by id
 export const getAllTicketsByOpsId = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { opsId } = req.params;
 
     logEvent(
       "PatientRequestTicket",
       `Get all tickets by Ops ID initiated - Ops Member: ${opsId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const opsObjectId = new mongoose.Types.ObjectId(opsId);
@@ -165,7 +186,8 @@ export const getAllTicketsByOpsId = async (req, res) => {
       logEvent(
         "PatientRequestTicket",
         `Get all tickets failed - Ops Member ${opsId} has no tickets`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Tickets not found" });
     }
@@ -173,7 +195,8 @@ export const getAllTicketsByOpsId = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `All tickets retrieved for Ops member - Ops Member: ${opsId}, Count: ${tickets.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json(tickets);
@@ -181,7 +204,8 @@ export const getAllTicketsByOpsId = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Get all tickets by Ops ID error - Ops Member: ${req.params?.opsId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -190,13 +214,15 @@ export const getAllTicketsByOpsId = async (req, res) => {
 // Move a pending ticket into In Progress
 // Changes responsibleMember to the Ops User's id
 export const startTicketProgress = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { ticketId } = req.params;
 
     logEvent(
       "PatientRequestTicket",
       `Start ticket progress initiated - Ticket ID: ${ticketId}, Ops Member: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = await PatientRequestTicket.findOne({
@@ -208,7 +234,8 @@ export const startTicketProgress = async (req, res) => {
       logEvent(
         "PatientRequestTicket",
         `Start ticket progress failed - Ticket ID ${ticketId} not found or already in progress`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res
         .status(404)
@@ -223,7 +250,8 @@ export const startTicketProgress = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Ticket moved to In Progress - Ticket ID: ${ticketId}, Previous Status: ${previousStatus}, Responsible Member: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.json({
@@ -234,7 +262,8 @@ export const startTicketProgress = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Start ticket progress error - Ticket ID: ${req.params?.ticketId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -244,13 +273,15 @@ export const startTicketProgress = async (req, res) => {
 // Update approved by the Ops User's id
 // Update date completed
 export const completeTicket = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { ticketId } = req.params;
 
     logEvent(
       "PatientRequestTicket",
       `Complete ticket initiated - Ticket ID: ${ticketId}, Approved By: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = await PatientRequestTicket.findOne({
@@ -262,7 +293,8 @@ export const completeTicket = async (req, res) => {
       logEvent(
         "PatientRequestTicket",
         `Complete ticket failed - Ticket ID ${ticketId} not found or not in progress`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res
         .status(404)
@@ -280,7 +312,8 @@ export const completeTicket = async (req, res) => {
       `Ticket marked as Completed - Ticket ID: ${ticketId}, Previous Status: ${previousStatus}, Approved By: ${
         req.user._id
       }, Completed At: ${ticket.dateCompleted.toISOString()}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.json({
@@ -291,7 +324,8 @@ export const completeTicket = async (req, res) => {
     logEvent(
       "PatientRequestTicket",
       `Complete ticket error - Ticket ID: ${req.params?.ticketId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }

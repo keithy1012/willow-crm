@@ -1,15 +1,18 @@
 import OpsMember from "../../models/ops/OpsMember.js";
 import User from "../../models/users/User.js";
 import { generateToken } from "../../middleware/authentication.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 export const createOpsMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     logEvent(
       "OpsMember",
       `Create ops member initiated - Email: ${req.body.email}, Username: ${req.body.username}`,
-      req.user?._id
+      "N/A",
+      ip
     );
+
     // Step 1: Create the User directly
     const user = new User({
       firstName: req.body.firstName,
@@ -17,7 +20,7 @@ export const createOpsMember = async (req, res) => {
       email: req.body.email,
       username: req.body.username,
       gender: req.body.gender || req.body.sex,
-      password: req.body.password, // hashed via pre-save hook
+      password: req.body.password,
       phoneNumber: req.body.phoneNumber || req.body.phone,
       profilePic: req.body.profilePic,
       role: "Ops",
@@ -27,7 +30,8 @@ export const createOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `User account created - User ID: ${savedUser._id}, Email: ${savedUser.email}`,
-      req.user?._id
+      savedUser._id,
+      ip
     );
 
     // Step 2: Create the OpsMember entry linked to the user
@@ -37,7 +41,8 @@ export const createOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `Ops member created successfully - OpsMember ID: ${savedOpsMember._id}, User ID: ${savedUser._id}, Email: ${savedUser.email}, Name: ${savedUser.firstName} ${savedUser.lastName}`,
-      req.user?._id
+      savedUser._id,
+      ip
     );
 
     // Generate JWT token for authentication
@@ -54,7 +59,8 @@ export const createOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `Create ops member error - Email: ${req.body?.email}, Error: ${error.message}`,
-      req.user?._id
+      "N/A",
+      ip
     );
     res.status(500).json({ error: "Internal server error" });
   }
@@ -62,8 +68,9 @@ export const createOpsMember = async (req, res) => {
 
 // Get all ops members
 export const getAllOpsMembers = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    logEvent("OpsMember", "Get all ops members initiated", req.user?._id);
+    logEvent("OpsMember", "Get all ops members initiated", req.user?._id, ip);
 
     const opsMembers = await OpsMember.find().populate(
       "user",
@@ -73,7 +80,8 @@ export const getAllOpsMembers = async (req, res) => {
     logEvent(
       "OpsMember",
       `All ops members retrieved - Count: ${opsMembers.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json(opsMembers);
@@ -81,7 +89,8 @@ export const getAllOpsMembers = async (req, res) => {
     logEvent(
       "OpsMember",
       `Get all ops members error - Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -89,13 +98,15 @@ export const getAllOpsMembers = async (req, res) => {
 
 // Get single ops member by ID
 export const getOpsMemberById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { userId } = req.params;
 
     logEvent(
       "OpsMember",
       `Get ops member by ID initiated - User ID: ${userId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const opsMember = await OpsMember.findOne({ user: userId }).populate(
@@ -107,7 +118,8 @@ export const getOpsMemberById = async (req, res) => {
       logEvent(
         "OpsMember",
         `Get ops member failed - User ID ${userId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "OpsMember not found" });
     }
@@ -115,7 +127,8 @@ export const getOpsMemberById = async (req, res) => {
     logEvent(
       "OpsMember",
       `Ops member retrieved - OpsMember ID: ${opsMember._id}, User ID: ${userId}, Email: ${opsMember.user?.email}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json(opsMember);
@@ -123,7 +136,8 @@ export const getOpsMemberById = async (req, res) => {
     logEvent(
       "OpsMember",
       `Get ops member error - User ID: ${req.params?.userId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -131,6 +145,7 @@ export const getOpsMemberById = async (req, res) => {
 
 // Update ops member by ID
 export const updateOpsMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { userId } = req.params;
     const userUpdates = req.body;
@@ -140,7 +155,8 @@ export const updateOpsMember = async (req, res) => {
       `Update ops member initiated - User ID: ${userId}, Updates: ${JSON.stringify(
         userUpdates
       )}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const opsMember = await OpsMember.findOne({ user: userId });
@@ -148,7 +164,8 @@ export const updateOpsMember = async (req, res) => {
       logEvent(
         "OpsMember",
         `Update ops member failed - User ID ${userId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "OpsMember not found" });
     }
@@ -162,7 +179,8 @@ export const updateOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `Ops member updated successfully - OpsMember ID: ${opsMember._id}, User ID: ${userId}, Email: ${updatedUser.email}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json({ user: updatedUser });
@@ -170,7 +188,8 @@ export const updateOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `Update ops member error - User ID: ${req.params?.userId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(400).json({ error: err.message });
   }
@@ -178,13 +197,15 @@ export const updateOpsMember = async (req, res) => {
 
 // Delete ops member by ID
 export const deleteOpsMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { userId } = req.params;
 
     logEvent(
       "OpsMember",
       `Delete ops member initiated - User ID: ${userId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const opsMember = await OpsMember.findOne({ user: userId });
@@ -193,7 +214,8 @@ export const deleteOpsMember = async (req, res) => {
       logEvent(
         "OpsMember",
         `Delete ops member failed - User ID ${userId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "OpsMember not found" });
     }
@@ -205,7 +227,8 @@ export const deleteOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `Ops member deleted successfully - OpsMember ID: ${opsMemberId}, User ID: ${userId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.json({ message: "OpsMember and associated user deleted" });
@@ -213,7 +236,8 @@ export const deleteOpsMember = async (req, res) => {
     logEvent(
       "OpsMember",
       `Delete ops member error - User ID: ${req.params?.userId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }

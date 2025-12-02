@@ -1,14 +1,16 @@
 import Invoice from "../../models/finance/Invoice.js";
 import Patient from "../../models/patients/Patient.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 // Get invoices for a specific patient
 export const getPatientInvoices = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { patientId } = req.params;
     logEvent(
       "Invoice",
       `Get patient invoices - Patient: ${patientId}`,
-      patientId
+      patientId,
+      ip
     );
 
     const invoices = await Invoice.find({ patient: patientId })
@@ -17,14 +19,17 @@ export const getPatientInvoices = async (req, res) => {
     logEvent(
       "Invoice",
       `Patient invoices retrieved - Patient: ${patientId}, Count: ${invoices.length}`,
-      patientId
+      patientId,
+      ip
     );
 
     res.status(200).json(invoices);
   } catch (error) {
     logEvent(
       "Invoice",
-      `Get patient invoices error - Patient: ${req.params?.patientId}, Error: ${error.message}`
+      `Get patient invoices error - Patient: ${req.params?.patientId}, Error: ${error.message}`,
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -32,30 +37,43 @@ export const getPatientInvoices = async (req, res) => {
 
 // Get all invoices
 export const getAllInvoices = async (req, res) => {
+  ip = getClientIp(req);
   try {
-    logEvent("Invoice", "Get all invoices initiated");
+    logEvent("Invoice", "Get all invoices initiated", req.user?._id, ip);
 
     const invoices = await Invoice.find()
       .sort({ createdAt: -1 })
       .populate("patient");
-    logEvent("Invoice", `All invoices retrieved - Count: ${invoices.length}`);
+    logEvent(
+      "Invoice",
+      `All invoices retrieved - Count: ${invoices.length}`,
+      req.user?._id,
+      ip
+    );
 
     res.status(200).json(invoices);
   } catch (error) {
-    logEvent("Invoice", `Get all invoices error - Error: ${error.message}`);
+    logEvent(
+      "Invoice",
+      `Get all invoices error - Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 // Create new invoice
 export const createInvoice = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { patientId, doctorName, appointmentDate, amount, description } =
       req.body;
     logEvent(
       "Invoice",
       `Invoice creation initiated - Patient: ${patientId}, Doctor: ${doctorName}, Amount: ${amount}, Date: ${appointmentDate}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     // Verify patient exists and get patient name
     const patient = await Patient.findById(patientId).populate("user");
@@ -63,7 +81,8 @@ export const createInvoice = async (req, res) => {
       logEvent(
         "Invoice",
         `Invoice creation failed - Patient ${patientId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ message: "Patient not found" });
     }
@@ -78,7 +97,8 @@ export const createInvoice = async (req, res) => {
     logEvent(
       "Invoice",
       `Invoice ID generated - Invoice ID: ${invoiceId}, Patient: ${patientId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     // Create new invoice with patient reference
@@ -98,7 +118,8 @@ export const createInvoice = async (req, res) => {
     logEvent(
       "Invoice",
       `Invoice created successfully - Invoice ID: ${invoiceId}, MongoDB ID: ${savedInvoice._id}, Patient: ${patientId}, Amount: ${amount}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(201).json({
       success: true,
@@ -109,7 +130,8 @@ export const createInvoice = async (req, res) => {
     logEvent(
       "Invoice",
       `Invoice creation error - Patient: ${req.body?.patientId}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -117,12 +139,14 @@ export const createInvoice = async (req, res) => {
 
 // Send invoice to external billing system
 export const sendInvoiceToExternal = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { id } = req.params;
     logEvent(
       "Invoice",
       `Send to external billing initiated - Invoice: ${id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     const invoice = await Invoice.findById(id);
 
@@ -130,7 +154,8 @@ export const sendInvoiceToExternal = async (req, res) => {
       logEvent(
         "Invoice",
         `Send to external failed - Invoice ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ message: "Invoice not found" });
     }
@@ -141,7 +166,8 @@ export const sendInvoiceToExternal = async (req, res) => {
     logEvent(
       "Invoice",
       `Invoice sent to external billing - Invoice: ${id}, Invoice ID: ${invoice.invoiceId}, Status changed: ${previousStatus} -> sent, Patient: ${invoice.patient}, Amount: ${invoice.amount}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.status(200).json({
@@ -152,7 +178,8 @@ export const sendInvoiceToExternal = async (req, res) => {
     logEvent(
       "Invoice",
       `Send to external error - Invoice: ${req.params?.id}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -160,6 +187,7 @@ export const sendInvoiceToExternal = async (req, res) => {
 
 // Update invoice status
 export const updateInvoiceStatus = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -169,14 +197,16 @@ export const updateInvoiceStatus = async (req, res) => {
       logEvent(
         "Invoice",
         `Status update failed - Invalid status "${status}" for Invoice ${id}`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(400).json({ message: "Invalid status" });
     }
     logEvent(
       "Invoice",
       `Invoice status update initiated - Invoice: ${id}, New status: ${status}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     const invoice = await Invoice.findByIdAndUpdate(
       id,
@@ -188,7 +218,8 @@ export const updateInvoiceStatus = async (req, res) => {
       logEvent(
         "Invoice",
         `Status update failed - Invoice ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ message: "Invoice not found" });
     }
@@ -196,7 +227,8 @@ export const updateInvoiceStatus = async (req, res) => {
     logEvent(
       "Invoice",
       `Invoice status updated - Invoice: ${id}, Invoice ID: ${invoice.invoiceId}, Status: ${status}, Patient: ${invoice.patient}, Amount: ${invoice.amount}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(200).json({
       success: true,
@@ -207,7 +239,8 @@ export const updateInvoiceStatus = async (req, res) => {
     logEvent(
       "Invoice",
       `Status update error - Invoice: ${req.params?.id}, Status: ${req.body?.status}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error: error.message });
   }

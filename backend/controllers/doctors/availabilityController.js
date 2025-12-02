@@ -1,9 +1,10 @@
 import Availability from "../../models/doctors/Availability.js";
 import Doctor from "../../models/doctors/Doctor.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Fixed setDateAvailability function
 export const setDateAvailability = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date, timeSlots: requestTimeSlots } = req.body; // Rename to avoid conflict
@@ -12,14 +13,16 @@ export const setDateAvailability = async (req, res) => {
       `Set date availability initiated - Doctor: ${doctorId}, Date: ${date}, Slots: ${
         requestTimeSlots?.length || 0
       }`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
       logEvent(
         "Availability",
         `Set date availability failed - Doctor ${doctorId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Doctor not found" });
     }
@@ -94,7 +97,8 @@ export const setDateAvailability = async (req, res) => {
     logEvent(
       "Availability",
       `Date availability ${action} successfully - Doctor: ${doctorId}, Date: ${date}, Slots: ${processedTimeSlots.length}, Availability ID: ${availability._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     r;
     return res.status(201).json({
@@ -109,7 +113,8 @@ export const setDateAvailability = async (req, res) => {
     logEvent(
       "Availability",
       `Set date availability error - Doctor: ${req.params.doctorId}, Date: ${req.body?.date}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(400).json({ error: err.message });
   }
@@ -117,6 +122,7 @@ export const setDateAvailability = async (req, res) => {
 
 // Updated createRecurringAvailability to handle 1-hour slots
 export const createRecurringAvailability = async (req, res) => {
+  ip = getClientIp(ip);
   try {
     const { doctorId } = req.params;
     const { weeklySchedule } = req.body;
@@ -126,7 +132,8 @@ export const createRecurringAvailability = async (req, res) => {
       `Create recurring availability initiated - Doctor: ${doctorId}, Days: ${
         weeklySchedule?.length || 0
       }`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const doctor = await Doctor.findById(doctorId);
@@ -134,7 +141,8 @@ export const createRecurringAvailability = async (req, res) => {
       logEvent(
         "Availability",
         `Create recurring availability failed - Doctor ${doctorId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Doctor not found" });
     }
@@ -152,7 +160,8 @@ export const createRecurringAvailability = async (req, res) => {
       logEvent(
         "Availability",
         `Deactivated ${deactivatedResult.modifiedCount} existing recurring availabilities - Doctor: ${doctorId}`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
     }
 
@@ -199,7 +208,8 @@ export const createRecurringAvailability = async (req, res) => {
             logEvent(
               "Availability",
               `Recurring availability reactivated - Doctor: ${doctorId}, Day: ${availabilityData.dayOfWeek}, Slots: ${processedSlots.length}`,
-              req.user?._id
+              req.user?._id,
+              ip
             );
           } else {
             // Create new
@@ -216,7 +226,8 @@ export const createRecurringAvailability = async (req, res) => {
             logEvent(
               "Availability",
               `Recurring availability created - Doctor: ${doctorId}, Day: ${availabilityData.dayOfWeek}, Slots: ${processedSlots.length}, ID: ${availability._id}`,
-              req.user?._id
+              req.user?._id,
+              ip
             );
           }
         }
@@ -226,7 +237,8 @@ export const createRecurringAvailability = async (req, res) => {
     logEvent(
       "Availability",
       `Recurring availability ${action} - Doctor: ${doctorId}, Created/Updated: ${createdAvailabilities.length} days`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     return res.status(201).json({
@@ -240,7 +252,8 @@ export const createRecurringAvailability = async (req, res) => {
     logEvent(
       "Availability",
       `Create recurring availability error - Doctor: ${req.params.doctorId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(400).json({ error: err.message });
   }
@@ -248,6 +261,7 @@ export const createRecurringAvailability = async (req, res) => {
 
 // Update getDoctorAllAvailabilities to not require authentication
 export const getDoctorAllAvailabilities = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
 
@@ -255,7 +269,9 @@ export const getDoctorAllAvailabilities = async (req, res) => {
     if (!doctor) {
       logEvent(
         "Availability",
-        `Get all availabilities failed - Doctor ${doctorId} not found`
+        `Get all availabilities failed - Doctor ${doctorId} not found`,
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Doctor not found" });
     }
@@ -267,7 +283,9 @@ export const getDoctorAllAvailabilities = async (req, res) => {
     }).sort({ type: 1, dayOfWeek: 1, date: 1 });
     logEvent(
       "Availability",
-      `All availabilities retrieved - Doctor: ${doctorId}, Count: ${availabilities.length}`
+      `All availabilities retrieved - Doctor: ${doctorId}, Count: ${availabilities.length}`,
+      req.user?._id,
+      ip
     );
 
     return res.json({
@@ -276,7 +294,9 @@ export const getDoctorAllAvailabilities = async (req, res) => {
   } catch (err) {
     logEvent(
       "Availability",
-      `Get all availabilities error - Doctor: ${req.params.doctorId}, Error: ${err.message}`
+      `Get all availabilities error - Doctor: ${req.params.doctorId}, Error: ${err.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -284,6 +304,7 @@ export const getDoctorAllAvailabilities = async (req, res) => {
 
 // Remove all availability for a specific date
 export const removeAvailabilityForDate = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date } = req.body;
@@ -291,7 +312,8 @@ export const removeAvailabilityForDate = async (req, res) => {
     logEvent(
       "Availability",
       `Remove availability for date initiated - Doctor: ${doctorId}, Date: ${date}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     // Create a "single" availability entry with no time slots
     await Availability.updateMany(
@@ -317,7 +339,8 @@ export const removeAvailabilityForDate = async (req, res) => {
     logEvent(
       "Availability",
       `Availability removed for date - Doctor: ${doctorId}, Date: ${date}, Deactivated: ${deactivatedResult.modifiedCount}, Block ID: ${blockedDate._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.json({
       message: "Availability removed for date",
@@ -327,7 +350,8 @@ export const removeAvailabilityForDate = async (req, res) => {
     logEvent(
       "Availability",
       `Remove availability for date error - Doctor: ${req.params.doctorId}, Date: ${req.body?.date}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(400).json({ error: err.message });
   }
@@ -335,6 +359,7 @@ export const removeAvailabilityForDate = async (req, res) => {
 
 // Remove a specific time slot
 export const removeTimeSlot = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { availabilityId, slotIndex } = req.params;
 
@@ -343,7 +368,8 @@ export const removeTimeSlot = async (req, res) => {
       logEvent(
         "Availability",
         `Remove time slot failed - Availability ${availabilityId} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Availability not found" });
     }
@@ -356,7 +382,8 @@ export const removeTimeSlot = async (req, res) => {
     logEvent(
       "Availability",
       `Time slot removed - Availability: ${availabilityId}, Slot: ${removedSlot?.startTime}-${removedSlot?.endTime}, Remaining slots: ${availability.timeSlots.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.json({
       message: "Time slot removed successfully",
@@ -366,7 +393,8 @@ export const removeTimeSlot = async (req, res) => {
     logEvent(
       "Availability",
       `Remove time slot error - Availability: ${req.params.availabilityId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(400).json({ error: err.message });
   }
@@ -374,6 +402,7 @@ export const removeTimeSlot = async (req, res) => {
 
 // Get doctor's availability for a specific date
 export const getDoctorAvailabilityForDate = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date } = req.query;
@@ -381,7 +410,9 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
     if (!date) {
       logEvent(
         "Availability",
-        `Get availability for date failed - Date parameter missing, Doctor: ${doctorId}`
+        `Get availability for date failed - Date parameter missing, Doctor: ${doctorId}`,
+        req.user?._id,
+        ip
       );
       return res.status(400).json({ error: "Date parameter is required" });
     }
@@ -417,7 +448,9 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
       if (singleDateAvail.timeSlots.length === 0) {
         logEvent(
           "Availability",
-          `Single date availability found - Doctor: ${doctorId}, Date: ${date}, Available: ${isAvailable}, Slots: ${availableSlots.length}`
+          `Single date availability found - Doctor: ${doctorId}, Date: ${date}, Available: ${isAvailable}, Slots: ${availableSlots.length}`,
+          req.user?._id,
+          ip
         );
         return res.json({
           date: date,
@@ -446,7 +479,9 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
     if (recurringAvail) {
       logEvent(
         "Availability",
-        `Recurring availability found - Doctor: ${doctorId}, Date: ${date}, Day: ${dayOfWeek}, Slots: ${availableSlots.length}`
+        `Recurring availability found - Doctor: ${doctorId}, Date: ${date}, Day: ${dayOfWeek}, Slots: ${availableSlots.length}`,
+        req.user?._id,
+        ip
       );
       return res.json({
         date: date,
@@ -460,7 +495,9 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
     // No availability found
     logEvent(
       "Availability",
-      `No availability found - Doctor: ${doctorId}, Date: ${date}, Day: ${dayOfWeek}`
+      `No availability found - Doctor: ${doctorId}, Date: ${date}, Day: ${dayOfWeek}`,
+      req.user?._id,
+      ip
     );
     return res.json({
       date: date,
@@ -471,7 +508,9 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
   } catch (err) {
     logEvent(
       "Availability",
-      `Get availability for date error - Doctor: ${req.params.doctorId}, Date: ${req.query?.date}, Error: ${err.message}`
+      `Get availability for date error - Doctor: ${req.params.doctorId}, Date: ${req.query?.date}, Error: ${err.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -480,13 +519,16 @@ export const getDoctorAvailabilityForDate = async (req, res) => {
 // Search doctors available on a specific date and optionally at a specific time
 // In availabilityController.js - Complete updated searchDoctorsByDateTime function
 export const searchDoctorsByDateTime = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { date, name } = req.query;
     logEvent(
       "Availability",
       `Search doctors initiated - Date: ${date || "none"}, Name: ${
         name || "none"
-      }`
+      }`,
+      req.user?._id,
+      ip
     );
 
     let dayOfWeek = null;
@@ -514,7 +556,9 @@ export const searchDoctorsByDateTime = async (req, res) => {
       ][requestedDate.getDay()];
       logEvent(
         "Availability",
-        `Search doctors - Searching date range: ${startOfDay} to ${endOfDay}. Day of week: ${dayOfWeek}`
+        `Search doctors - Searching date range: ${startOfDay} to ${endOfDay}. Day of week: ${dayOfWeek}`,
+        req.user?._id,
+        ip
       );
     }
 
@@ -557,7 +601,9 @@ export const searchDoctorsByDateTime = async (req, res) => {
       availableDoctors = Array.from(doctorMap.values());
       logEvent(
         "Availability",
-        `Search by name only - Name: ${name}, Results: ${availableDoctors.length}`
+        `Search by name only - Name: ${name}, Results: ${availableDoctors.length}`,
+        req.user?._id,
+        ip
       );
     } else if (date) {
       // Find single date availabilities for this date
@@ -580,7 +626,9 @@ export const searchDoctorsByDateTime = async (req, res) => {
 
       logEvent(
         "Availability",
-        `Search doctor availability - Found ${singleDateAvails.length} single date availabilities`
+        `Search doctor availability - Found ${singleDateAvails.length} single date availabilities`,
+        req.user?._id,
+        ip
       );
 
       // Find all recurring availabilities for this day of week
@@ -599,7 +647,9 @@ export const searchDoctorsByDateTime = async (req, res) => {
 
       logEvent(
         "Availability",
-        `Search doctor availability - Found ${recurringAvails.length} recurring availabilities`
+        `Search doctor availability - Found ${recurringAvails.length} recurring availabilities`,
+        req.user?._id,
+        ip
       );
 
       // Track which doctors we've already added (single date takes priority)
@@ -682,12 +732,16 @@ export const searchDoctorsByDateTime = async (req, res) => {
         });
         logEvent(
           "Availability",
-          `Name filter applied - Before: ${beforeFilter}, After: ${availableDoctors.length}, Name: ${name}`
+          `Name filter applied - Before: ${beforeFilter}, After: ${availableDoctors.length}, Name: ${name}`,
+          req.user?._id,
+          ip
         );
       }
       logEvent(
         "Availability",
-        `Search by date completed - Date: ${date}, Day: ${dayOfWeek}, Single: ${singleDateAvails.length}, Recurring: ${recurringAvails.length}, Results: ${availableDoctors.length}`
+        `Search by date completed - Date: ${date}, Day: ${dayOfWeek}, Single: ${singleDateAvails.length}, Recurring: ${recurringAvails.length}, Results: ${availableDoctors.length}`,
+        req.user?._id,
+        ip
       );
     }
 
@@ -695,7 +749,9 @@ export const searchDoctorsByDateTime = async (req, res) => {
       "Availability",
       `Search completed - Date: ${date || "none"}, Name: ${
         name || "none"
-      }, Results: ${availableDoctors.length}`
+      }, Results: ${availableDoctors.length}`,
+      req.user?._id,
+      ip
     );
     return res.json({
       date: date,
@@ -707,13 +763,16 @@ export const searchDoctorsByDateTime = async (req, res) => {
   } catch (err) {
     logEvent(
       "Availability",
-      `Search doctors error - Date: ${req.query?.date}, Name: ${req.query?.name}, Error: ${err.message}`
+      `Search doctors error - Date: ${req.query?.date}, Name: ${req.query?.name}, Error: ${err.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
 };
 
 export const getDoctorAvailabilityForDateRange = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { startDate, endDate } = req.query;
@@ -721,7 +780,9 @@ export const getDoctorAvailabilityForDateRange = async (req, res) => {
     if (!startDate || !endDate) {
       logEvent(
         "Availability",
-        `Get date range failed - Missing dates, Doctor: ${doctorId}`
+        `Get date range failed - Missing dates, Doctor: ${doctorId}`,
+        req.user?._id,
+        ip
       );
       return res
         .status(400)
@@ -730,7 +791,9 @@ export const getDoctorAvailabilityForDateRange = async (req, res) => {
 
     logEvent(
       "Availability",
-      `Get availability for date range - Doctor: ${doctorId}, Start: ${startDate}, End: ${endDate}`
+      `Get availability for date range - Doctor: ${doctorId}, Start: ${startDate}, End: ${endDate}`,
+      req.user?._id,
+      ip
     );
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -753,7 +816,9 @@ export const getDoctorAvailabilityForDateRange = async (req, res) => {
 
     logEvent(
       "Availability",
-      `Date range data retrieved - Doctor: ${doctorId}, Recurring: ${recurringAvails.length}, Single: ${singleAvails.length}`
+      `Date range data retrieved - Doctor: ${doctorId}, Recurring: ${recurringAvails.length}, Single: ${singleAvails.length}`,
+      req.user?._id,
+      ip
     );
     // Process each date in the range
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
@@ -803,14 +868,18 @@ export const getDoctorAvailabilityForDateRange = async (req, res) => {
     }
     logEvent(
       "Availability",
-      `Date range processed - Doctor: ${doctorId}, Start: ${startDate}, End: ${endDate}, Days: ${dates.length}`
+      `Date range processed - Doctor: ${doctorId}, Start: ${startDate}, End: ${endDate}, Days: ${dates.length}`,
+      req.user?._id,
+      ip
     );
 
     return res.json({ dates });
   } catch (err) {
     logEvent(
       "Availability",
-      `Get date range error - Doctor: ${req.params.doctorId}, Start: ${req.query?.startDate}, End: ${req.query?.endDate}, Error: ${err.message}`
+      `Get date range error - Doctor: ${req.params.doctorId}, Start: ${req.query?.startDate}, End: ${req.query?.endDate}, Error: ${err.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }

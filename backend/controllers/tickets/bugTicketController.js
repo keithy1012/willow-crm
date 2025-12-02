@@ -1,15 +1,17 @@
 import mongoose from "mongoose";
 import BugTicket from "../../models/tickets/BugTicket.js";
 import User from "../../models/users/User.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Create new generic ticket
 export const createTicket = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     logEvent(
       "BugTicket",
       `Create ticket initiated - Submitter: ${req.user._id}, Title: ${req.body.title}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = new BugTicket({
@@ -18,17 +20,21 @@ export const createTicket = async (req, res) => {
       ...req.body,
     });
     await ticket.save();
+
     logEvent(
       "BugTicket",
       `Ticket created successfully - Ticket ID: ${ticket._id}, Title: ${ticket.title}, Submitter: ${req.user._id}, Status: Pending`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
+
     res.status(201).json({ message: "Ticket submitted successfully", ticket });
   } catch (err) {
     logEvent(
       "BugTicket",
       `Create ticket error - Submitter: ${req.user?._id}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(400).json({ error: err.message });
   }
@@ -36,10 +42,12 @@ export const createTicket = async (req, res) => {
 
 // Get all pending tickets
 export const getPendingTickets = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    logEvent("BugTicket", "Get pending tickets initiated", req.user?._id);
+    logEvent("BugTicket", "Get pending tickets initiated", req.user?._id, ip);
 
     const tickets = await BugTicket.find({ status: "Pending" });
+
     // Find user details for each submitter
     const enrichedTickets = await Promise.all(
       tickets.map(async (ticket) => {
@@ -53,10 +61,12 @@ export const getPendingTickets = async (req, res) => {
         };
       })
     );
+
     logEvent(
       "BugTicket",
       `Pending tickets retrieved - Count: ${enrichedTickets.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.json(enrichedTickets);
@@ -64,7 +74,8 @@ export const getPendingTickets = async (req, res) => {
     logEvent(
       "BugTicket",
       `Get pending tickets error - Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -72,30 +83,38 @@ export const getPendingTickets = async (req, res) => {
 
 // Get a specific ticket by ID
 export const getTicketByID = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
+
     logEvent(
       "BugTicket",
       `Get ticket by ID initiated - Ticket ID: ${id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = await BugTicket.findById(id);
+
     if (!ticket) {
       logEvent(
         "BugTicket",
         `Get ticket failed - Ticket ID ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "Ticket not found" });
     }
+
     const user = await User.findById(ticket.submitter);
 
     logEvent(
       "BugTicket",
       `Ticket retrieved - Ticket ID: ${id}, Title: ${ticket.title}, Status: ${ticket.status}, Submitter: ${ticket.submitter}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
+
     return res.json({
       ...ticket.toObject(),
       requestedBy: user ? `${user.firstName} ${user.lastName}` : null,
@@ -107,7 +126,8 @@ export const getTicketByID = async (req, res) => {
     logEvent(
       "BugTicket",
       `Get ticket error - Ticket ID: ${req.params?.id}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -115,13 +135,17 @@ export const getTicketByID = async (req, res) => {
 
 // Get all In Progress tickets assigned to a specific IT member
 export const getInProgressTicketsByItId = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { itId } = req.params;
+
     logEvent(
       "BugTicket",
       `Get in-progress tickets by IT ID initiated - IT Member: ${itId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
+
     const itObjectId = new mongoose.Types.ObjectId(itId);
     const tickets = await BugTicket.find({
       assignedTo: itObjectId,
@@ -144,14 +168,17 @@ export const getInProgressTicketsByItId = async (req, res) => {
     logEvent(
       "BugTicket",
       `In-progress tickets retrieved - IT Member: ${itId}, Count: ${enrichedTickets.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
+
     return res.json(enrichedTickets);
   } catch (err) {
     logEvent(
       "BugTicket",
       `Get in-progress tickets error - IT Member: ${req.params?.itId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -159,15 +186,18 @@ export const getInProgressTicketsByItId = async (req, res) => {
 
 // Get all tickets (any status) assigned to a specific IT member
 export const getAllTicketsByItId = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { itId } = req.params;
+
     logEvent(
       "BugTicket",
       `Get all tickets by IT ID initiated - IT Member: ${itId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
-    const itObjectId = new mongoose.Types.ObjectId(req.params.itId);
+    const itObjectId = new mongoose.Types.ObjectId(itId);
     const tickets = await BugTicket.find({ assignedTo: itObjectId });
 
     const enrichedTickets = await Promise.all(
@@ -182,17 +212,21 @@ export const getAllTicketsByItId = async (req, res) => {
         };
       })
     );
+
     logEvent(
       "BugTicket",
       `All tickets retrieved for IT member - IT Member: ${itId}, Count: ${enrichedTickets.length}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
+
     return res.json(enrichedTickets);
   } catch (err) {
     logEvent(
       "BugTicket",
       `Get all tickets by IT ID error - IT Member: ${req.params?.itId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -200,12 +234,15 @@ export const getAllTicketsByItId = async (req, res) => {
 
 // Move a pending ticket into "In Progress"
 export const startTicketProgress = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    const ticketId = req.params.ticketId;
+    const { ticketId } = req.params;
+
     logEvent(
       "BugTicket",
       `Start ticket progress initiated - Ticket ID: ${ticketId}, Assigned To: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = await BugTicket.findOne({
@@ -217,21 +254,26 @@ export const startTicketProgress = async (req, res) => {
       logEvent(
         "BugTicket",
         `Start ticket progress failed - Ticket ID ${ticketId} not found or already in progress`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res
         .status(404)
         .json({ error: "Pending ticket not found or already in progress." });
     }
 
+    const previousStatus = ticket.status;
     ticket.status = "In Progress";
     ticket.assignedTo = req.user._id;
     await ticket.save();
+
     logEvent(
       "BugTicket",
       `Ticket moved to In Progress - Ticket ID: ${ticketId}, Title: ${ticket.title}, Previous Status: ${previousStatus}, Assigned To: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
+
     res.json({
       message: "Ticket moved to In Progress",
       ticket,
@@ -240,7 +282,8 @@ export const startTicketProgress = async (req, res) => {
     logEvent(
       "BugTicket",
       `Start ticket progress error - Ticket ID: ${req.params?.ticketId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -248,12 +291,15 @@ export const startTicketProgress = async (req, res) => {
 
 // Move an In Progress ticket to Completed
 export const completeTicket = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    const ticketId = req.params.ticketId;
+    const { ticketId } = req.params;
+
     logEvent(
       "BugTicket",
       `Complete ticket initiated - Ticket ID: ${ticketId}, Approved By: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     const ticket = await BugTicket.findOne({
@@ -265,17 +311,20 @@ export const completeTicket = async (req, res) => {
       logEvent(
         "BugTicket",
         `Complete ticket failed - Ticket ID ${ticketId} not found or not in progress`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res
         .status(404)
         .json({ error: "Ticket not found or not in progress." });
     }
 
+    const previousStatus = ticket.status;
     ticket.status = "Completed";
     ticket.approvedBy = req.user._id;
     ticket.dateCompleted = new Date();
     await ticket.save();
+
     logEvent(
       "BugTicket",
       `Ticket marked as Completed - Ticket ID: ${ticketId}, Title: ${
@@ -283,7 +332,8 @@ export const completeTicket = async (req, res) => {
       }, Previous Status: ${previousStatus}, Approved By: ${
         req.user._id
       }, Completed At: ${ticket.dateCompleted.toISOString()}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.json({
@@ -294,7 +344,8 @@ export const completeTicket = async (req, res) => {
     logEvent(
       "BugTicket",
       `Complete ticket error - Ticket ID: ${req.params?.ticketId}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }

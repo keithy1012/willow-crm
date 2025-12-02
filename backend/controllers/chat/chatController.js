@@ -1,7 +1,8 @@
 import { chatBot } from "../../models/chat/chatBot.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 export const chatController = {
   async sendMessage(req, res) {
+    ip = getClientIp(req);
     try {
       const { messages } = req.body;
 
@@ -11,7 +12,8 @@ export const chatController = {
           `Message send failed - Invalid messages array${
             userId ? `, User: ${userId}` : ""
           }`,
-          userId
+          userId,
+          ip
         );
         return res.status(400).json({ error: "Messages array is required." });
       }
@@ -26,7 +28,8 @@ export const chatController = {
         }, Response length: ${
           answer?.length || 0
         }, Preview: "${responsePreview}${answer?.length > 50 ? "..." : ""}"`,
-        userId
+        userId,
+        ip
       );
 
       res.json({ answer });
@@ -37,7 +40,8 @@ export const chatController = {
         `Chat request error - User: ${userId || "Unknown"}, Error: ${
           err.message
         }`,
-        userId
+        userId,
+        ip
       );
       res.status(500).json({ error: "Failed to process chat request." });
     }

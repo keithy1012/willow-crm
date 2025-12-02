@@ -1,13 +1,17 @@
 import Doctor from "../../models/doctors/Doctor.js";
 import User from "../../models/users/User.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
+
 export const createDoctor = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { email, username, firstName, lastName, speciality } = req.body;
 
     logEvent(
       "Doctor",
-      `Doctor creation initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}, Speciality: ${speciality}`
+      `Doctor creation initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}, Speciality: ${speciality}`,
+      req.user?._id,
+      ip
     );
 
     // Step 1: Create the User directly
@@ -15,7 +19,7 @@ export const createDoctor = async (req, res) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      username: req.body.username,
+      username: req.username,
       gender: req.body.gender,
       password: req.body.password, // hashed by pre-save hook if you have one
       phoneNumber: req.body.phoneNumber,
@@ -27,7 +31,8 @@ export const createDoctor = async (req, res) => {
     logEvent(
       "Doctor",
       `User created for doctor - User ID: ${savedUser._id}, Email: ${savedUser.email}`,
-      savedUser._id
+      savedUser._id,
+      ip
     );
 
     // Step 2: Create the Doctor entry and link to the user
@@ -45,7 +50,8 @@ export const createDoctor = async (req, res) => {
     logEvent(
       "Doctor",
       `Doctor profile created successfully - Doctor ID: ${savedDoctor._id}, User ID: ${savedUser._id}, Speciality: ${savedDoctor.speciality}`,
-      savedUser._id
+      savedUser._id,
+      ip
     );
     res.status(201).json({
       success: true,
@@ -56,7 +62,9 @@ export const createDoctor = async (req, res) => {
   } catch (error) {
     logEvent(
       "Doctor",
-      `Doctor creation error - Email: ${req.body?.email}, Error: ${error.message}`
+      `Doctor creation error - Email: ${req.body?.email}, Error: ${error.message}`,
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: "Internal server error" });
   }
@@ -64,14 +72,25 @@ export const createDoctor = async (req, res) => {
 
 // search doctors by name only
 export const searchDoctorsByName = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { name } = req.query;
 
     if (!name) {
-      logEvent("Doctor", "Search by name failed - Name parameter missing");
+      logEvent(
+        "Doctor",
+        "Search by name failed - Name parameter missing",
+        req.user?._id,
+        ip
+      );
       return res.status(400).json({ error: "Name parameter is required" });
     }
-    logEvent("Doctor", `Search by name initiated - Search term: ${name}`);
+    logEvent(
+      "Doctor",
+      `Search by name initiated - Search term: ${name}`,
+      req.user?._id,
+      ip
+    );
 
     // Find all doctors and populate user info
     const doctors = await Doctor.find()
@@ -102,7 +121,9 @@ export const searchDoctorsByName = async (req, res) => {
 
     logEvent(
       "Doctor",
-      `Search by name completed - Search term: ${name}, Results: ${result.length}`
+      `Search by name completed - Search term: ${name}, Results: ${result.length}`,
+      req.user?._id,
+      ip
     );
     return res.json({
       searchTerm: name,
@@ -112,7 +133,9 @@ export const searchDoctorsByName = async (req, res) => {
   } catch (err) {
     logEvent(
       "Doctor",
-      `Search by name error - Search term: ${req.query?.name}, Error: ${err.message}`
+      `Search by name error - Search term: ${req.query?.name}, Error: ${err.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -120,29 +143,46 @@ export const searchDoctorsByName = async (req, res) => {
 
 // Get All Doctors
 export const getAllDoctors = async (req, res) => {
+  ip = getClientIp(req);
   try {
-    logEvent("Doctor", "Get all doctors initiated");
+    logEvent("Doctor", "Get all doctors initiated", req.user?._id, ip);
 
     const doctors = await Doctor.find().populate(
       "user",
       "firstName lastName email username gender phoneNumber profilePic"
     );
 
-    logEvent("Doctor", `All doctors retrieved - Count: ${doctors.length}`);
+    logEvent(
+      "Doctor",
+      `All doctors retrieved - Count: ${doctors.length}`,
+      req.user?._id,
+      ip
+    );
 
     return res.json(doctors);
   } catch (err) {
-    logEvent("Doctor", `Get all doctors error - Error: ${err.message}`);
+    logEvent(
+      "Doctor",
+      `Get all doctors error - Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Get all doctors by speciality
 export const getDoctorsBySpeciality = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { speciality } = req.params;
 
-    logEvent("Doctor", `Get doctors by speciality - Speciality: ${speciality}`);
+    logEvent(
+      "Doctor",
+      `Get doctors by speciality - Speciality: ${speciality}`,
+      req.user?._id,
+      ip
+    );
 
     const doctors = await Doctor.find({
       speciality: speciality,
@@ -154,7 +194,9 @@ export const getDoctorsBySpeciality = async (req, res) => {
     if (!doctors || doctors.length === 0) {
       logEvent(
         "Doctor",
-        `No doctors found for speciality - Speciality: ${speciality}`
+        `No doctors found for speciality - Speciality: ${speciality}`,
+        req.user?._id,
+        ip
       );
       return res
         .status(404)
@@ -162,13 +204,17 @@ export const getDoctorsBySpeciality = async (req, res) => {
     }
     logEvent(
       "Doctor",
-      `Doctors by speciality retrieved - Speciality: ${speciality}, Count: ${doctors.length}`
+      `Doctors by speciality retrieved - Speciality: ${speciality}, Count: ${doctors.length}`,
+      req.user?._id,
+      ip
     );
     return res.json(doctors);
   } catch (err) {
     logEvent(
       "Doctor",
-      `Get doctors by speciality error - Speciality: ${req.params?.speciality}, Error: ${err.message}`
+      `Get doctors by speciality error - Speciality: ${req.params?.speciality}, Error: ${err.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -176,11 +222,14 @@ export const getDoctorsBySpeciality = async (req, res) => {
 
 // Creates a Doctor from the Doctor Acocunt Creation Ticket
 export const createDoctorFromData = async (doctorData) => {
+  ip = getClientIp(req);
   // Create a user entry first
   try {
     logEvent(
       "Doctor",
-      `Doctor creation from data initiated - Email: ${doctorData.email}, Username: ${doctorData.username}`
+      `Doctor creation from data initiated - Email: ${doctorData.email}, Username: ${doctorData.username}`,
+      req.user?._id,
+      ip
     );
     const user = new User({
       firstName: doctorData.firstName,
@@ -197,7 +246,8 @@ export const createDoctorFromData = async (doctorData) => {
     logEvent(
       "Doctor",
       `User created from data - User ID: ${savedUser._id}, Email: ${savedUser.email}`,
-      savedUser._id
+      savedUser._id,
+      ip
     );
     // Create the doctor entry and link to the user
     const doctor = new Doctor({
@@ -212,13 +262,16 @@ export const createDoctorFromData = async (doctorData) => {
     logEvent(
       "Doctor",
       `Doctor created from data - Doctor ID: ${savedDoctor._id}, User ID: ${savedUser._id}, Speciality: ${savedDoctor.speciality}`,
-      savedUser._id
+      savedUser._id,
+      ip
     );
     return { savedUser, savedDoctor };
   } catch (error) {
     logEvent(
       "Doctor",
-      `Doctor creation from data error - Email: ${doctorData?.email}, Error: ${error.message}`
+      `Doctor creation from data error - Email: ${doctorData?.email}, Error: ${error.message}`,
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: err.message });
   }
@@ -226,9 +279,15 @@ export const createDoctorFromData = async (doctorData) => {
 
 // backend/controllers/doctors/doctorController.js
 export const getDoctorByUserId = async (req, res) => {
+  ip = getClientIp(req);
   try {
     const { userId } = req.params;
-    logEvent("Doctor", `Get doctor by user ID - User ID: ${userId}`);
+    logEvent(
+      "Doctor",
+      `Get doctor by user ID - User ID: ${userId}`,
+      req.user?._id,
+      ip
+    );
 
     // Find doctor by user reference and populate user data
     let doctor = await Doctor.findOne({ user: userId }).populate("user");
@@ -237,20 +296,25 @@ export const getDoctorByUserId = async (req, res) => {
     if (!doctor) {
       logEvent(
         "Doctor",
-        `Doctor profile not found, checking user - User ID: ${userId}`
+        `Doctor profile not found, checking user - User ID: ${userId}`,
+        req.user?._id,
+        ip
       );
       const user = await User.findById(userId);
       if (!user || user.role !== "Doctor") {
         logEvent(
           "Doctor",
-          `Get doctor by user ID failed - User ${userId} is not a doctor or not found`
+          `Get doctor by user ID failed - User ${userId} is not a doctor or not found`,
+          req.user?._id,
+          ip
         );
         return res.status(404).json({ error: "User is not a doctor" });
       }
       logEvent(
         "Doctor",
         `Creating doctor profile for existing user - User ID: ${userId}`,
-        userId
+        userId,
+        ip
       );
 
       // Create doctor record matching your type
@@ -267,13 +331,15 @@ export const getDoctorByUserId = async (req, res) => {
       logEvent(
         "Doctor",
         `Doctor profile auto-created - Doctor ID: ${doctor._id}, User ID: ${userId}, Default speciality: General Practice`,
-        userId
+        userId,
+        ip
       );
     } else {
       logEvent(
         "Doctor",
         `Doctor profile found - Doctor ID: ${doctor._id}, User ID: ${userId}, Speciality: ${doctor.speciality}`,
-        userId
+        userId,
+        ip
       );
     }
 

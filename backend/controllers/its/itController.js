@@ -1,10 +1,11 @@
 import ITMember from "../../models/its/ITMember.js";
 import User from "../../models/users/User.js";
 import { generateToken } from "../../middleware/authentication.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Create new IT member
 export const createITMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const {
       firstName,
@@ -19,8 +20,11 @@ export const createITMember = async (req, res) => {
 
     logEvent(
       "IT",
-      `IT member creation initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}`
+      `IT member creation initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}`,
+      "N/A",
+      ip
     );
+
     // Create user directly
     const newUser = new User({
       firstName,
@@ -38,14 +42,16 @@ export const createITMember = async (req, res) => {
     logEvent(
       "IT",
       `User created for IT member - User ID: ${newUser._id}, Email: ${email}`,
-      newUser._id
+      newUser._id,
+      ip
     );
 
     const itMember = await ITMember.create({ user: newUser._id });
     logEvent(
       "IT",
       `IT member created successfully - IT ID: ${itMember._id}, User ID: ${newUser._id}`,
-      newUser._id
+      newUser._id,
+      ip
     );
 
     // Generate JWT token for authentication
@@ -61,7 +67,9 @@ export const createITMember = async (req, res) => {
   } catch (error) {
     logEvent(
       "IT",
-      `IT member creation error - Email: ${req.body?.email}, Error: ${error.message}`
+      `IT member creation error - Email: ${req.body?.email}, Error: ${error.message}`,
+      "N/A",
+      ip
     );
     res
       .status(500)
@@ -71,42 +79,65 @@ export const createITMember = async (req, res) => {
 
 // Get all IT members
 export const getAllITMembers = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    logEvent("IT", "Get all IT members initiated");
+    logEvent("IT", "Get all IT members initiated", req.user?._id, ip);
+
     const itMembers = await ITMember.find().populate("user", "-password");
-    logEvent("IT", `All IT members retrieved - Count: ${itMembers.length}`);
+
+    logEvent(
+      "IT",
+      `All IT members retrieved - Count: ${itMembers.length}`,
+      req.user?._id,
+      ip
+    );
+
     res.status(200).json(itMembers);
   } catch (error) {
-    logEvent("IT", `Get all IT members error - Error: ${error.message}`);
+    logEvent(
+      "IT",
+      `Get all IT members error - Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error });
   }
 };
 
 // Get IT member by ID
 export const getITMemberById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
 
-    logEvent("IT", `Get IT member by ID - IT ID: ${id}`);
+    logEvent("IT", `Get IT member by ID - IT ID: ${id}`, req.user?._id, ip);
 
     const itMember = await ITMember.findById(id).populate("user", "-password");
 
     if (!itMember) {
-      logEvent("IT", `Get IT member failed - IT member ${id} not found`);
+      logEvent(
+        "IT",
+        `Get IT member failed - IT member ${id} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "IT member not found" });
     }
 
     logEvent(
       "IT",
       `IT member retrieved - IT ID: ${id}, User ID: ${itMember.user?._id}`,
-      itMember.user?._id
+      itMember.user?._id,
+      ip
     );
 
     res.status(200).json(itMember);
   } catch (error) {
     logEvent(
       "IT",
-      `Get IT member error - IT ID: ${req.params?.id}, Error: ${error.message}`
+      `Get IT member error - IT ID: ${req.params?.id}, Error: ${error.message}`,
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error });
   }
@@ -114,17 +145,25 @@ export const getITMemberById = async (req, res) => {
 
 // Update IT member
 export const updateITMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
 
-    logEvent("IT", `Update IT member initiated - IT ID: ${id}`, req.user?._id);
+    logEvent(
+      "IT",
+      `Update IT member initiated - IT ID: ${id}`,
+      req.user?._id,
+      ip
+    );
+
     const itMember = await ITMember.findById(id);
 
     if (!itMember) {
       logEvent(
         "IT",
         `Update failed - IT member ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ message: "IT member not found" });
     }
@@ -134,7 +173,8 @@ export const updateITMember = async (req, res) => {
       logEvent(
         "IT",
         `Update failed - Associated user not found for IT member ${id}`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ message: "Associated user not found" });
     }
@@ -151,14 +191,17 @@ export const updateITMember = async (req, res) => {
       `IT member updated successfully - IT ID: ${id}, User ID: ${
         user._id
       }, Updated fields: ${updatedFields.join(", ")}`,
-      user._id
+      user._id,
+      ip
     );
+
     res.status(200).json({ message: "IT member updated successfully", user });
   } catch (error) {
     logEvent(
       "IT",
       `Update IT member error - IT ID: ${req.params?.id}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error });
   }
@@ -166,17 +209,24 @@ export const updateITMember = async (req, res) => {
 
 // Delete IT member
 export const deleteITMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
 
-    logEvent("IT", `Delete IT member initiated - IT ID: ${id}`, req.user?._id);
+    logEvent(
+      "IT",
+      `Delete IT member initiated - IT ID: ${id}`,
+      req.user?._id,
+      ip
+    );
 
     const itMember = await ITMember.findById(id);
     if (!itMember) {
       logEvent(
         "IT",
         `Delete failed - IT member ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ message: "IT member not found" });
     }
@@ -189,7 +239,8 @@ export const deleteITMember = async (req, res) => {
     logEvent(
       "IT",
       `IT member deleted successfully - IT ID: ${id}, User ID: ${userId}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.status(200).json({ message: "IT member deleted successfully" });
@@ -197,7 +248,8 @@ export const deleteITMember = async (req, res) => {
     logEvent(
       "IT",
       `Delete IT member error - IT ID: ${req.params?.id}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ message: "Server error", error });
   }
