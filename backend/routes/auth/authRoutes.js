@@ -5,7 +5,5 @@ const router = express.Router();
 
 router.post("/request-reset", authController.requestPasswordReset);
 router.post("/reset-password", authController.resetPassword);
-router.post("/request-password-reset", authController.requestPasswordReset);
-router.post("/reset-password", authController.resetPassword);
 
 export default router;

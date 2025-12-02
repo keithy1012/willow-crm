@@ -24,6 +24,7 @@ export interface Patient {
   updatedAt?: string;
 }
 
+
 export interface CreatePatientData {
   firstName: string;
   lastName: string;
@@ -50,3 +51,4 @@ export interface InsuranceCards {
   insuranceCardBack: string | null;
   success?: boolean;
 }
+

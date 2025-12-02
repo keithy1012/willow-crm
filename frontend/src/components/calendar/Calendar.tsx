@@ -1,24 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowElbowLeft, ArrowElbowRight } from "phosphor-react";
 
 interface CalendarProps {
   selectedDates?: Date[];
-  onDateSelect?: (date: Date) => void;
   highlightedDates?: Date[];
+  appointmentDates?: Date[]; // New prop for appointment dates
+  onDateSelect?: (date: Date) => void;
+  onMonthChange?: (month: Date) => void;
+  currentMonth?: Date;
+  className?: string;
   minDate?: Date;
   maxDate?: Date;
-  className?: string;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
   selectedDates = [],
-  onDateSelect,
   highlightedDates = [],
+  appointmentDates = [], // Default to empty array
+  onDateSelect,
+  onMonthChange,
+  currentMonth,
+  className = "",
   minDate,
   maxDate,
-  className = "",
 }) => {
-  const [viewDate, setViewDate] = useState(new Date());
+  const [viewDate, setViewDate] = useState(currentMonth || new Date());
 
   const monthNames = [
     "January",
@@ -77,6 +83,11 @@ const Calendar: React.FC<CalendarProps> = ({
       newDate.setMonth(newDate.getMonth() + 1);
     }
     setViewDate(newDate);
+
+    // Notify parent component about month change
+    if (onMonthChange) {
+      onMonthChange(newDate);
+    }
   };
 
   const isDateSelected = (date: Date): boolean => {
@@ -94,6 +105,15 @@ const Calendar: React.FC<CalendarProps> = ({
         highlighted.getDate() === date.getDate() &&
         highlighted.getMonth() === date.getMonth() &&
         highlighted.getFullYear() === date.getFullYear()
+    );
+  };
+
+  const hasAppointment = (date: Date): boolean => {
+    return appointmentDates.some(
+      (appointment) =>
+        appointment.getDate() === date.getDate() &&
+        appointment.getMonth() === date.getMonth() &&
+        appointment.getFullYear() === date.getFullYear()
     );
   };
 
@@ -121,6 +141,13 @@ const Calendar: React.FC<CalendarProps> = ({
       onDateSelect(date);
     }
   };
+
+  // Update viewDate when currentMonth prop changes
+  useEffect(() => {
+    if (currentMonth) {
+      setViewDate(currentMonth);
+    }
+  }, [currentMonth]);
 
   return (
     <div
@@ -165,6 +192,7 @@ const Calendar: React.FC<CalendarProps> = ({
 
           const isSelected = isDateSelected(date);
           const isHighlighted = isDateHighlighted(date);
+          const hasAppt = hasAppointment(date);
           const isTodayDate = isToday(date);
           const isInCurrentMonth = isCurrentMonth(date);
           const isDisabled = isDateDisabled(date);
@@ -176,7 +204,7 @@ const Calendar: React.FC<CalendarProps> = ({
                 disabled={isDisabled}
                 type="button"
                 className={`
-                  w-full h-full flex items-center justify-center
+                  w-full h-full flex flex-col items-center justify-center
                   text-md font-medium rounded-lg
                   transition-all duration-150
                   relative
@@ -185,7 +213,7 @@ const Calendar: React.FC<CalendarProps> = ({
                     isSelected
                       ? "bg-primary text-white hover:bg-primary/90"
                       : isHighlighted
-                      ? "bg-primary/10 text-primary hover:bg-primary/20"
+                      ? "bg-green-100 text-green-700 hover:bg-green-200"
                       : isTodayDate
                       ? "bg-blue-50 text-blue-600 font-semibold"
                       : "hover:bg-gray-100"
@@ -198,6 +226,15 @@ const Calendar: React.FC<CalendarProps> = ({
                 `}
               >
                 {date.getDate()}
+                {/* Show indicators for available dates and appointments */}
+                <div className="flex gap-1 mt-1">
+                  {isHighlighted && (
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                  )}
+                  {hasAppt && (
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
               </button>
             </div>
           );

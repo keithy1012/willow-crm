@@ -7,295 +7,375 @@ import Calendar from "components/calendar/Calendar";
 import { Heartbeat } from "phosphor-react";
 import PrimaryButton from "components/buttons/PrimaryButton";
 import AvailabilityModal from "./AvailabilityModal";
-
-// Patient data map for quick lookup
-const patientDataMap = {
-  patient1: {
-    id: "patient1",
-    name: "Sarah Johnson",
-    firstName: "Sarah",
-    lastName: "Johnson",
-    email: "sarah.johnson@email.com",
-    phone: "(555) 123-4567",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    dateOfBirth: "1985-03-15",
-    medicalRecordNumber: "MRN-001234",
-  },
-  patient2: {
-    id: "patient2",
-    name: "Michael Chen",
-    firstName: "Michael",
-    lastName: "Chen",
-    email: "michael.chen@email.com",
-    phone: "(555) 234-5678",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-    dateOfBirth: "1972-08-22",
-    medicalRecordNumber: "MRN-001235",
-  },
-  patient3: {
-    id: "patient3",
-    name: "Emily Rodriguez",
-    firstName: "Emily",
-    lastName: "Rodriguez",
-    email: "emily.rodriguez@email.com",
-    phone: "(555) 345-6789",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-    dateOfBirth: "1990-11-30",
-    medicalRecordNumber: "MRN-001236",
-  },
-  patient4: {
-    id: "patient4",
-    name: "David Kim",
-    firstName: "David",
-    lastName: "Kim",
-    email: "david.kim@email.com",
-    phone: "(555) 456-7890",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-    dateOfBirth: "1968-05-10",
-    medicalRecordNumber: "MRN-001237",
-  },
-  patient5: {
-    id: "patient5",
-    name: "Lisa Thompson",
-    firstName: "Lisa",
-    lastName: "Thompson",
-    email: "lisa.thompson@email.com",
-    phone: "(555) 567-8901",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
-    dateOfBirth: "1982-09-18",
-    medicalRecordNumber: "MRN-001238",
-  },
-  patient6: {
-    id: "patient6",
-    name: "Robert Martinez",
-    firstName: "Robert",
-    lastName: "Martinez",
-    email: "robert.martinez@email.com",
-    phone: "(555) 678-9012",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
-    dateOfBirth: "1995-12-05",
-    medicalRecordNumber: "MRN-001239",
-  },
-  patient7: {
-    id: "patient7",
-    name: "Jennifer Lee",
-    firstName: "Jennifer",
-    lastName: "Lee",
-    email: "jennifer.lee@email.com",
-    phone: "(555) 789-0123",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer",
-    dateOfBirth: "1978-07-25",
-    medicalRecordNumber: "MRN-001240",
-  },
-  patient8: {
-    id: "patient8",
-    name: "William Brown",
-    firstName: "William",
-    lastName: "Brown",
-    email: "william.brown@email.com",
-    phone: "(555) 890-1234",
-    profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=William",
-    dateOfBirth: "1988-02-14",
-    medicalRecordNumber: "MRN-001241",
-  },
-};
-
-// Helper function to get today's appointments
-const getTodayAppointments = (): EnhancedAppointment[] => {
-  const today = new Date();
-  const baseDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  );
-
-  return [
-    {
-      _id: "1",
-      appointmentID: "APT-2024-001",
-      patientID: "patient1",
-      doctorID: "doctor1",
-      summary: "Post-Surgery Follow-up",
-      description:
-        "Check surgical site healing, remove stitches if appropriate, discuss recovery progress",
-      startTime: new Date(baseDate.getTime() + 9 * 60 * 60 * 1000), // 9:00 AM
-      endTime: new Date(baseDate.getTime() + 10 * 60 * 60 * 1000), // 10:00 AM
-      status: "Scheduled",
-      patient: patientDataMap["patient1"],
-      appointmentReason: "2-week post-operative checkup",
-      insuranceVerified: true,
-      copayAmount: 25,
-      reminderSent: true,
-      notes:
-        "Patient reported mild discomfort at incision site via patient portal",
-    },
-    {
-      _id: "2",
-      appointmentID: "APT-2024-002",
-      patientID: "patient2",
-      doctorID: "doctor1",
-      summary: "Diabetes Management",
-      description:
-        "Quarterly diabetes checkup, A1C review, medication adjustment if needed",
-      startTime: new Date(baseDate.getTime() + 10.5 * 60 * 60 * 1000), // 10:30 AM
-      endTime: new Date(baseDate.getTime() + 11.5 * 60 * 60 * 1000), // 11:30 AM
-      status: "Completed",
-      patient: patientDataMap["patient2"],
-      appointmentReason: "Regular diabetes follow-up",
-      insuranceVerified: true,
-      copayAmount: 40,
-      reminderSent: true,
-      notes: "Lab work completed last week - results in chart",
-    },
-    {
-      _id: "3",
-      appointmentID: "APT-2024-003",
-      patientID: "patient3",
-      doctorID: "doctor1",
-      summary: "Annual Physical",
-      description:
-        "Comprehensive annual health examination with preventive screening",
-      startTime: new Date(baseDate.getTime() + 13 * 60 * 60 * 1000), // 1:00 PM
-      endTime: new Date(baseDate.getTime() + 14 * 60 * 60 * 1000), // 2:00 PM
-      status: "No-Show",
-      patient: patientDataMap["patient3"],
-      appointmentReason: "Annual wellness exam",
-      insuranceVerified: true,
-      copayAmount: 0,
-      reminderSent: true,
-      notes: "Patient requested discussion about stress management",
-    },
-    {
-      _id: "4",
-      appointmentID: "APT-2024-004",
-      patientID: "patient4",
-      doctorID: "doctor1",
-      summary: "Hypertension Follow-up",
-      description:
-        "Blood pressure monitoring, medication efficacy review, lifestyle counseling",
-      startTime: new Date(baseDate.getTime() + 14.5 * 60 * 60 * 1000), // 2:30 PM
-      endTime: new Date(baseDate.getTime() + 15.25 * 60 * 60 * 1000), // 3:15 PM
-      status: "In-Progress",
-      patient: patientDataMap["patient4"],
-      appointmentReason: "3-month BP medication follow-up",
-      insuranceVerified: true,
-      copayAmount: 25,
-      reminderSent: true,
-      notes: "Home BP log requested - remind patient to bring",
-    },
-    {
-      _id: "5",
-      appointmentID: "APT-2024-005",
-      patientID: "patient5",
-      doctorID: "doctor1",
-      summary: "Acute Visit - Respiratory",
-      description:
-        "Patient reports persistent cough and chest congestion for 5 days",
-      startTime: new Date(baseDate.getTime() + 16 * 60 * 60 * 1000), // 4:00 PM
-      endTime: new Date(baseDate.getTime() + 16.5 * 60 * 60 * 1000), // 4:30 PM
-      status: "Cancelled",
-      patient: patientDataMap["patient5"],
-      appointmentReason: "Acute respiratory symptoms",
-      insuranceVerified: false,
-      copayAmount: 50,
-      reminderSent: false,
-      notes: "Same-day appointment added this morning",
-    },
-  ];
-};
-
-// Helper function to get month's appointments
-const getMonthAppointments = (): EnhancedAppointment[] => {
-  const todayAppointments = getTodayAppointments();
-
-  // Additional appointments for the month
-  const additionalAppointments: EnhancedAppointment[] = [
-    {
-      _id: "6",
-      appointmentID: "APT-2024-006",
-      patientID: "patient6",
-      doctorID: "doctor1",
-      summary: "Consultation - Joint Pain",
-      description:
-        "New patient consultation for chronic knee pain, possible referral to orthopedics",
-      startTime: new Date(2025, 10, 25, 10, 0), // Nov 25
-      endTime: new Date(2025, 10, 25, 11, 0),
-      status: "Scheduled",
-      patient: patientDataMap["patient6"],
-      appointmentReason: "Chronic knee pain evaluation",
-      insuranceVerified: true,
-      copayAmount: 60,
-      reminderSent: false,
-      notes: "X-rays ordered - results pending",
-    },
-    {
-      _id: "7",
-      appointmentID: "APT-2024-007",
-      patientID: "patient7",
-      doctorID: "doctor1",
-      summary: "Mental Health Check-in",
-      description: "Follow-up for anxiety management, medication review",
-      startTime: new Date(2025, 10, 26, 14, 0), // Nov 26
-      endTime: new Date(2025, 10, 26, 14, 45),
-      status: "Scheduled",
-      patient: patientDataMap["patient7"],
-      appointmentReason: "Monthly mental health follow-up",
-      insuranceVerified: true,
-      copayAmount: 25,
-      reminderSent: true,
-      notes: "Virtual appointment - send link 15 min before",
-    },
-    {
-      _id: "8",
-      appointmentID: "APT-2024-008",
-      patientID: "patient8",
-      doctorID: "doctor1",
-      summary: "Allergy Testing Results",
-      description: "Review allergy panel results and discuss treatment options",
-      startTime: new Date(2025, 10, 27, 9, 0), // Nov 27
-      endTime: new Date(2025, 10, 27, 9, 30),
-      status: "Scheduled",
-      patient: patientDataMap["patient8"],
-      appointmentReason: "Allergy test results review",
-      insuranceVerified: true,
-      copayAmount: 25,
-      reminderSent: true,
-      notes:
-        "Severe peanut allergy confirmed - prepare EpiPen training materials",
-    },
-  ];
-
-  return [...todayAppointments, ...additionalAppointments];
-};
-
-// Helper function to check if appointment is current
-const isAppointmentCurrent = (appointment: EnhancedAppointment): boolean => {
-  const now = new Date();
-  const start = new Date(appointment.startTime);
-  const end = new Date(appointment.endTime);
-  return now >= start && now <= end;
-};
+import { availabilityService } from "api/services/availability.service";
+import { appointmentService } from "api/services/appointment.service";
+import { doctorService } from "api/services/doctor.service";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import CancelAppointmentModal from "components/modal/CancelAppointmentModal";
 
 const DoctorDashboard: React.FC = () => {
-  const [todayAppointments, setTodayAppointments] = useState<
-    EnhancedAppointment[]
-  >([]);
-  const [monthAppointments, setMonthAppointments] = useState<
-    EnhancedAppointment[]
-  >([]);
+  const navigate = useNavigate();
+  // State declarations
+  const [todayAppointments, setTodayAppointments] = useState<any[]>([]);
+  const [monthAppointments, setMonthAppointments] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [doctorId, setDoctorId] = useState<string>("");
+  const [isLoadingDoctor, setIsLoadingDoctor] = useState(true);
+  const [isLoadingAppointments, setIsLoadingAppointments] = useState(false);
+  const [storedAvailabilities, setStoredAvailabilities] = useState<any[]>([]);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(new Date());
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelType, setCancelType] = useState<"cancel" | "no-show">("cancel");
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [processingCancel, setProcessingCancel] = useState(false);
+  // State for availability
+  const [availabilityDates, setAvailabilityDates] = useState<Date[]>([]);
+  const [isLoadingAvailability, setIsLoadingAvailability] = useState(false);
 
+  // Month names for logging
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  // Hook must be called at the top level
   useRequireRole("Doctor");
 
+  // Get doctor ID
   useEffect(() => {
-    // In production, replace with actual API calls
-    setTodayAppointments(getTodayAppointments());
-    setMonthAppointments(getMonthAppointments());
+    const fetchDoctorInfo = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        console.log("User ID from localStorage:", user._id);
+
+        try {
+          const doctorData = await doctorService.getByUserId(user._id);
+          console.log("Doctor data received:", doctorData);
+          setDoctorId(doctorData._id);
+        } catch (error: any) {
+          console.error("Failed to get doctor info:", error);
+          toast.error("Failed to load doctor information");
+        } finally {
+          setIsLoadingDoctor(false);
+        }
+      }
+    };
+
+    fetchDoctorInfo();
   }, []);
 
+  // Fetch availability and appointments when doctor ID is available
+  useEffect(() => {
+    if (doctorId) {
+      fetchAvailability();
+      fetchAppointments();
+    }
+  }, [doctorId]);
+
+  // Fetch availability for calendar display
+  const fetchAvailability = async () => {
+    if (!doctorId) return;
+
+    setIsLoadingAvailability(true);
+    try {
+      // Get all availabilities for the doctor
+      const response = await availabilityService.getDoctorAvailabilities(
+        doctorId
+      );
+      console.log("Fetched availabilities for calendar:", response);
+
+      if (response.availabilities) {
+        setStoredAvailabilities(response.availabilities);
+        processAvailabilityForCalendar(response.availabilities, calendarMonth);
+      }
+    } catch (error) {
+      console.error("Failed to fetch availability:", error);
+      // If the all endpoint doesn't exist, try the date-specific endpoint
+      try {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        const dates: Date[] = [];
+
+        // Check each day of the month
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+        for (
+          let d = new Date(firstDay);
+          d <= lastDay;
+          d.setDate(d.getDate() + 1)
+        ) {
+          const dateStr = d.toISOString().split("T")[0];
+          try {
+            const dayAvailability = await availabilityService.getForDate(
+              doctorId,
+              dateStr
+            );
+            if (
+              dayAvailability.available &&
+              dayAvailability.timeSlots?.length > 0
+            ) {
+              dates.push(new Date(d));
+            }
+          } catch (dayError) {
+            // Skip this day if error
+          }
+        }
+
+        setAvailabilityDates(dates);
+      } catch (fallbackError) {
+        console.error("Fallback fetch also failed:", fallbackError);
+      }
+    } finally {
+      setIsLoadingAvailability(false);
+    }
+  };
+  const handleCancelAppointment = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setCancelType("cancel");
+    setIsCancelModalOpen(true);
+  };
+
+  // Replace the handleMarkNoShow function
+  const handleMarkNoShow = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setCancelType("no-show");
+    setIsCancelModalOpen(true);
+  };
+
+  // Add this new handler for confirming cancellation/no-show
+  const handleConfirmCancellation = async (
+    reason: string,
+    type: "cancel" | "no-show"
+  ) => {
+    if (!selectedAppointment) return;
+
+    setProcessingCancel(true);
+    try {
+      if (type === "cancel") {
+        await appointmentService.cancelWithReason(
+          selectedAppointment._id,
+          reason,
+          "doctor"
+        );
+        toast.success("Appointment cancelled and patient notified");
+      } else {
+        await appointmentService.markNoShowWithReason(
+          selectedAppointment._id,
+          reason
+        );
+        toast.success("Appointment marked as no-show and patient notified");
+      }
+
+      // Refresh appointments
+      await fetchAppointments();
+      setIsCancelModalOpen(false);
+      setSelectedAppointment(null);
+    } catch (error) {
+      console.error("Error processing cancellation:", error);
+      toast.error("Failed to process. Please try again.");
+    } finally {
+      setProcessingCancel(false);
+    }
+  };
+  const processAvailabilityForCalendar = (
+    availabilities: any[],
+    targetMonth?: Date
+  ) => {
+    const dates: Date[] = [];
+    const monthToProcess = targetMonth || calendarMonth;
+    const currentMonth = monthToProcess.getMonth();
+    const currentYear = monthToProcess.getFullYear();
+
+    // Process recurring availabilities
+    const recurringAvails = availabilities.filter(
+      (a) =>
+        a.type === "Recurring" &&
+        (a.isActive === true || a.isActive === undefined)
+    );
+    const singleAvails = availabilities.filter(
+      (a) =>
+        a.type === "Single" && (a.isActive === true || a.isActive === undefined)
+    );
+
+    // Generate dates for the specified month
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+    // Keep track of blocked dates (single entries with no time slots)
+    const blockedDates = new Set<string>();
+
+    // Create a map of single date overrides for quick lookup
+    const singleDateMap = new Map();
+    singleAvails.forEach((sa) => {
+      if (sa.date) {
+        const date = new Date(sa.date);
+        const dateKey = date.toDateString();
+
+        // Check if this is a blocked date (has no time slots or empty array)
+        if (!sa.timeSlots || sa.timeSlots.length === 0) {
+          blockedDates.add(dateKey);
+        } else {
+          singleDateMap.set(dateKey, sa);
+        }
+      }
+    });
+
+    // Check each day of the month
+    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+      const currentDate = new Date(d);
+      const dateKey = currentDate.toDateString();
+      const dayOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ][currentDate.getDay()];
+
+      // First check if this date is explicitly blocked
+      if (blockedDates.has(dateKey)) {
+        // Skip this date - it's blocked
+        continue;
+      }
+
+      // Then check for single date override with time slots
+      if (singleDateMap.has(dateKey)) {
+        const singleOverride = singleDateMap.get(dateKey);
+        // We already checked it has time slots when adding to map
+        dates.push(new Date(currentDate));
+      } else {
+        // No single date override, check recurring availability
+        const recurring = recurringAvails.find(
+          (ra) => ra.dayOfWeek === dayOfWeek
+        );
+        if (
+          recurring &&
+          recurring.timeSlots &&
+          recurring.timeSlots.length > 0
+        ) {
+          dates.push(new Date(currentDate));
+        }
+      }
+    }
+
+    console.log(
+      `Found ${
+        dates.length
+      } available dates for ${monthToProcess.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })}`
+    );
+    console.log(`Blocked dates: ${blockedDates.size}`);
+    setAvailabilityDates(dates);
+  };
+
+  // Fetch appointments from API
+  const fetchAppointments = async () => {
+    if (!doctorId) return;
+
+    setIsLoadingAppointments(true);
+    try {
+      console.log("Fetching appointments for doctorId:", doctorId);
+
+      // Fetch ALL appointments
+      const allAppointmentsResponse: any =
+        await appointmentService.getDoctorAppointments(doctorId);
+      console.log("All appointments raw response:", allAppointmentsResponse);
+
+      const allData = Array.isArray(allAppointmentsResponse)
+        ? allAppointmentsResponse
+        : allAppointmentsResponse?.appointments || [];
+
+      // Filter today's appointments from all appointments
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const todayData = allData.filter((apt: any) => {
+        const aptDate = new Date(apt.startTime);
+        return aptDate >= today && aptDate < tomorrow;
+      });
+
+      console.log("Today's appointments:", todayData);
+
+      // Sort by start time
+      const sortedTodayData = todayData.sort(
+        (a: any, b: any) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      );
+
+      setTodayAppointments(sortedTodayData);
+
+      // Filter for current month appointments for statistics
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      const monthAppts = allData.filter((apt: any) => {
+        const aptDate = new Date(apt.startTime);
+        const isCurrentMonth =
+          aptDate.getMonth() === currentMonth &&
+          aptDate.getFullYear() === currentYear;
+        const notCancelled = apt.status !== "Cancelled";
+        return isCurrentMonth && notCancelled;
+      });
+      console.log(
+        `Current month (${monthNames[currentMonth]} ${currentYear}) appointments:`,
+        monthAppts.length
+      );
+      setMonthAppointments(monthAppts);
+    } catch (error) {
+      console.error("Failed to fetch appointments:", error);
+      setTodayAppointments([]);
+      setMonthAppointments([]);
+      // Don't show error toast if API is not ready
+      if (error instanceof Error && !error.message.includes("404")) {
+        toast.error("Failed to load appointments");
+      }
+    } finally {
+      setIsLoadingAppointments(false);
+    }
+  };
+
+  const handleAvailabilityComplete = (data: any) => {
+    console.log("Availability saved:", data);
+    // Refresh availability display after saving
+    fetchAvailability();
+    setIsModalOpen(false);
+  };
+
+  const handleAvailability = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleMonthChange = (newMonth: Date) => {
+    setCalendarMonth(newMonth);
+    if (storedAvailabilities.length > 0) {
+      processAvailabilityForCalendar(storedAvailabilities, newMonth);
+    }
+  };
+
+  // Helper functions for the dashboard
   const generateTimeSlots = () => {
     const slots = [];
-    for (let hour = 9; hour <= 17; hour++) {
+    for (let hour = 8; hour <= 18; hour++) {
       const time = hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`;
       const displayTime = hour === 12 ? "12:00 PM" : time;
       slots.push({
@@ -307,9 +387,6 @@ const DoctorDashboard: React.FC = () => {
     return slots;
   };
 
-  const timeSlots = generateTimeSlots();
-
-  // Helper function to get appointments in a time slot
   const getAppointmentsForTimeSlot = (hour: number) => {
     return todayAppointments.filter((apt) => {
       const aptHour = new Date(apt.startTime).getHours();
@@ -317,7 +394,13 @@ const DoctorDashboard: React.FC = () => {
     });
   };
 
-  // Format date for display
+  const isAppointmentCurrent = (appointment: any): boolean => {
+    const now = new Date();
+    const start = new Date(appointment.startTime);
+    const end = new Date(appointment.endTime);
+    return now >= start && now <= end;
+  };
+
   const formatDate = (date: Date | string) => {
     const d = new Date(date);
     return d.toLocaleDateString("en-US", {
@@ -327,16 +410,14 @@ const DoctorDashboard: React.FC = () => {
     });
   };
 
-  // Get appointment dates for calendar highlighting
   const getAppointmentDates = (): Date[] => {
     return monthAppointments.map((apt) => new Date(apt.startTime));
   };
 
-  // Handle calendar date selection
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = async (date: Date) => {
     setSelectedDate(date);
 
-    // Find appointments for selected date
+    // Check appointments for this date
     const selectedDateAppointments = monthAppointments.filter((apt) => {
       const aptDate = new Date(apt.startTime);
       return (
@@ -346,19 +427,74 @@ const DoctorDashboard: React.FC = () => {
       );
     });
 
-    if (selectedDateAppointments.length > 0) {
-      console.log(
-        `Found ${selectedDateAppointments.length} appointments on ${formatDate(
-          date
-        )}`
+    // Check if this date has availability
+    const hasAvailability = availabilityDates.some(
+      (availDate) =>
+        availDate.getDate() === date.getDate() &&
+        availDate.getMonth() === date.getMonth() &&
+        availDate.getFullYear() === date.getFullYear()
+    );
+
+    if (hasAvailability) {
+      // Get specific availability details if needed
+      if (doctorId) {
+        try {
+          const dateStr = date.toISOString().split("T")[0];
+          const availability = await availabilityService.getForDate(
+            doctorId,
+            dateStr
+          );
+
+          if (availability.available && availability.timeSlots) {
+            const availableSlots = availability.timeSlots.filter(
+              (slot: any) => !slot.isBooked
+            );
+            const bookedSlots = availability.timeSlots.filter(
+              (slot: any) => slot.isBooked
+            );
+
+            let message = `${formatDate(date)}: `;
+            if (selectedDateAppointments.length > 0) {
+              message += `${selectedDateAppointments.length} appointments, `;
+            }
+            message += `${availableSlots.length} open slots`;
+
+            toast.success(message, { duration: 3000 });
+          }
+        } catch (error) {
+          console.error("Failed to fetch availability details:", error);
+        }
+      }
+    } else if (selectedDateAppointments.length > 0) {
+      toast.success(
+        `${formatDate(date)}: ${
+          selectedDateAppointments.length
+        } appointment(s)`,
+        { duration: 3000 }
       );
-      // You can show these appointments in a modal or sidebar
     }
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleAvailability = () => {
-    setIsModalOpen(true);
+
+  // Handlers
+  const handleMessagePatient = (patientId: string) => {
+    navigate(`/doctormessages?patientId=${patientId}`);
   };
+
+  const handleViewPatientProfile = (patientId: string) => {
+    navigate(`/patient/${patientId}`);
+  };
+
+  const handleViewSummary = (appointmentId: string) => {
+    navigate(`/medical-records/${appointmentId}`);
+  };
+  const handleViewDetails = (appointment: any) => {
+    navigate(`/doctor/appointment/${appointment._id}`);
+  };
+
+  // Calculate statistics
+  const upcomingAppointmentsCount = monthAppointments.filter(
+    (apt) => new Date(apt.startTime) > new Date()
+  ).length;
 
   return (
     <div className="w-full min-h-screen bg-background">
@@ -367,7 +503,7 @@ const DoctorDashboard: React.FC = () => {
           <h2 className="text-3xl font-semibold">Welcome Back, Doctor!</h2>
           <p className="text-lg mt-2 opacity-90">
             {formatDate(new Date())} - You have {todayAppointments.length}{" "}
-            appointments today
+            appointment{todayAppointments.length !== 1 ? "s" : ""} today
           </p>
         </div>
       </div>
@@ -376,44 +512,110 @@ const DoctorDashboard: React.FC = () => {
         <div className="pr-8 py-8 w-3/5">
           <h1 className="text-2xl font-normal mb-6">Today's Schedule</h1>
 
-          <div className="space-y-2">
-            {timeSlots.map((slot) => {
-              const appointments = getAppointmentsForTimeSlot(slot.hour);
+          {isLoadingAppointments ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {generateTimeSlots().map((slot) => {
+                const appointments = getAppointmentsForTimeSlot(slot.hour);
 
-              if (appointments.length > 0) {
-                return appointments.map((appointment) => (
-                  <DoctorAppointmentCard
-                    key={appointment._id}
-                    startTime={appointment.startTime}
-                    endTime={appointment.endTime}
-                    patientName={appointment.patient?.name || "Unknown Patient"}
-                    patientId={appointment.patientID}
-                    patientProfilePic={appointment.patient?.profilePic}
-                    appointmentType={appointment.summary}
-                    appointmentDescription={appointment.description}
-                    appointmentId={appointment.appointmentID}
-                    status={appointment.status}
-                    isCurrentAppointment={isAppointmentCurrent(appointment)}
-                  />
-                ));
-              }
+                if (appointments.length > 0) {
+                  return appointments.map((appointment) => (
+                    <DoctorAppointmentCard
+                      key={appointment._id}
+                      startTime={appointment.startTime}
+                      endTime={appointment.endTime}
+                      patientName={
+                        appointment.patientID?.user?.firstName &&
+                        appointment.patientID?.user?.lastName
+                          ? `${appointment.patientID.user.firstName} ${appointment.patientID.user.lastName}`
+                          : appointment.patientName || "Unknown Patient"
+                      }
+                      patientId={
+                        appointment.patientID?._id || appointment.patientID
+                      }
+                      patientProfilePic={
+                        appointment.patientID?.user?.profilePic
+                      }
+                      appointmentType={appointment.summary || "Consultation"}
+                      appointmentDescription={appointment.description}
+                      appointmentId={appointment._id}
+                      status={appointment.status || "Scheduled"}
+                      isCurrentAppointment={isAppointmentCurrent(appointment)}
+                      onViewDetails={() => handleViewDetails(appointment)}
+                      onMessage={() =>
+                        handleMessagePatient(
+                          appointment.patientID?._id || appointment.patientID
+                        )
+                      }
+                      onViewProfile={() =>
+                        handleViewPatientProfile(
+                          appointment.patientID?._id || appointment.patientID
+                        )
+                      }
+                      onComplete={async () => {
+                        try {
+                          await appointmentService.updateStatus(
+                            appointment._id,
+                            "Completed"
+                          );
+                          toast.success("Appointment marked as completed");
+                          fetchAppointments();
+                        } catch (error) {
+                          toast.error("Failed to complete appointment");
+                        }
+                      }}
+                      onCancel={() => handleCancelAppointment(appointment)}
+                      onMarkNoShow={() => handleMarkNoShow(appointment)}
+                      isTimeline={true}
+                      onStartAppointment={async () => {
+                        try {
+                          await appointmentService.updateStatus(
+                            appointment._id,
+                            "In-Progress"
+                          );
+                          toast.success("Appointment started");
+                          fetchAppointments();
+                        } catch (error) {
+                          toast.error("Failed to start appointment");
+                        }
+                      }}
+                      onViewSummary={() => handleViewSummary(appointment._id)}
+                      onClick={() => handleViewDetails(appointment)}
+                    />
+                  ));
+                }
 
-              return (
-                <div key={slot.hour} className="flex gap-4 mb-4">
-                  <div className="min-w-[80px] text-right pt-1">
-                    <span className="text-sm text-darkerStroke">
-                      {slot.displayTime}
-                    </span>
+                return (
+                  <div key={slot.hour} className="flex gap-4 mb-4">
+                    <div className="min-w-[80px] text-right pt-1">
+                      <span className="text-sm text-darkerStroke">
+                        {slot.displayTime}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-2 h-2 rounded-full bg-darkerStroke mt-2" />
+                      <div className="w-[1px] bg-darkerStroke h-16" />
+                    </div>
+                    <div className="flex-1 h-16 border-b border-dashed border-stroke" />
                   </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-2 h-2 rounded-full bg-darkerStroke mt-2" />
-                    <div className="w-[1px] bg-darkerStroke h-16" />
-                  </div>
-                  <div className="flex-1 h-16 border-b border-dashed border-stroke" />
+                );
+              })}
+
+              {todayAppointments.length === 0 && (
+                <div className="text-center py-8 text-secondaryText">
+                  <p>No appointments scheduled for today</p>
+                  <p className="text-sm mt-2">
+                    {availabilityDates.length > 0
+                      ? "Your availability is set. Patients can book appointments."
+                      : "Set your availability to accept bookings"}
+                  </p>
                 </div>
-              );
-            })}
-          </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="pl-8 py-8 w-2/5 gap-6 flex flex-col border-l border-gray-200">
@@ -433,29 +635,113 @@ const DoctorDashboard: React.FC = () => {
             />
           </div>
 
-          <h1 className="text-2xl font-normal mb-4">This Month's Schedule</h1>
-          <Calendar
-            selectedDates={selectedDate ? [selectedDate] : []}
-            highlightedDates={getAppointmentDates()}
-            onDateSelect={handleDateSelect}
-            className="w-full"
-          />
+          <div>
+            <h1 className="text-2xl font-normal mb-4">This Month's Schedule</h1>
+
+            {/* Legend for calendar */}
+            <div className="flex gap-3 mb-3 text-xs">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-primary rounded-full"></div>
+                <span>Selected Date</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>Available</span>
+              </div>
+              {getAppointmentDates().length > 0 && (
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <span>Has Appointments</span>
+                </div>
+              )}
+            </div>
+
+            <Calendar
+              selectedDates={selectedDate ? [selectedDate] : []}
+              highlightedDates={availabilityDates}
+              appointmentDates={getAppointmentDates()}
+              onDateSelect={handleDateSelect}
+              onMonthChange={handleMonthChange}
+              currentMonth={calendarMonth}
+              className="w-full"
+            />
+
+            {isLoadingAvailability && (
+              <p className="text-sm text-secondaryText text-center mt-2">
+                Loading availability...
+              </p>
+            )}
+
+            <div className="mt-2 text-xs text-secondaryText">
+              <p>Available days: {availabilityDates.length}</p>
+              <p>Upcoming appointments: {upcomingAppointmentsCount}</p>
+            </div>
+          </div>
 
           <PrimaryButton
-            text="Add Availability"
+            text="Manage Availability"
             variant="primary"
             size="small"
             onClick={handleAvailability}
+            disabled={!doctorId || isLoadingDoctor}
           />
         </div>
       </div>
-      <AvailabilityModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onComplete={(data) => {
-          console.log("Availability data:", data);
-          // Handle the availability data here
+
+      {doctorId && (
+        <AvailabilityModal
+          isOpen={isModalOpen}
+          doctorId={doctorId}
+          onClose={() => {
+            setIsModalOpen(false);
+            // Refresh availability when modal closes
+            fetchAvailability();
+          }}
+          onComplete={handleAvailabilityComplete}
+        />
+      )}
+
+      <CancelAppointmentModal
+        isOpen={isCancelModalOpen}
+        onClose={() => {
+          if (!processingCancel) {
+            setIsCancelModalOpen(false);
+            setSelectedAppointment(null);
+          }
         }}
+        onConfirm={handleConfirmCancellation}
+        type={cancelType}
+        appointmentDate={
+          selectedAppointment
+            ? new Date(selectedAppointment.startTime).toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              )
+            : ""
+        }
+        appointmentTime={
+          selectedAppointment
+            ? new Date(selectedAppointment.startTime).toLocaleTimeString(
+                "en-US",
+                {
+                  hour: "numeric",
+                  minute: "2-digit",
+                }
+              )
+            : ""
+        }
+        patientName={
+          selectedAppointment?.patientID?.user?.firstName &&
+          selectedAppointment?.patientID?.user?.lastName
+            ? `${selectedAppointment.patientID.user.firstName} ${selectedAppointment.patientID.user.lastName}`
+            : "Patient"
+        }
+        isLoading={processingCancel}
       />
     </div>
   );

@@ -1,36 +1,20 @@
 import React from "react";
 import DoctorResultCard from "../card/DoctorResultCard";
 import BookingButton from "../buttons/BookingButton";
+import { AvailableDoctorResult } from "api/types/availability.types";
 const noResultsImage = "/533.Checking-The-Calendar.png";
+
 interface TimeSlot {
   startTime: string;
   endTime: string;
   isBooked: boolean;
-  _id: string;
-}
-
-interface DoctorResult {
-  doctor: {
-    _id: string;
-    user: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      phoneNumber: string;
-      profilePic?: string;
-    };
-    bioContent: string;
-    education: string;
-    speciality: string;
-  };
-  availabilityType: string;
-  timeSlots: TimeSlot[];
+  _id?: string;
 }
 
 interface DoctorSearchResultsProps {
   searchDate: string;
   searchName: string;
-  results: DoctorResult[];
+  results: AvailableDoctorResult[];
   specialtyFilter?: string;
   onSpecialtyChange?: (specialty: string) => void;
   onBookAppointment?: (doctorId: string, timeSlot: TimeSlot) => void;
@@ -63,59 +47,95 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? "PM" : "AM";
     const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes}`;
+    return `${displayHour}:${minutes} ${ampm}`;
   };
 
-  // get the 30-minute time slots from the given time range
-  const generateTimeSlots = (startTime: string, endTime: string): string[] => {
-    const slots: string[] = [];
-    const [startHour, startMin] = startTime.split(":").map(Number);
-    const [endHour, endMin] = endTime.split(":").map(Number);
-
-    let currentHour = startHour;
-    let currentMin = startMin;
-
-    while (
-      currentHour < endHour ||
-      (currentHour === endHour && currentMin < endMin)
-    ) {
-      const timeString = `${currentHour
-        .toString()
-        .padStart(2, "0")}:${currentMin.toString().padStart(2, "0")}`;
-      slots.push(timeString);
-      currentMin += 30;
-      if (currentMin >= 60) {
-        currentMin -= 60;
-        currentHour += 1;
-      }
-    }
-
-    return slots;
-  };
-
-  // get the time slots for a doctor
-  const getDoctorTimeSlots = (timeSlots: TimeSlot[]) => {
-    const allSlots: { time: string; isBooked: boolean; slotData?: TimeSlot }[] =
-      [];
+  // Generate 1-hour time slots from a time range
+  const generateOneHourSlots = (timeSlots: TimeSlot[]): TimeSlot[] => {
+    const allHourSlots: TimeSlot[] = [];
 
     timeSlots.forEach((slot) => {
-      const thirtyMinSlots = generateTimeSlots(slot.startTime, slot.endTime);
-      thirtyMinSlots.forEach((time) => {
-        allSlots.push({
-          time,
-          isBooked: slot.isBooked,
-          slotData: slot,
+      // If slot is already booked, skip it
+      if (slot.isBooked) {
+        return;
+      }
+
+      // Parse start and end times
+      const [startHour, startMin] = slot.startTime.split(":").map(Number);
+      const [endHour, endMin] = slot.endTime.split(":").map(Number);
+
+      // Calculate duration in minutes
+      const totalMinutes = endHour * 60 + endMin - (startHour * 60 + startMin);
+
+      // If it's already a 60-minute slot or less, just add it
+      if (totalMinutes <= 60) {
+        allHourSlots.push(slot);
+        return;
+      }
+
+      // Generate 1-hour slots within this range
+      let currentHour = startHour;
+      let currentMin = startMin;
+
+      while (
+        currentHour < endHour ||
+        (currentHour === endHour && currentMin < endMin)
+      ) {
+        // Calculate next slot (60 minutes later)
+        let nextHour = currentHour + 1;
+        let nextMin = currentMin;
+
+        // Make sure we don't go past the end time
+        if (nextHour > endHour || (nextHour === endHour && nextMin > endMin)) {
+          // If remaining time is less than 60 min but more than 0, create a shorter slot
+          if (endHour * 60 + endMin - (currentHour * 60 + currentMin) > 0) {
+            const finalSlot: TimeSlot = {
+              startTime: `${String(currentHour).padStart(2, "0")}:${String(
+                currentMin
+              ).padStart(2, "0")}`,
+              endTime: `${String(endHour).padStart(2, "0")}:${String(
+                endMin
+              ).padStart(2, "0")}`,
+              isBooked: false,
+              _id: slot._id
+                ? `${slot._id}-${currentHour}-${currentMin}`
+                : undefined,
+            };
+            allHourSlots.push(finalSlot);
+          }
+          break;
+        }
+
+        // Create the 1-hour slot - IMPORTANT: Ensure end time is exactly 1 hour after start
+        const newSlot: TimeSlot = {
+          startTime: `${String(currentHour).padStart(2, "0")}:${String(
+            currentMin
+          ).padStart(2, "0")}`,
+          endTime: `${String(nextHour).padStart(2, "0")}:${String(
+            nextMin
+          ).padStart(2, "0")}`,
+          isBooked: false,
+          _id: slot._id
+            ? `${slot._id}-${currentHour}-${currentMin}`
+            : undefined,
+        };
+
+        // Log for debugging
+        console.log("Generated 1-hour slot:", {
+          start: newSlot.startTime,
+          end: newSlot.endTime,
+          duration: "60 minutes",
         });
-      });
+
+        allHourSlots.push(newSlot);
+
+        // Move to next slot (1 hour later)
+        currentHour = nextHour;
+        currentMin = nextMin;
+      }
     });
 
-    return allSlots;
-  };
-
-  // Get unique specialties from results
-  const getSpecialties = () => {
-    const specialties = new Set(results.map((r) => r.doctor.speciality));
-    return Array.from(specialties).sort();
+    return allHourSlots;
   };
 
   return (
@@ -140,7 +160,11 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
                     : "No open appointments found matching your search criteria."}
                 </p>
                 <div className="my-4 w-full flex justify-center text-gray-400 mb-4">
-                  <img src={noResultsImage} className="w-2/5" />
+                  <img
+                    src={noResultsImage}
+                    className="w-2/5"
+                    alt="No results"
+                  />
                 </div>
               </div>
             ) : (
@@ -159,8 +183,29 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
                     )}
                   </div>
                 </div>
+
                 {results.map((result) => {
-                  const timeSlots = getDoctorTimeSlots(result.timeSlots);
+                  // Generate proper 1-hour slots
+                  const oneHourSlots = generateOneHourSlots(result.timeSlots);
+
+                  console.log(`Doctor ${result.doctor._id} slots:`, {
+                    original: result.timeSlots,
+                    generated1Hour: oneHourSlots,
+                  });
+
+                  // Handle case where doctor.user might be a string (ID) or User object
+                  const user =
+                    typeof result.doctor.user === "string"
+                      ? null
+                      : result.doctor.user;
+
+                  if (!user) {
+                    console.warn(
+                      "Doctor user data not populated:",
+                      result.doctor
+                    );
+                    return null;
+                  }
 
                   return (
                     <div key={result.doctor._id}>
@@ -168,11 +213,13 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
                         <div className="flex-shrink-0 w-[500px]">
                           <DoctorResultCard
                             doctorId={result.doctor._id}
-                            doctorName={`${result.doctor.user.firstName} ${result.doctor.user.lastName}`}
-                            specialty={result.doctor.speciality}
-                            email={result.doctor.user.email}
-                            phd={result.doctor.education}
-                            profilePicUrl={result.doctor.user.profilePic}
+                            doctorName={`${user.firstName} ${user.lastName}`}
+                            specialty={
+                              result.doctor.speciality || "General Practice"
+                            }
+                            email={user.email}
+                            phd={result.doctor.education || ""}
+                            profilePicUrl={user.profilePic}
                             onMessageDoctor={() =>
                               onMessageDoctor &&
                               onMessageDoctor(result.doctor._id)
@@ -182,20 +229,35 @@ const DoctorSearchResults: React.FC<DoctorSearchResultsProps> = ({
 
                         <div className="flex-1">
                           <div className="grid grid-cols-4 gap-3">
-                            {timeSlots.map((slot, index) => (
-                              <BookingButton
-                                key={`${result.doctor._id}-${slot.time}-${index}`}
-                                time={formatTime(slot.time)}
-                                isBooked={slot.isBooked}
-                                onClick={() =>
-                                  slot.slotData &&
-                                  onBookAppointment?.(
-                                    result.doctor._id,
-                                    slot.slotData
-                                  )
-                                }
-                              />
-                            ))}
+                            {oneHourSlots.length === 0 ? (
+                              <div className="col-span-4 text-center text-secondaryText py-4">
+                                No available time slots
+                              </div>
+                            ) : (
+                              oneHourSlots.map((slot, index) => (
+                                <BookingButton
+                                  key={`${result.doctor._id}-${slot.startTime}-${index}`}
+                                  time={formatTime(slot.startTime)}
+                                  isBooked={slot.isBooked}
+                                  onClick={() => {
+                                    if (!slot.isBooked) {
+                                      console.log(
+                                        "Selecting slot for booking:",
+                                        {
+                                          doctorId: result.doctor._id,
+                                          slot: slot,
+                                          duration: `${slot.startTime} - ${slot.endTime}`,
+                                        }
+                                      );
+                                      onBookAppointment?.(
+                                        result.doctor._id,
+                                        slot
+                                      );
+                                    }
+                                  }}
+                                />
+                              ))
+                            )}
                           </div>
                         </div>
                       </div>

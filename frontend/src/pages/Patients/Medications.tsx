@@ -1,50 +1,122 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LargeMedicationCard from "components/card/LargeMedicationCard";
 import { Info } from "phosphor-react";
-
-interface Medication {
-  id: string;
-  name: string;
-  notes: string;
-  lastRequested: Date;
-  prescribedOn: Date;
-  refillDetails: string;
-  pharmacyDetails: string;
-}
+import { medorderService } from "api/services/medorder.service";
+import { MedorderResponse } from "api/types/medorder.types";
+import toast from "react-hot-toast";
+import { patientService } from "api/services/patient.service";
 
 const Medications: React.FC = () => {
-  const medications: Medication[] = [
-    {
-      id: "1",
-      name: "Name of Medication",
-      notes:
-        "Take this medication once a day by month. If taken late, take two in one day, but do not exceed three.",
-      lastRequested: new Date("2025-03-10"),
-      prescribedOn: new Date("2025-02-18"),
-      refillDetails: "84 Tablets",
-      pharmacyDetails: "This Hospital",
-    },
-    {
-      id: "2",
-      name: "Name of Medication",
-      notes:
-        "Take this medication once a day by month. If taken late, take two in one day, but do not exceed three.",
-      lastRequested: new Date("2025-03-10"),
-      prescribedOn: new Date("2025-02-18"),
-      refillDetails: "84 Tablets",
-      pharmacyDetails: "This Hospital",
-    },
-    {
-      id: "3",
-      name: "Name of Medication",
-      notes:
-        "Take this medication once a day by month. If taken late, take two in one day, but do not exceed three.",
-      lastRequested: new Date("2025-03-10"),
-      prescribedOn: new Date("2025-02-18"),
-      refillDetails: "84 Tablets",
-      pharmacyDetails: "This Hospital",
-    },
-  ];
+  const [medications, setMedications] = useState<MedorderResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [patientId, setPatientId] = useState<string>("");
+
+  // Fetch patient ID
+  useEffect(() => {
+    const loadPatient = async () => {
+      try {
+        const stored = localStorage.getItem("user");
+        if (stored) {
+          const userParsed = JSON.parse(stored);
+
+          try {
+            const patient = await patientService.getById(userParsed._id);
+            setPatientId(patient._id);
+          } catch (err) {
+            console.log("Direct patient fetch failed, searching by name...");
+            const fullName = `${userParsed.firstName} ${userParsed.lastName}`;
+            const searchResult = await patientService.searchByName(fullName);
+
+            if (searchResult.patients && searchResult.patients.length > 0) {
+              const patient = searchResult.patients[0];
+              setPatientId(patient._id);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load patient:", err);
+        toast.error("Failed to load patient information");
+      }
+    };
+    loadPatient();
+  }, []);
+
+  // Fetch medications
+  useEffect(() => {
+    const fetchMedications = async () => {
+      if (!patientId) return;
+
+      try {
+        setLoading(true);
+        const response = await medorderService.getMedordersByPatient(patientId);
+        setMedications(response.medorders);
+      } catch (error) {
+        console.error("Error fetching medications:", error);
+        toast.error("Failed to load medications");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMedications();
+  }, [patientId]);
+
+  const handleRefillRequest = async (medicationId: string) => {
+    try {
+      const medication = medications.find(
+        (med) => med.orderID === medicationId
+      );
+      if (!medication) return;
+
+      // Send refill request email
+      await fetch("http://localhost:5050/api/medorders/refill-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          medicationName: medication.medicationName,
+          patientName: `${medication.patientID.name}`,
+          patientEmail: medication.patientID.email,
+          quantity: medication.quantity,
+          pharmacy: "Willow CRM Pharmacy",
+          lastRefillDate: medication.lastRefillDate,
+        }),
+      });
+
+      toast.success("Refill request sent successfully!");
+
+      // Refresh medications list
+      const response = await medorderService.getMedordersByPatient(patientId);
+      setMedications(response.medorders);
+    } catch (error) {
+      console.error("Error requesting refill:", error);
+      toast.error("Failed to request refill. Please try again.");
+    }
+  };
+
+  const handleDelete = async (medicationId: string) => {
+    try {
+      await medorderService.deleteMedorder(medicationId);
+      toast.success("Medication deleted successfully");
+
+      // Remove from local state
+      setMedications((prev) =>
+        prev.filter((med) => med.orderID !== medicationId)
+      );
+    } catch (error) {
+      console.error("Error deleting medication:", error);
+      toast.error("Failed to delete medication. Please try again.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-foreground">
@@ -53,20 +125,36 @@ const Medications: React.FC = () => {
           My Medications
         </h1>
 
-        <div className="space-y-4">
-          {medications.map((medication) => (
-            <LargeMedicationCard
-              key={medication.id}
-              medicationId={medication.id}
-              medicationName={medication.name}
-              medicationNotes={medication.notes}
-              lastRequested={medication.lastRequested}
-              prescribedOn={medication.prescribedOn}
-              refillDetails={medication.refillDetails}
-              pharmacyDetails={medication.pharmacyDetails}
-            />
-          ))}
-        </div>
+        {medications.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">No medications found</p>
+            <p className="text-gray-500 text-sm mt-2">
+              Your prescribed medications will appear here
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {medications.map((medication) => (
+              <LargeMedicationCard
+                key={medication.orderID}
+                medicationId={medication.orderID}
+                medicationName={medication.medicationName}
+                medicationNotes={medication.instruction}
+                lastRequested={
+                  medication.lastRefillDate
+                    ? new Date(medication.lastRefillDate)
+                    : undefined
+                }
+                prescribedOn={new Date(medication.prescribedOn)}
+                refillDetails={medication.quantity || "N/A"}
+                pharmacyDetails="Willow CRM Pharmacy"
+                onRefillRequest={handleRefillRequest}
+                onDelete={handleDelete}
+                isPatient={true}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="w-96 bg-white border-l border-gray-200 p-6 overflow-y-auto">

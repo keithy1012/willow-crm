@@ -1,11 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MagnifyingGlass, Calendar } from "phosphor-react";
+import { availabilityService } from "api/services/availability.service";
+import { AvailableDoctorResult } from "api/types/availability.types";
+import toast from "react-hot-toast";
 
 interface DoctorSearchBarProps {
   onSearch?: (doctorQuery: string, availabilityQuery: string) => void;
+  onResults?: (results: AvailableDoctorResult[]) => void;
 }
 
-const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
+const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({
+  onSearch,
+  onResults,
+}) => {
   const [doctorQuery, setDoctorQuery] = useState("");
   const [availabilityQuery, setAvailabilityQuery] = useState("");
   const [focusedSection, setFocusedSection] = useState<
@@ -14,6 +21,7 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
   const [selected, setSelected] = useState<Date | undefined>();
   const [showCalendar, setShowCalendar] = useState(false);
   const [viewDate, setViewDate] = useState(new Date());
+  const [isSearching, setIsSearching] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
   const availabilityRef = useRef<HTMLDivElement>(null);
 
@@ -37,14 +45,94 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
     };
   }, []);
 
-  const handleSearch = () => {
-    if (onSearch) {
-      onSearch(doctorQuery, availabilityQuery);
+  // Format date to YYYY-MM-DD for API
+  const formatDateForAPI = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleSearch = async () => {
+    setIsSearching(true);
+
+    try {
+      // Prepare search parameters
+      const searchParams: { date?: string; name?: string } = {};
+
+      // If a date is selected, use that date
+      if (selected && availabilityQuery) {
+        searchParams.date = formatDateForAPI(selected);
+      } else if (doctorQuery && !availabilityQuery) {
+        // If only name is searched, use today's date
+        searchParams.date = formatDateForAPI(new Date());
+      }
+
+      // Add doctor name if provided
+      if (doctorQuery.trim()) {
+        searchParams.name = doctorQuery.trim();
+      }
+
+      // If neither date nor name is provided, show an error
+      if (!searchParams.date && !searchParams.name) {
+        toast.error("Please enter a doctor name or select a date");
+        setIsSearching(false);
+        return;
+      }
+
+      // Call the availability search API
+      const response = await availabilityService.searchByDateTime(searchParams);
+
+      if (response.doctors && response.doctors.length > 0) {
+        toast.success(
+          `Found ${response.doctors.length} available doctor${
+            response.doctors.length > 1 ? "s" : ""
+          }`
+        );
+
+        // Pass results to parent component if handler is provided
+        if (onResults) {
+          onResults(response.doctors);
+        }
+      } else {
+        let message = "No doctors found";
+        if (searchParams.name && searchParams.date) {
+          const dateStr = selected
+            ? selected.toLocaleDateString()
+            : new Date().toLocaleDateString();
+          message = `No doctors named "${searchParams.name}" available on ${dateStr}`;
+        } else if (searchParams.date) {
+          const dateStr = selected
+            ? selected.toLocaleDateString()
+            : new Date().toLocaleDateString();
+          message = `No doctors available on ${dateStr}`;
+        } else if (searchParams.name) {
+          message = `No doctors found with name "${searchParams.name}"`;
+        }
+        toast.error(message);
+
+        if (onResults) {
+          onResults([]);
+        }
+      }
+
+      // Call the original onSearch callback if provided
+      if (onSearch) {
+        onSearch(doctorQuery, availabilityQuery);
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+      toast.error("Failed to search for doctors. Please try again.");
+      if (onResults) {
+        onResults([]);
+      }
+    } finally {
+      setIsSearching(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !isSearching) {
       handleSearch();
     }
   };
@@ -60,6 +148,11 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
     setAvailabilityQuery(date.toLocaleDateString());
     setShowCalendar(false);
     setFocusedSection(null);
+  };
+
+  const clearDateSelection = () => {
+    setSelected(undefined);
+    setAvailabilityQuery("");
   };
 
   // Generate calendar days for current view month
@@ -102,7 +195,6 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
   ];
 
   const navigateMonth = (e: React.MouseEvent, direction: "prev" | "next") => {
-    // stop the calendar from closing when navigating the months
     e.stopPropagation();
 
     const newDate = new Date(viewDate);
@@ -161,28 +253,47 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
             size={20}
             className="text-secondaryText mr-3 flex-shrink-0"
           />
-          <input
-            type="text"
-            placeholder="Search by availability"
-            value={availabilityQuery}
-            onChange={(e) => setAvailabilityQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            onClick={handleAvailabilityClick}
-            onFocus={(e) => {
-              e.stopPropagation();
-              setFocusedSection("availability");
-              setShowCalendar(true);
-            }}
-            className="w-full bg-transparent outline-none text-primaryText placeholder-secondaryText text-base cursor-pointer"
-            readOnly={showCalendar} // Prevent typing while calendar is open
-          />
+          <div className="flex items-center w-full">
+            <input
+              type="text"
+              placeholder="Select date (optional)"
+              value={availabilityQuery}
+              onChange={(e) => setAvailabilityQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              onClick={handleAvailabilityClick}
+              onFocus={(e) => {
+                e.stopPropagation();
+                setFocusedSection("availability");
+                setShowCalendar(true);
+              }}
+              className="w-full bg-transparent outline-none text-primaryText placeholder-secondaryText text-base cursor-pointer"
+              readOnly={showCalendar}
+            />
+            {availabilityQuery && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clearDateSelection();
+                }}
+                className="ml-2 text-secondaryText hover:text-primaryText transition-colors"
+                type="button"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
         <button
           onClick={handleSearch}
-          className="bg-primary text-white px-8 py-3 rounded-full hover:bg-opacity-90 transition-all duration-200 font-medium text-base flex-shrink-0"
+          disabled={isSearching}
+          className={`px-8 py-3 rounded-full font-medium text-base flex-shrink-0 transition-all duration-200 ${
+            isSearching
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : "bg-primary text-white hover:bg-opacity-90"
+          }`}
         >
-          Search
+          {isSearching ? "Searching..." : "Search"}
         </button>
       </div>
 
@@ -195,7 +306,7 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
             transform: "translateX(-15%)",
             minWidth: "320px",
           }}
-          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside calendar
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center mb-4">
             <button
@@ -245,17 +356,27 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
                 date.getMonth() === new Date().getMonth() &&
                 date.getFullYear() === new Date().getFullYear();
 
+              const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+
               return (
                 <button
                   key={`day-${date.getDate()}-${date.getMonth()}`}
                   onClick={() => handleDateSelect(date)}
                   type="button"
+                  disabled={isPast}
                   className={`
                     p-2 text-sm rounded transition-all duration-150
                     ${
+                      isPast
+                        ? "opacity-50 cursor-not-allowed text-gray-400"
+                        : ""
+                    }
+                    ${
                       isSelected
                         ? "bg-primary text-white hover:bg-primary/90"
-                        : "text-gray-700 hover:bg-gray-100"
+                        : !isPast
+                        ? "text-gray-700 hover:bg-gray-100"
+                        : ""
                     }
                     ${
                       isToday && !isSelected
@@ -268,6 +389,11 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({ onSearch }) => {
                 </button>
               );
             })}
+          </div>
+
+          <div className="mt-3 text-xs text-secondaryText text-center">
+            {!selected && "Select a date to search availability"}
+            {selected && `Selected: ${selected.toLocaleDateString()}`}
           </div>
         </div>
       )}

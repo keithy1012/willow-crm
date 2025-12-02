@@ -17,4 +17,7 @@ export const doctorService = {
       count: number;
       doctors: DoctorSearchResult[];
     }>(`/doctors/search?name=${name}`),
+
+  getByUserId: (userId: string) =>
+    apiClient.get<Doctor>(`/doctors/user/${userId}`),
 };

@@ -139,8 +139,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       ws.current.onerror = (error) => {
         console.error("WebSocket error:", error);
         setIsConnected(false);
-        // Load data via HTTP as fallback
-        refreshConversations();
       };
 
       ws.current.onclose = () => {
@@ -155,8 +153,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     } catch (error) {
       console.error("Failed to connect:", error);
       setIsConnected(false);
-      // Load data via HTTP as fallback
-      refreshConversations();
     }
   }, [token, refreshConversations]);
 

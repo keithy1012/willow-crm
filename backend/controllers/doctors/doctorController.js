@@ -154,3 +154,37 @@ export const createDoctorFromData = async (doctorData) => {
 
   return { savedUser, savedDoctor };
 };
+
+// backend/controllers/doctors/doctorController.js
+export const getDoctorByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find doctor by user reference and populate user data
+    let doctor = await Doctor.findOne({ user: userId }).populate("user");
+
+    // If no doctor record exists, create one
+    if (!doctor) {
+      const user = await User.findById(userId);
+      if (!user || user.role !== "Doctor") {
+        return res.status(404).json({ error: "User is not a doctor" });
+      }
+
+      // Create doctor record matching your type
+      doctor = new Doctor({
+        user: userId,
+        bioContent: "",
+        education: "",
+        graduationDate: new Date(),
+        speciality: "General Practice", // Default
+      });
+
+      await doctor.save();
+      await doctor.populate("user");
+    }
+
+    return res.json(doctor);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
