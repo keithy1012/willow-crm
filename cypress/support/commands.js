@@ -58,3 +58,13 @@ Cypress.Commands.add('createAndLogin', (user) => {
 		return cy.apiLogin(user.email, user.password);
 	});
 });
+
+// Create a patient (user + patient record) via API
+Cypress.Commands.add('createPatientAccount', (patient) => {
+	return cy.request({
+		method: 'POST',
+		url: `${API_BASE}/patients`,
+		body: patient,
+		failOnStatusCode: false,
+	});
+});
