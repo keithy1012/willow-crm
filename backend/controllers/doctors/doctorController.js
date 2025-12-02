@@ -221,16 +221,20 @@ export const getDoctorsBySpeciality = async (req, res) => {
 };
 
 // Creates a Doctor from the Doctor Acocunt Creation Ticket
-export const createDoctorFromData = async (doctorData) => {
-  const ip = getClientIp(req);
-  // Create a user entry first
+// Creates a Doctor from the Doctor Account Creation Ticket
+export const createDoctorFromData = async (
+  doctorData,
+  ip = null,
+  userId = null
+) => {
   try {
     logEvent(
       "Doctor",
       `Doctor creation from data initiated - Email: ${doctorData.email}, Username: ${doctorData.username}`,
-      req.user?._id,
+      userId,
       ip
     );
+
     const user = new User({
       firstName: doctorData.firstName,
       lastName: doctorData.lastName,
@@ -242,6 +246,7 @@ export const createDoctorFromData = async (doctorData) => {
       profilePic: doctorData.profilePic,
       role: "Doctor",
     });
+
     const savedUser = await user.save();
     logEvent(
       "Doctor",
@@ -249,7 +254,7 @@ export const createDoctorFromData = async (doctorData) => {
       savedUser._id,
       ip
     );
-    // Create the doctor entry and link to the user
+
     const doctor = new Doctor({
       user: savedUser._id,
       bioContent: doctorData.bioContent,
@@ -258,6 +263,7 @@ export const createDoctorFromData = async (doctorData) => {
       speciality: doctorData.speciality,
       availability: doctorData.availability,
     });
+
     const savedDoctor = await doctor.save();
     logEvent(
       "Doctor",
@@ -265,15 +271,16 @@ export const createDoctorFromData = async (doctorData) => {
       savedUser._id,
       ip
     );
+
     return { savedUser, savedDoctor };
   } catch (error) {
     logEvent(
       "Doctor",
       `Doctor creation from data error - Email: ${doctorData?.email}, Error: ${error.message}`,
-      req.user?._id,
+      userId,
       ip
     );
-    return res.status(500).json({ error: err.message });
+    throw error; // Re-throw so the caller can handle it
   }
 };
 

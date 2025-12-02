@@ -602,3 +602,141 @@
 2025-12-02T23:10:22.074Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
 2025-12-02T23:10:22.075Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
 2025-12-02T23:10:22.081Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:14:37.489Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:15:31.074Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:15:42.013Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.015Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.016Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.103Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.106Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.117Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.201Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.226Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.228Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.293Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.320Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:15:42.322Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:01.478Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:01.570Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:01.571Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:01.622Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:01.713Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:01.713Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:02.442Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:02.533Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:02.534Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:03.374Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:03.465Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:03.466Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:08.849Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:08.940Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:08.940Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:09.625Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:09.718Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:16:09.719Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:38.292Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:20:41.343Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.345Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.351Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.433Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.436Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.442Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.525Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.526Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.534Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.613Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.617Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:41.635Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:49.947Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:50.039Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:20:50.039Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:52.020Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:22:54.373Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.376Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.383Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.465Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.472Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.476Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.564Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.566Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.569Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.652Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.657Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:54.661Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:56.269Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:56.362Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:22:56.363Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:10.427Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:23:13.262Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.263Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.281Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.357Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.360Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.373Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.452Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.453Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.465Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.539Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.545Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:13.555Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:15.110Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:15.198Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:23:15.199Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:05.247Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:24:07.489Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.492Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.495Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.578Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.581Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.594Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.670Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.687Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.759Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.781Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:07.978Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:08.066Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:10.387Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:10.482Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:10.483Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:26.663Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:24:29.477Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.479Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.479Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.568Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.571Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.574Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.663Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.664Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.665Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.751Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.755Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:29.879Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:31.381Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:31.473Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:24:31.475Z,DoctorTicket,Approve doctor ticket error - Ticket ID: 692e3bf3f971617d8ff041ee; Error: req is not defined,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:30.520Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:26:32.827Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:32.828Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:32.830Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:32.924Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:32.928Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:32.930Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:33.020Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:33.024Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:33.025Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:33.111Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:33.113Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:33.114Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.296Z,DoctorTicket,Approve doctor ticket initiated - Ticket ID: 692e3bf3f971617d8ff041ee; Reviewer: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.387Z,DoctorTicket,Creating doctor account from ticket - Ticket ID: 692e3bf3f971617d8ff041ee; Email: test.doctor@example.com; Name: Test Doctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.387Z,Doctor,Doctor creation from data initiated - Email: test.doctor@example.com; Username: testdoctor,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.551Z,Doctor,User created from data - User ID: 692f75aa2f53dc03814723c7; Email: test.doctor@example.com,692f75aa2f53dc03814723c7,127.0.0.1
+2025-12-02T23:26:34.645Z,Doctor,Doctor created from data - Doctor ID: 692f75aa2f53dc03814723c9; User ID: 692f75aa2f53dc03814723c7; Speciality: General Practice,692f75aa2f53dc03814723c7,127.0.0.1
+2025-12-02T23:26:34.645Z,DoctorTicket,Doctor account created - User ID: 692f75aa2f53dc03814723c7; Doctor ID: 692f75aa2f53dc03814723c9; Email: test.doctor@example.com,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.738Z,DoctorTicket,Doctor ticket approved successfully - Ticket ID: 692e3bf3f971617d8ff041ee; Doctor ID: 692f75aa2f53dc03814723c9; User ID: 692f75aa2f53dc03814723c7; Reviewer: 690fef142edfbde4a204d7f6; Name: Test Doctor; Specialty: General Practice,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.833Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.834Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.835Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.926Z,DoctorTicket,Pending doctor tickets retrieved - Count: 17,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.927Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:26:34.928Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1

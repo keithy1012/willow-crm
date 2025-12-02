@@ -151,7 +151,11 @@ export const approveTicket = async (req, res) => {
       speciality: ticket.speciality,
     };
 
-    const { savedUser, savedDoctor } = await createDoctorFromData(doctorData);
+    const { savedUser, savedDoctor } = await createDoctorFromData(
+      doctorData,
+      ip,
+      req.user?._id
+    );
 
     logEvent(
       "DoctorTicket",
