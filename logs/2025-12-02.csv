@@ -31,3 +31,574 @@
 2025-12-02T23:07:11.594Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
 2025-12-02T23:07:45.417Z,BugTicket,Create ticket initiated - Submitter: 6910456a20ff4f26dc0eb70f; Title: here is a bug!!!!,6910456a20ff4f26dc0eb70f,127.0.0.1
 2025-12-02T23:07:45.524Z,BugTicket,Ticket created successfully - Ticket ID: 692f7141c6b986152902f2bf; Title: here is a bug!!!!; Submitter: 6910456a20ff4f26dc0eb70f; Status: Pending,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-02T23:09:56.826Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T23:10:03.983Z,User,Login attempt initiated - Email: test@gmail.com,N/A,127.0.0.1
+2025-12-02T23:10:04.167Z,User,Login successful - User ID: 690fef142edfbde4a204d7f6; Email: test@gmail.com; Role: Ops,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.281Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.286Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.287Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.371Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.376Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.377Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.462Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.477Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.479Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.551Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.569Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.570Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.654Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.672Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.673Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.742Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.761Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.764Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.833Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.853Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.855Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.924Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.977Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:04.986Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.055Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.077Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.078Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.142Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.165Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.170Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.236Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.254Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.264Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.324Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.343Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.353Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.414Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.432Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.442Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.502Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.519Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.530Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.632Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.633Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.633Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.719Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.719Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.722Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.807Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.808Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.810Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.894Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.902Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.903Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.986Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.992Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:05.994Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.075Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.082Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.083Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.164Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.170Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.172Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.252Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.257Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.260Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.340Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.346Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.350Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.490Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.491Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.493Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.581Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.583Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.585Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.669Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.670Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.674Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.758Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.759Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.761Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.845Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.846Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.851Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.934Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.935Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:06.951Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.022Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.024Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.043Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.111Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.113Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.133Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.199Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.201Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.222Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.289Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.290Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.311Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.377Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.377Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.400Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.465Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.466Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.493Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.553Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.559Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.584Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.645Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.652Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.676Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.732Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.740Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.764Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.820Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.828Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.854Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.908Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.916Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.944Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:07.998Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.005Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.033Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.086Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.091Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.123Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.176Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.180Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.213Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.264Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.267Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.302Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.352Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.356Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.393Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.440Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.457Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.491Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.532Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.549Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.584Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.619Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.636Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.675Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.707Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.725Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.763Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.795Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.812Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.854Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.883Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.901Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.944Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.971Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:08.988Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.036Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.061Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.080Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.130Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.148Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.168Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.220Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.236Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.256Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.311Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.325Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.344Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.402Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.428Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.434Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.497Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.520Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.521Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.593Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.610Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.611Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.684Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.697Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.699Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.775Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.785Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.787Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.865Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.873Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.874Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.955Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.961Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:09.963Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.047Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.048Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.050Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.141Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.142Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.143Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.230Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.231Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.232Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.319Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.321Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.322Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.414Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.415Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.416Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.506Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.507Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.509Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.629Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.630Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.631Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.720Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.721Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.723Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.807Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.808Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.812Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.896Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.897Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.903Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.984Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:10.985Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.060Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.143Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.144Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.151Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.232Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.233Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.241Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.325Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.326Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.330Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.414Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.414Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.420Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.502Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.504Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.510Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.590Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.592Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.600Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.680Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.682Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.690Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.768Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.770Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.779Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.858Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.860Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.869Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.946Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.947Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:11.959Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.040Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.040Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.049Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.127Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.128Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.139Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.216Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.217Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.229Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.303Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.305Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.318Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.393Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.395Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.408Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.481Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.483Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.498Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.571Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.571Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.589Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.659Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.660Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.678Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.752Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.753Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.769Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.841Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.841Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.860Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.930Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.930Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:12.950Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.021Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.022Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.039Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.110Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.126Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.198Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.213Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.256Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.350Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.354Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.355Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.442Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.442Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.442Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.549Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.551Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.555Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.637Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.638Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.642Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.727Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.732Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.733Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.816Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.820Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.820Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.905Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.911Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.912Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:13.998Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.000Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.081Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.170Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.174Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.174Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.259Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.262Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.264Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.348Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.355Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.357Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.442Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.446Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.534Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.540Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.623Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.629Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.728Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.753Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.820Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.842Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.848Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.911Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.930Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:14.936Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.008Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.018Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.026Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.096Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.106Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.114Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.185Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.194Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.201Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.274Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.281Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.289Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.363Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.369Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.377Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.453Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.458Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.465Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.542Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.549Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.553Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.645Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.647Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.647Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.736Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.738Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.743Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.827Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.828Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.831Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.917Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.920Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:15.926Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.007Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.009Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.014Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.096Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.098Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.104Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.185Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.186Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.192Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.275Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.276Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.280Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.364Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.367Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.369Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.454Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.457Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.458Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.541Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.545Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.547Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.632Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.638Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.636Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.721Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.731Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.730Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.818Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.823Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.825Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.907Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.922Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.922Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:16.997Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.011Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.012Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.084Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.098Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.100Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.173Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.254Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.257Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.339Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.355Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.436Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.446Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.527Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.540Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.619Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.631Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.663Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.708Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.758Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.761Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.803Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.847Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.856Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.894Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.941Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.952Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:17.988Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.031Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.043Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.079Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.125Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.136Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.174Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.213Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.225Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.264Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.301Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.313Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.352Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.390Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.406Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.442Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.483Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.499Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.534Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.574Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.588Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.624Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.671Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.677Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.720Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.761Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.767Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.809Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.851Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.856Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.901Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.939Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.956Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:18.992Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.038Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.047Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.085Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.125Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.147Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.184Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.224Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.235Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.276Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.311Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.337Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.364Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.399Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.427Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.454Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.487Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.519Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.542Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.577Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.608Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.632Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.665Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.697Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.719Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.753Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.786Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.809Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.840Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.875Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.897Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.929Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.964Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:19.987Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.016Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.052Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.075Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.105Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.141Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.165Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.192Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.230Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.253Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.280Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.319Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.347Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.368Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.409Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.434Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.456Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.498Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.524Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.557Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.612Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.645Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.702Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.716Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.743Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.790Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.817Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.835Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.880Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.907Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.923Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.967Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:20.995Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.010Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.058Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.084Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.098Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.157Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.173Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.186Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.247Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.261Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.274Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.337Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.350Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.365Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.429Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.439Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.452Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.522Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.528Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.540Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.619Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.620Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.639Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.707Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.708Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.727Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.798Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.800Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.816Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.894Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.895Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.905Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.983Z,DoctorTicket,Pending doctor tickets retrieved - Count: 18,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.986Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:21.993Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:22.074Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:22.075Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-02T23:10:22.081Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
