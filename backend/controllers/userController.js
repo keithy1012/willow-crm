@@ -1,7 +1,8 @@
 import User from "../models/users/User.js";
 import { generateToken } from "../middleware/authentication.js";
+import { logEvent } from "../utils/logger.js";
 
-// POST /api/users/register - Register a new user
+// Register a new user
 export const register = async (req, res) => {
   try {
     const {
@@ -15,9 +16,17 @@ export const register = async (req, res) => {
       profilePic,
       role,
     } = req.body;
+    logEvent(
+      "User",
+      `Registration initiated - Email: ${email}, Username: ${username}, Role: ${role}`
+    );
 
     // Validate required fields
     if (!firstName || !lastName || !email || !password || !role) {
+      logEvent(
+        "User",
+        `Registration failed - Missing required fields - Email: ${email}`
+      );
       return res.status(400).json({
         error:
           "Missing required fields: firstName, lastName, email, password, role",
@@ -27,6 +36,10 @@ export const register = async (req, res) => {
     // Validate role
     const validRoles = ["Doctor", "Patient", "Ops", "IT", "Finance"];
     if (!validRoles.includes(role)) {
+      logEvent(
+        "User",
+        `Registration failed - Invalid role: ${role} - Email: ${email}`
+      );
       return res.status(400).json({
         error:
           "Invalid role. Must be one of: Doctor, Patient, Ops, IT, Finance",
@@ -36,6 +49,7 @@ export const register = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      logEvent("User", `Registration failed - Email already exists: ${email}`);
       return res
         .status(409)
         .json({ error: "User with this email already exists" });
@@ -56,6 +70,11 @@ export const register = async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(user._id);
+    logEvent(
+      "User",
+      `Registration successful - User ID: ${user._id}, Email: ${email}, Username: ${username}, Role: ${role}, Name: ${firstName} ${lastName}`,
+      user._id
+    );
 
     res.status(201).json({
       success: true,
@@ -64,19 +83,32 @@ export const register = async (req, res) => {
     });
   } catch (err) {
     if (err.code === 11000) {
+      logEvent(
+        "User",
+        `Registration failed - Duplicate field value - Email: ${req.body?.email}, Error: ${err.message}`
+      );
       return res.status(409).json({ error: "Duplicate field value entered" });
     }
+    logEvent(
+      "User",
+      `Registration error - Email: ${req.body?.email}, Error: ${err.message}`
+    );
     res.status(500).json({ error: err.message });
   }
 };
 
-// POST /api/users/login - Login user
+// Login user
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    logEvent("User", `Login attempt initiated - Email: ${email}`);
 
     // Validate input
     if (!email || !password) {
+      logEvent(
+        "User",
+        `Login failed - Missing credentials - Email: ${email || "not provided"}`
+      );
       return res
         .status(400)
         .json({ error: "Please provide email and password" });
@@ -84,19 +116,29 @@ export const login = async (req, res) => {
 
     // Find user and include password field (since it's excluded by default)
     const user = await User.findOne({ email }).select("+password");
-
     if (!user) {
+      logEvent("User", `Login failed - User not found - Email: ${email}`);
       return res.status(401).json({ error: "Invalid credentials - No User" });
     }
 
     // Check if password matches
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
+      logEvent(
+        "User",
+        `Login failed - Incorrect password - Email: ${email}, User ID: ${user._id}`
+      );
       return res.status(401).json({ error: "Incorrect Password" });
     }
 
     // Generate JWT token
     const token = generateToken(user._id);
+
+    logEvent(
+      "User",
+      `Login successful - User ID: ${user._id}, Email: ${email}, Role: ${user.role}`,
+      user._id
+    );
 
     res.status(200).json({
       success: true,
@@ -104,22 +146,46 @@ export const login = async (req, res) => {
       user: user.toJSON(),
     });
   } catch (err) {
+    logEvent(
+      "User",
+      `Login error - Email: ${req.body?.email}, Error: ${err.message}`
+    );
     res.status(500).json({ error: err.message });
   }
 };
 
-// GET /api/users/me - Get current user profile (protected)
+// Get current user profile (protected)
 export const getCurrentUser = async (req, res) => {
   try {
+    logEvent(
+      "User",
+      `Get current user initiated - User ID: ${req.user._id}`,
+      req.user?._id
+    );
     const user = await User.findById(req.user._id);
     if (!user) {
+      logEvent(
+        "User",
+        `Get current user failed - User ID ${req.user._id} not found`,
+        req.user?._id
+      );
       return res.status(404).json({ error: "User not found" });
     }
+    logEvent(
+      "User",
+      `Current user retrieved - User ID: ${user._id}, Email: ${user.email}, Role: ${user.role}`,
+      req.user?._id
+    );
     res.status(200).json({
       success: true,
       user: user.toJSON(),
     });
   } catch (err) {
+    logEvent(
+      "User",
+      `Get current user error - User ID: ${req.user?._id}, Error: ${err.message}`,
+      req.user?._id
+    );
     res.status(500).json({ error: err.message });
   }
 };
@@ -127,20 +193,36 @@ export const getCurrentUser = async (req, res) => {
 // GET /api/users/email-check?email=...
 export const checkEmail = async (req, res) => {
   const email = req.query.email;
+  logEvent("User", `Email check initiated - Email: ${email}`, req.user?._id);
 
   if (!email) {
+    logEvent("User", "Email check failed - Email not provided", req.user?._id);
     return res.status(400).json({ error: "Email is required" });
   }
 
   try {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (user) {
+      logEvent(
+        "User",
+        `Email check completed - Email: ${email}, Exists: true`,
+        req.user?._id
+      );
       return res.json({ exists: true });
     } else {
+      logEvent(
+        "User",
+        `Email check completed - Email: ${email}, Exists: false`,
+        req.user?._id
+      );
       return res.json({ exists: false });
     }
   } catch (error) {
-    console.error("Error checking email:", error);
+    logEvent(
+      "User",
+      `Email check error - Email: ${email}, Error: ${error.message}`,
+      req.user?._id
+    );
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -149,20 +231,21 @@ export const checkEmail = async (req, res) => {
 export const searchUsers = async (req, res) => {
   try {
     const { query } = req.query;
+    const currentUserId = req.user?._id || req.userId;
 
-    console.log("Search request for query:", query);
-    console.log("Current user:", req.user?._id || req.userId);
+    logEvent(
+      "User",
+      `User search initiated - Query: ${query}, Requested By: ${currentUserId}`,
+      currentUserId
+    );
 
     // Require at least 2 characters to search
     if (!query || query.length < 2) {
       return res.json({ success: true, users: [] });
     }
 
-    // Get the current user ID from the auth middleware
-    const currentUserId = req.user?._id || req.userId;
-
     if (!currentUserId) {
-      console.error("No user ID found in request");
+      logEvent("User", "User search failed - User not authenticated");
       return res.status(401).json({ error: "User not authenticated" });
     }
 
@@ -177,7 +260,11 @@ export const searchUsers = async (req, res) => {
       ],
     };
 
-    console.log("Searching with criteria:", searchCriteria);
+    logEvent(
+      "User",
+      `User search initiated - Criteria: ${searchCriteria}`,
+      currentUserId
+    );
 
     // Find matching users
     const users = await User.find(searchCriteria)
@@ -187,7 +274,11 @@ export const searchUsers = async (req, res) => {
       .limit(20)
       .sort({ isOnline: -1, lastActive: -1 });
 
-    console.log(`Found ${users.length} users`);
+    logEvent(
+      "User",
+      `User search  - Found: ${users.length} users`,
+      currentUserId
+    );
 
     // Transform the results
     const transformedUsers = users.map((user) => ({
@@ -203,13 +294,22 @@ export const searchUsers = async (req, res) => {
       lastActive: user.lastActive,
     }));
 
+    logEvent(
+      "User",
+      `User search completed - Query: ${query}, Results: ${transformedUsers.length}`,
+      currentUserId
+    );
     res.json({
       success: true,
       count: transformedUsers.length,
       users: transformedUsers,
     });
   } catch (error) {
-    console.error("User search error:", error);
+    logEvent(
+      "User",
+      `User search error - Query: ${req.query?.query}, Error: ${error.message}`,
+      req.user?._id || req.userId
+    );
     res.status(500).json({
       error: "Search failed",
       details: error.message,
@@ -221,10 +321,22 @@ export const searchUsersByRole = async (req, res) => {
   try {
     const { role, query } = req.query;
     const currentUserId = req.user?._id || req.userId;
+    logEvent(
+      "User",
+      `Role-based search initiated - Role: ${role || "all"}, Query: ${
+        query || "none"
+      }, Requested By: ${currentUserId}`,
+      currentUserId
+    );
 
     // Validate role if provided
     const validRoles = ["Doctor", "Patient", "Ops", "IT", "Finance"];
     if (role && !validRoles.includes(role)) {
+      logEvent(
+        "User",
+        `Role-based search failed - Invalid role: ${role}`,
+        currentUserId
+      );
       return res.status(400).json({
         error: `Invalid role. Must be one of: ${validRoles.join(", ")}`,
       });
@@ -254,7 +366,13 @@ export const searchUsersByRole = async (req, res) => {
       .select("firstName lastName username email role profilePic isOnline")
       .limit(20)
       .sort({ isOnline: -1, firstName: 1 });
-
+    logEvent(
+      "User",
+      `Role-based search completed - Role: ${role || "all"}, Query: ${
+        query || "none"
+      }, Results: ${users.length}`,
+      currentUserId
+    );
     res.json({
       success: true,
       count: users.length,
@@ -269,7 +387,11 @@ export const searchUsersByRole = async (req, res) => {
       })),
     });
   } catch (error) {
-    console.error("Role-based search error:", error);
+    logEvent(
+      "User",
+      `Role-based search error - Role: ${req.query?.role}, Query: ${req.query?.query}, Error: ${error.message}`,
+      req.user?._id || req.userId
+    );
     res.status(500).json({
       error: "Search failed",
       details: error.message,
@@ -281,14 +403,29 @@ export const searchUsersByRole = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-
+    logEvent(
+      "User",
+      `Get user by ID initiated - Target User ID: ${id}`,
+      req.user?._id
+    );
     const user = await User.findById(id).select(
       "firstName lastName username email role profilePic isOnline lastActive"
     );
 
     if (!user) {
+      logEvent(
+        "User",
+        `Get user by ID failed - User ID ${id} not found`,
+        req.user?._id
+      );
       return res.status(404).json({ error: "User not found" });
     }
+
+    logEvent(
+      "User",
+      `User retrieved - User ID: ${id}, Email: ${user.email}, Role: ${user.role}`,
+      req.user?._id
+    );
 
     res.json({
       success: true,
@@ -304,7 +441,11 @@ export const getUserById = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get user error:", error);
+    logEvent(
+      "User",
+      `Get user by ID error - User ID: ${req.params?.id}, Error: ${error.message}`,
+      req.user?._id
+    );
     res.status(500).json({
       error: "Failed to get user",
       details: error.message,
