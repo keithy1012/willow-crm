@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { logEvent } from "../utils/logger.js";
+import { logEvent, getClientIp } from "../utils/logger.js";
 
 const connectDB = async () => {
   try {
@@ -12,6 +12,7 @@ const connectDB = async () => {
     logEvent(
       "MongoDB Connection",
       `Server successfully connected to MongoDB`,
+      `SERVER`,
       `SERVER`
     );
   } catch (err) {

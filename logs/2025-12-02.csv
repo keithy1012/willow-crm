@@ -1,3 +1,27 @@
-timestamp,event_type,message,user_id
-2025-12-02T17:39:28.588Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER
-2025-12-02T17:40:02.493Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER
+timestamp,event_type,message,user_id,ip_address
+2025-12-02T21:30:29.909Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T21:30:38.932Z,User,Login error - Email: mimi@gmail.com; Error: ip is not defined,N/A,N/A
+2025-12-02T21:31:23.840Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T21:31:30.929Z,User,Login attempt initiated - Email: mimi@gmail.com,::1,N/A
+2025-12-02T21:31:31.118Z,User,Login successful - User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com; Role: Patient,6910456a20ff4f26dc0eb70f,N/A
+2025-12-02T21:31:31.143Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:32:47.025Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T21:32:48.975Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:32:55.061Z,User,Login attempt initiated - Email: mimi@gmail.com,127.0.0.1,N/A
+2025-12-02T21:32:55.255Z,User,Login successful - User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com; Role: Patient,6910456a20ff4f26dc0eb70f,N/A
+2025-12-02T21:32:55.282Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:33:08.319Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,N/A,N/A
+2025-12-02T21:39:00.781Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-02T21:39:02.305Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:39:03.124Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:39:13.761Z,User,Login attempt initiated - Email: mimi@gmail.com,N/A,127.0.0.1
+2025-12-02T21:39:13.950Z,User,Login successful - User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com; Role: Patient,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-02T21:39:13.975Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:39:17.389Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,N/A,N/A
+2025-12-02T21:39:19.237Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,N/A,N/A
+2025-12-02T21:39:30.158Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,N/A,N/A
+2025-12-02T21:39:30.224Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,N/A,N/A
+2025-12-02T21:39:30.266Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,N/A,N/A
+2025-12-02T21:39:30.354Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,N/A
+2025-12-02T21:39:30.355Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,N/A,N/A
+2025-12-02T21:39:30.732Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456b20ff4f26dc0eb713,N/A

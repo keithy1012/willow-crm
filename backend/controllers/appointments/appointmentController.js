@@ -8,7 +8,7 @@ import {
   sendDocumentNotification,
   sendEmail,
 } from "../../utils/emailService.js";
-import { logEvent } from "../../utils/logger.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 // Helper functions
 const formatDate = (date) => {
   return date.toLocaleDateString("en-US", {

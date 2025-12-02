@@ -1,9 +1,11 @@
 import User from "../models/users/User.js";
 import { generateToken } from "../middleware/authentication.js";
-import { logEvent } from "../utils/logger.js";
+import { logEvent, getClientIp } from "../utils/logger.js";
+import { get } from "mongoose";
 
 // Register a new user
 export const register = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const {
       firstName,
@@ -18,14 +20,18 @@ export const register = async (req, res) => {
     } = req.body;
     logEvent(
       "User",
-      `Registration initiated - Email: ${email}, Username: ${username}, Role: ${role}`
+      `Registration initiated - Email: ${email}, Username: ${username}, Role: ${role}`,
+      "N/A",
+      ip
     );
 
     // Validate required fields
     if (!firstName || !lastName || !email || !password || !role) {
       logEvent(
         "User",
-        `Registration failed - Missing required fields - Email: ${email}`
+        `Registration failed - Missing required fields - Email: ${email}`,
+        "N/A",
+        ip
       );
       return res.status(400).json({
         error:
@@ -38,7 +44,9 @@ export const register = async (req, res) => {
     if (!validRoles.includes(role)) {
       logEvent(
         "User",
-        `Registration failed - Invalid role: ${role} - Email: ${email}`
+        `Registration failed - Invalid role: ${role} - Email: ${email}`,
+        "N/A",
+        ip
       );
       return res.status(400).json({
         error:
@@ -49,7 +57,12 @@ export const register = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      logEvent("User", `Registration failed - Email already exists: ${email}`);
+      logEvent(
+        "User",
+        `Registration failed - Email already exists: ${email}`,
+        "N/A",
+        ip
+      );
       return res
         .status(409)
         .json({ error: "User with this email already exists" });
@@ -73,7 +86,8 @@ export const register = async (req, res) => {
     logEvent(
       "User",
       `Registration successful - User ID: ${user._id}, Email: ${email}, Username: ${username}, Role: ${role}, Name: ${firstName} ${lastName}`,
-      user._id
+      user._id,
+      ip
     );
 
     res.status(201).json({
@@ -85,13 +99,17 @@ export const register = async (req, res) => {
     if (err.code === 11000) {
       logEvent(
         "User",
-        `Registration failed - Duplicate field value - Email: ${req.body?.email}, Error: ${err.message}`
+        `Registration failed - Duplicate field value - Email: ${req.body?.email}, Error: ${err.message}`,
+        "N/A",
+        ip
       );
       return res.status(409).json({ error: "Duplicate field value entered" });
     }
     logEvent(
       "User",
-      `Registration error - Email: ${req.body?.email}, Error: ${err.message}`
+      `Registration error - Email: ${req.body?.email}, Error: ${err.message}`,
+      "N/A",
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -99,15 +117,20 @@ export const register = async (req, res) => {
 
 // Login user
 export const login = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { email, password } = req.body;
-    logEvent("User", `Login attempt initiated - Email: ${email}`);
+    logEvent("User", `Login attempt initiated - Email: ${email}`, "N/A", ip);
 
     // Validate input
     if (!email || !password) {
       logEvent(
         "User",
-        `Login failed - Missing credentials - Email: ${email || "not provided"}`
+        `Login failed - Missing credentials - Email: ${
+          email || "not provided"
+        }`,
+        "N/A",
+        ip
       );
       return res
         .status(400)
@@ -117,7 +140,12 @@ export const login = async (req, res) => {
     // Find user and include password field (since it's excluded by default)
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      logEvent("User", `Login failed - User not found - Email: ${email}`);
+      logEvent(
+        "User",
+        `Login failed - User not found - Email: ${email}`,
+        "N/A",
+        ip
+      );
       return res.status(401).json({ error: "Invalid credentials - No User" });
     }
 
@@ -126,7 +154,9 @@ export const login = async (req, res) => {
     if (!isPasswordValid) {
       logEvent(
         "User",
-        `Login failed - Incorrect password - Email: ${email}, User ID: ${user._id}`
+        `Login failed - Incorrect password - Email: ${email}, User ID: ${user._id}`,
+        "N/A",
+        ip
       );
       return res.status(401).json({ error: "Incorrect Password" });
     }
@@ -137,7 +167,8 @@ export const login = async (req, res) => {
     logEvent(
       "User",
       `Login successful - User ID: ${user._id}, Email: ${email}, Role: ${user.role}`,
-      user._id
+      user._id,
+      ip
     );
 
     res.status(200).json({
@@ -148,7 +179,9 @@ export const login = async (req, res) => {
   } catch (err) {
     logEvent(
       "User",
-      `Login error - Email: ${req.body?.email}, Error: ${err.message}`
+      `Login error - Email: ${req.body?.email}, Error: ${err.message}`,
+      "N/A",
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -156,25 +189,29 @@ export const login = async (req, res) => {
 
 // Get current user profile (protected)
 export const getCurrentUser = async (req, res) => {
+  ip = getClientIp(req);
   try {
     logEvent(
       "User",
       `Get current user initiated - User ID: ${req.user._id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     const user = await User.findById(req.user._id);
     if (!user) {
       logEvent(
         "User",
         `Get current user failed - User ID ${req.user._id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "User not found" });
     }
     logEvent(
       "User",
       `Current user retrieved - User ID: ${user._id}, Email: ${user.email}, Role: ${user.role}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(200).json({
       success: true,
@@ -184,7 +221,8 @@ export const getCurrentUser = async (req, res) => {
     logEvent(
       "User",
       `Get current user error - User ID: ${req.user?._id}, Error: ${err.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({ error: err.message });
   }
@@ -192,11 +230,22 @@ export const getCurrentUser = async (req, res) => {
 
 // GET /api/users/email-check?email=...
 export const checkEmail = async (req, res) => {
+  ip = getClientIp(req);
   const email = req.query.email;
-  logEvent("User", `Email check initiated - Email: ${email}`, req.user?._id);
+  logEvent(
+    "User",
+    `Email check initiated - Email: ${email}`,
+    req.user?._id,
+    ip
+  );
 
   if (!email) {
-    logEvent("User", "Email check failed - Email not provided", req.user?._id);
+    logEvent(
+      "User",
+      "Email check failed - Email not provided",
+      req.user?._id,
+      ip
+    );
     return res.status(400).json({ error: "Email is required" });
   }
 
@@ -206,14 +255,16 @@ export const checkEmail = async (req, res) => {
       logEvent(
         "User",
         `Email check completed - Email: ${email}, Exists: true`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.json({ exists: true });
     } else {
       logEvent(
         "User",
         `Email check completed - Email: ${email}, Exists: false`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.json({ exists: false });
     }
@@ -221,7 +272,8 @@ export const checkEmail = async (req, res) => {
     logEvent(
       "User",
       `Email check error - Email: ${email}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -230,13 +282,15 @@ export const checkEmail = async (req, res) => {
 // GET /api/users/search?query=... - Search for users
 export const searchUsers = async (req, res) => {
   try {
+    ip = getClientIp(req);
     const { query } = req.query;
     const currentUserId = req.user?._id || req.userId;
 
     logEvent(
       "User",
       `User search initiated - Query: ${query}, Requested By: ${currentUserId}`,
-      currentUserId
+      currentUserId,
+      ip
     );
 
     // Require at least 2 characters to search
@@ -245,7 +299,12 @@ export const searchUsers = async (req, res) => {
     }
 
     if (!currentUserId) {
-      logEvent("User", "User search failed - User not authenticated");
+      logEvent(
+        "User",
+        "User search failed - User not authenticated",
+        "N/A",
+        ip
+      );
       return res.status(401).json({ error: "User not authenticated" });
     }
 
@@ -263,7 +322,8 @@ export const searchUsers = async (req, res) => {
     logEvent(
       "User",
       `User search initiated - Criteria: ${searchCriteria}`,
-      currentUserId
+      currentUserId,
+      ip
     );
 
     // Find matching users
@@ -277,7 +337,8 @@ export const searchUsers = async (req, res) => {
     logEvent(
       "User",
       `User search  - Found: ${users.length} users`,
-      currentUserId
+      currentUserId,
+      ip
     );
 
     // Transform the results
@@ -297,7 +358,8 @@ export const searchUsers = async (req, res) => {
     logEvent(
       "User",
       `User search completed - Query: ${query}, Results: ${transformedUsers.length}`,
-      currentUserId
+      currentUserId,
+      ip
     );
     res.json({
       success: true,
@@ -308,7 +370,8 @@ export const searchUsers = async (req, res) => {
     logEvent(
       "User",
       `User search error - Query: ${req.query?.query}, Error: ${error.message}`,
-      req.user?._id || req.userId
+      req.user?._id || req.userId,
+      ip
     );
     res.status(500).json({
       error: "Search failed",
@@ -319,6 +382,7 @@ export const searchUsers = async (req, res) => {
 
 export const searchUsersByRole = async (req, res) => {
   try {
+    ip = getClientIp(req);
     const { role, query } = req.query;
     const currentUserId = req.user?._id || req.userId;
     logEvent(
@@ -326,7 +390,8 @@ export const searchUsersByRole = async (req, res) => {
       `Role-based search initiated - Role: ${role || "all"}, Query: ${
         query || "none"
       }, Requested By: ${currentUserId}`,
-      currentUserId
+      currentUserId,
+      ip
     );
 
     // Validate role if provided
@@ -335,7 +400,8 @@ export const searchUsersByRole = async (req, res) => {
       logEvent(
         "User",
         `Role-based search failed - Invalid role: ${role}`,
-        currentUserId
+        currentUserId,
+        ip
       );
       return res.status(400).json({
         error: `Invalid role. Must be one of: ${validRoles.join(", ")}`,
@@ -371,7 +437,8 @@ export const searchUsersByRole = async (req, res) => {
       `Role-based search completed - Role: ${role || "all"}, Query: ${
         query || "none"
       }, Results: ${users.length}`,
-      currentUserId
+      currentUserId,
+      ip
     );
     res.json({
       success: true,
@@ -390,7 +457,8 @@ export const searchUsersByRole = async (req, res) => {
     logEvent(
       "User",
       `Role-based search error - Role: ${req.query?.role}, Query: ${req.query?.query}, Error: ${error.message}`,
-      req.user?._id || req.userId
+      req.user?._id || req.userId,
+      ip
     );
     res.status(500).json({
       error: "Search failed",
@@ -402,11 +470,13 @@ export const searchUsersByRole = async (req, res) => {
 // GET /api/users/:id - Get a specific user by ID
 export const getUserById = async (req, res) => {
   try {
+    ip = getClientIp(req);
     const { id } = req.params;
     logEvent(
       "User",
       `Get user by ID initiated - Target User ID: ${id}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     const user = await User.findById(id).select(
       "firstName lastName username email role profilePic isOnline lastActive"
@@ -416,7 +486,8 @@ export const getUserById = async (req, res) => {
       logEvent(
         "User",
         `Get user by ID failed - User ID ${id} not found`,
-        req.user?._id
+        req.user?._id,
+        ip
       );
       return res.status(404).json({ error: "User not found" });
     }
@@ -424,7 +495,8 @@ export const getUserById = async (req, res) => {
     logEvent(
       "User",
       `User retrieved - User ID: ${id}, Email: ${user.email}, Role: ${user.role}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
 
     res.json({
@@ -444,7 +516,8 @@ export const getUserById = async (req, res) => {
     logEvent(
       "User",
       `Get user by ID error - User ID: ${req.params?.id}, Error: ${error.message}`,
-      req.user?._id
+      req.user?._id,
+      ip
     );
     res.status(500).json({
       error: "Failed to get user",
