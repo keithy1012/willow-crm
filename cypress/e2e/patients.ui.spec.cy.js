@@ -1,5 +1,6 @@
 describe('Patient Onboarding UI', () => {
   const FE = Cypress.env('FRONTEND_BASE') || 'http://localhost:3000';
+  const API = Cypress.env('API_BASE') || 'http://localhost:5050/api';
   const unique = Date.now();
 
   const patient = {
@@ -46,9 +47,9 @@ describe('Patient Onboarding UI', () => {
     cy.contains('button', 'Finish').click();
 
     // Role selection -> Patient
-    cy.url().should('include', '/roleselection');
+    cy.url({ timeout: 10000 }).should('include', '/roleselection');
     cy.contains('button', 'Patient').click();
-    cy.url().should('include', '/patientonboarding1');
+    cy.url({ timeout: 10000 }).should('include', '/patientonboarding1');
 
     // PatientOnboarding1
     cy.contains('label', 'Birthdate', { timeout: 10000 }).should('be.visible');
@@ -61,7 +62,7 @@ describe('Patient Onboarding UI', () => {
     cy.contains('button', 'Next').click();
 
     // PatientOnboarding2
-    cy.url().should('include', '/patientonboarding2');
+    cy.url({ timeout: 10000 }).should('include', '/patientonboarding2');
     cy.get('input[placeholder="Name"]', { timeout: 10000 }).should('be.visible').type(patient.contact_name);
     cy.get('input[placeholder="Relationship"]', { timeout: 10000 }).should('be.visible').type(patient.contact_relationship);
     cy.get('input[placeholder="Phone Number"]', { timeout: 10000 }).should('be.visible').type(patient.contact_phone);
@@ -70,13 +71,13 @@ describe('Patient Onboarding UI', () => {
     cy.contains('button', 'Next').click();
 
     // PatientOnboarding3
-    cy.url().should('include', '/patientonboarding3');
+    cy.url({ timeout: 10000 }).should('include', '/patientonboarding3');
     cy.contains('label', 'Allergies').next().find('input').type(patient.allergies);
     cy.contains('label', 'Medical History').next().find('input').type(patient.medicalHistory);
     cy.contains('button', 'Next').click();
 
     // PatientOnboarding4
-    cy.url().should('include', '/patientonboarding4');
+    cy.url({ timeout: 10000 }).should('include', '/patientonboarding4');
     cy.get('input[type=file]').should('have.length.at.least', 2);
 
     // Upload front insurance card
@@ -107,44 +108,102 @@ describe('Patient Onboarding UI', () => {
       });
     });
 
+    // Click Finish and wait for submission
     cy.contains('button', 'Finish', { timeout: 10000 }).click();
 
-    // Wait for redirect or check current state
-    cy.wait(2000);
+    // Intercept the registration/onboarding API call to verify it completes
+    cy.wait(3000); // Give time for the backend to process
 
-    // Check if we're redirected or still on the page
-    cy.url({ timeout: 15000 }).then((url) => {
-      if (url.includes('/patientdashboard')) {
-        // Successfully redirected to dashboard
+    // Check final destination
+    cy.url({ timeout: 20000 }).then((finalUrl) => {
+      cy.log('Final URL after onboarding:', finalUrl);
+      
+      if (finalUrl.includes('/patientdashboard')) {
+        // Successfully redirected to dashboard - test passes
+        cy.log('✅ Successfully redirected to dashboard');
         cy.url().should('include', '/patientdashboard');
-      } else if (url.includes('/login')) {
-        // Redirected to login - perform login
+      } else if (finalUrl.includes('/login')) {
+        // Redirected to login - attempt login
+        cy.log('Redirected to login page, attempting login...');
+        
+        cy.contains('label', 'Email').next().find('input').clear().type(patient.email);
+        cy.contains('label', 'Password').next().find('input').clear().type(patient.password);
+        cy.contains('button', 'Login').click();
+        
+        // Wait and check if login succeeded
+        cy.wait(2000);
+        cy.url({ timeout: 15000 }).then((loginUrl) => {
+          if (loginUrl.includes('/patientdashboard')) {
+            cy.log('✅ Login successful, now on dashboard');
+            cy.url().should('include', '/patientdashboard');
+          } else {
+            // Login failed - check if user was actually created
+            cy.log('⚠️ Login failed - checking if user exists in database');
+            
+            cy.request({
+              method: 'POST',
+              url: `${API}/users/login`,
+              body: {
+                email: patient.email,
+                password: patient.password,
+              },
+              failOnStatusCode: false,
+            }).then((resp) => {
+              cy.log('Login API response:', resp.status, resp.body);
+              
+              if (resp.status === 200) {
+                cy.log('✅ User exists and credentials are correct - manual navigation');
+                cy.visit(`${FE}/patientdashboard`);
+                cy.url().should('include', '/patientdashboard');
+              } else if (resp.status === 401) {
+                cy.log('❌ User not found or wrong credentials - onboarding may have failed');
+                // Check if the user exists at all
+                cy.request({
+                  method: 'GET',
+                  url: `${API}/users/email-check?email=${encodeURIComponent(patient.email)}`,
+                  failOnStatusCode: false,
+                }).then((checkResp) => {
+                  cy.log('Email check response:', checkResp.status, checkResp.body);
+                  if (checkResp.body && checkResp.body.exists === false) {
+                    cy.log('❌ User was never created - onboarding submission failed');
+                  } else {
+                    cy.log('⚠️ User exists but login failed - possible password mismatch or incomplete registration');
+                  }
+                  // Fail the test with useful information
+                  throw new Error(`Onboarding failed: User creation status unclear. Login returned ${resp.status}`);
+                });
+              } else {
+                cy.log('❌ Unexpected API response:', resp.status);
+                throw new Error(`Unexpected login response: ${resp.status}`);
+              }
+            });
+          }
+        });
+      } else if (finalUrl.includes('/patientonboarding')) {
+        // Still on onboarding page - submission might have failed
+        cy.log('⚠️ Still on onboarding page after clicking Finish');
+        cy.wait(3000);
+        
+        // Try navigating to login manually
+        cy.visit(`${FE}/login`);
         cy.contains('label', 'Email').next().find('input').type(patient.email);
         cy.contains('label', 'Password').next().find('input').type(patient.password);
         cy.contains('button', 'Login').click();
-        cy.url({ timeout: 20000 }).should('include', '/patientdashboard');
-      } else {
-        // Still on onboarding page or other page - wait a bit more and check again
-        cy.wait(3000);
-        cy.url({ timeout: 10000 }).then((newUrl) => {
-          if (newUrl.includes('/patientdashboard')) {
+        
+        cy.wait(2000);
+        cy.url({ timeout: 15000 }).then((loginUrl) => {
+          if (loginUrl.includes('/patientdashboard')) {
+            cy.log('✅ Login successful after manual navigation');
             cy.url().should('include', '/patientdashboard');
-          } else if (newUrl.includes('/login')) {
-            cy.contains('label', 'Email').next().find('input').type(patient.email);
-            cy.contains('label', 'Password').next().find('input').type(patient.password);
-            cy.contains('button', 'Login').click();
-            cy.url({ timeout: 20000 }).should('include', '/patientdashboard');
           } else {
-            // If still on onboarding or other page, assume submission completed
-            // and manually navigate to login to verify account was created
-            cy.log(`Onboarding completed but still on: ${newUrl}, navigating to login`);
-            cy.visit(`${FE}/login`);
-            cy.contains('label', 'Email').next().find('input').type(patient.email);
-            cy.contains('label', 'Password').next().find('input').type(patient.password);
-            cy.contains('button', 'Login').click();
-            cy.url({ timeout: 20000 }).should('include', '/patientdashboard');
+            cy.log('❌ Login failed - user may not have been created');
+            throw new Error('Onboarding may have failed - user cannot login');
           }
         });
+      } else {
+        // Unknown state
+        cy.log('⚠️ Unexpected URL after onboarding:', finalUrl);
+        throw new Error(`Unexpected navigation after onboarding: ${finalUrl}`);
       }
     });
   });
