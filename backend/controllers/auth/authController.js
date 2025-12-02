@@ -54,8 +54,6 @@ export const authController = {
           .status(400)
           .json({ error: "Token and new password are required." });
       }
-      console.log("TOKEN RECEIVED:", token);
-      console.log("NEW PASSWORD:", newPassword);
       // Hash incoming token the same way we stored it
       const hashedIncoming = hashToken(token);
       if (!hashedIncoming) {
