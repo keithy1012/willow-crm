@@ -1,0 +1,3 @@
+timestamp,event_type,message,user_id
+2025-12-02T17:39:28.588Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER
+2025-12-02T17:40:02.493Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER
