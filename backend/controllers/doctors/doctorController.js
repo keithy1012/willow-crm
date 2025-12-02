@@ -1,10 +1,15 @@
-// controllers/doctorController.js
 import Doctor from "../../models/doctors/Doctor.js";
 import User from "../../models/users/User.js";
-import Availability from "../../models/doctors/Availability.js";
-
+import { logEvent } from "../../utils/logger.js";
 export const createDoctor = async (req, res) => {
   try {
+    const { email, username, firstName, lastName, speciality } = req.body;
+
+    logEvent(
+      "Doctor",
+      `Doctor creation initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}, Speciality: ${speciality}`
+    );
+
     // Step 1: Create the User directly
     const user = new User({
       firstName: req.body.firstName,
@@ -19,6 +24,11 @@ export const createDoctor = async (req, res) => {
     });
 
     const savedUser = await user.save();
+    logEvent(
+      "Doctor",
+      `User created for doctor - User ID: ${savedUser._id}, Email: ${savedUser.email}`,
+      savedUser._id
+    );
 
     // Step 2: Create the Doctor entry and link to the user
     const doctor = new Doctor({
@@ -32,6 +42,11 @@ export const createDoctor = async (req, res) => {
 
     const savedDoctor = await doctor.save();
 
+    logEvent(
+      "Doctor",
+      `Doctor profile created successfully - Doctor ID: ${savedDoctor._id}, User ID: ${savedUser._id}, Speciality: ${savedDoctor.speciality}`,
+      savedUser._id
+    );
     res.status(201).json({
       success: true,
       message: "Doctor profile and user account created successfully",
@@ -39,7 +54,10 @@ export const createDoctor = async (req, res) => {
       doctor: savedDoctor,
     });
   } catch (error) {
-    console.error("Error creating doctor:", error.message);
+    logEvent(
+      "Doctor",
+      `Doctor creation error - Email: ${req.body?.email}, Error: ${error.message}`
+    );
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -50,8 +68,10 @@ export const searchDoctorsByName = async (req, res) => {
     const { name } = req.query;
 
     if (!name) {
+      logEvent("Doctor", "Search by name failed - Name parameter missing");
       return res.status(400).json({ error: "Name parameter is required" });
     }
+    logEvent("Doctor", `Search by name initiated - Search term: ${name}`);
 
     // Find all doctors and populate user info
     const doctors = await Doctor.find()
@@ -80,12 +100,20 @@ export const searchDoctorsByName = async (req, res) => {
       speciality: doctor.speciality,
     }));
 
+    logEvent(
+      "Doctor",
+      `Search by name completed - Search term: ${name}, Results: ${result.length}`
+    );
     return res.json({
       searchTerm: name,
       count: result.length,
       doctors: result,
     });
   } catch (err) {
+    logEvent(
+      "Doctor",
+      `Search by name error - Search term: ${req.query?.name}, Error: ${err.message}`
+    );
     return res.status(500).json({ error: err.message });
   }
 };
@@ -93,12 +121,18 @@ export const searchDoctorsByName = async (req, res) => {
 // Get All Doctors
 export const getAllDoctors = async (req, res) => {
   try {
+    logEvent("Doctor", "Get all doctors initiated");
+
     const doctors = await Doctor.find().populate(
       "user",
       "firstName lastName email username gender phoneNumber profilePic"
     );
+
+    logEvent("Doctor", `All doctors retrieved - Count: ${doctors.length}`);
+
     return res.json(doctors);
   } catch (err) {
+    logEvent("Doctor", `Get all doctors error - Error: ${err.message}`);
     return res.status(500).json({ error: err.message });
   }
 };
@@ -106,21 +140,36 @@ export const getAllDoctors = async (req, res) => {
 // Get all doctors by speciality
 export const getDoctorsBySpeciality = async (req, res) => {
   try {
+    const { speciality } = req.params;
+
+    logEvent("Doctor", `Get doctors by speciality - Speciality: ${speciality}`);
+
     const doctors = await Doctor.find({
-      speciality: req.params.speciality,
+      speciality: speciality,
     }).populate(
       "user",
       "firstName lastName email username gender phoneNumber profilePic role"
     );
 
     if (!doctors || doctors.length === 0) {
+      logEvent(
+        "Doctor",
+        `No doctors found for speciality - Speciality: ${speciality}`
+      );
       return res
         .status(404)
         .json({ error: "No doctors found for this speciality" });
     }
-
+    logEvent(
+      "Doctor",
+      `Doctors by speciality retrieved - Speciality: ${speciality}, Count: ${doctors.length}`
+    );
     return res.json(doctors);
   } catch (err) {
+    logEvent(
+      "Doctor",
+      `Get doctors by speciality error - Speciality: ${req.params?.speciality}, Error: ${err.message}`
+    );
     return res.status(500).json({ error: err.message });
   }
 };
@@ -128,47 +177,81 @@ export const getDoctorsBySpeciality = async (req, res) => {
 // Creates a Doctor from the Doctor Acocunt Creation Ticket
 export const createDoctorFromData = async (doctorData) => {
   // Create a user entry first
-  const user = new User({
-    firstName: doctorData.firstName,
-    lastName: doctorData.lastName,
-    email: doctorData.email,
-    username: doctorData.username,
-    gender: doctorData.gender,
-    password: doctorData.password,
-    phoneNumber: doctorData.phoneNumber,
-    profilePic: doctorData.profilePic,
-    role: "Doctor",
-  });
-  const savedUser = await user.save();
-
-  // Create the doctor entry and link to the user
-  const doctor = new Doctor({
-    user: savedUser._id,
-    bioContent: doctorData.bioContent,
-    education: doctorData.education,
-    graduationDate: doctorData.graduationDate,
-    speciality: doctorData.speciality,
-    availability: doctorData.availability,
-  });
-  const savedDoctor = await doctor.save();
-
-  return { savedUser, savedDoctor };
+  try {
+    logEvent(
+      "Doctor",
+      `Doctor creation from data initiated - Email: ${doctorData.email}, Username: ${doctorData.username}`
+    );
+    const user = new User({
+      firstName: doctorData.firstName,
+      lastName: doctorData.lastName,
+      email: doctorData.email,
+      username: doctorData.username,
+      gender: doctorData.gender,
+      password: doctorData.password,
+      phoneNumber: doctorData.phoneNumber,
+      profilePic: doctorData.profilePic,
+      role: "Doctor",
+    });
+    const savedUser = await user.save();
+    logEvent(
+      "Doctor",
+      `User created from data - User ID: ${savedUser._id}, Email: ${savedUser.email}`,
+      savedUser._id
+    );
+    // Create the doctor entry and link to the user
+    const doctor = new Doctor({
+      user: savedUser._id,
+      bioContent: doctorData.bioContent,
+      education: doctorData.education,
+      graduationDate: doctorData.graduationDate,
+      speciality: doctorData.speciality,
+      availability: doctorData.availability,
+    });
+    const savedDoctor = await doctor.save();
+    logEvent(
+      "Doctor",
+      `Doctor created from data - Doctor ID: ${savedDoctor._id}, User ID: ${savedUser._id}, Speciality: ${savedDoctor.speciality}`,
+      savedUser._id
+    );
+    return { savedUser, savedDoctor };
+  } catch (error) {
+    logEvent(
+      "Doctor",
+      `Doctor creation from data error - Email: ${doctorData?.email}, Error: ${error.message}`
+    );
+    return res.status(500).json({ error: err.message });
+  }
 };
 
 // backend/controllers/doctors/doctorController.js
 export const getDoctorByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
+    logEvent("Doctor", `Get doctor by user ID - User ID: ${userId}`);
 
     // Find doctor by user reference and populate user data
     let doctor = await Doctor.findOne({ user: userId }).populate("user");
 
     // If no doctor record exists, create one
     if (!doctor) {
+      logEvent(
+        "Doctor",
+        `Doctor profile not found, checking user - User ID: ${userId}`
+      );
       const user = await User.findById(userId);
       if (!user || user.role !== "Doctor") {
+        logEvent(
+          "Doctor",
+          `Get doctor by user ID failed - User ${userId} is not a doctor or not found`
+        );
         return res.status(404).json({ error: "User is not a doctor" });
       }
+      logEvent(
+        "Doctor",
+        `Creating doctor profile for existing user - User ID: ${userId}`,
+        userId
+      );
 
       // Create doctor record matching your type
       doctor = new Doctor({
@@ -181,6 +264,17 @@ export const getDoctorByUserId = async (req, res) => {
 
       await doctor.save();
       await doctor.populate("user");
+      logEvent(
+        "Doctor",
+        `Doctor profile auto-created - Doctor ID: ${doctor._id}, User ID: ${userId}, Default speciality: General Practice`,
+        userId
+      );
+    } else {
+      logEvent(
+        "Doctor",
+        `Doctor profile found - Doctor ID: ${doctor._id}, User ID: ${userId}, Speciality: ${doctor.speciality}`,
+        userId
+      );
     }
 
     return res.json(doctor);
