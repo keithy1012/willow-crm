@@ -42,8 +42,7 @@ const FinanceSidebar: React.FC<FinanceSidebarProps> = () => {
   ];
 
   const bottomItems = [
-    { text: "Bug Report", icon: Bug, path: "/finance-bug-report" },
-    { text: "Help / Support", icon: Question, path: "/finance-help-support" },
+    { text: "Bug Report", icon: Bug, path: "/bug-report" },
     { text: "Logout", icon: SignOut, path: "/logout" },
   ];
 

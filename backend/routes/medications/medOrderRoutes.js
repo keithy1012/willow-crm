@@ -9,8 +9,12 @@ import {
   deleteMedorder,
   sendRefillRequest,
 } from "../../controllers/medications/medOrderController.js";
+import { authenticate } from "../../middleware/authentication.js";
 
 const router = express.Router();
+
+// Apply authenticate middleware to all routes
+router.use(authenticate);
 
 // Create a new medication order
 router.post("/", createMedorder);

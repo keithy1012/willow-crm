@@ -12,9 +12,15 @@ import ChatModal from "components/modal/ChatsModal";
 import { MedorderResponse } from "api/types/medorder.types";
 import { AvailableDoctorResult, TimeSlot } from "api/types/availability.types";
 import toast from "react-hot-toast";
-import { patientService, medorderService, availabilityService } from "api";
+import {
+  patientService,
+  medorderService,
+  availabilityService,
+  userService,
+} from "api";
 import { appointmentService } from "api/services/appointment.service";
 import { useNavigate } from "react-router-dom";
+import { User } from "../../api/types/user.types";
 
 const Dashboard: React.FC = () => {
   // ROLE ENFORCEMENT + AUTH
@@ -242,20 +248,29 @@ const Dashboard: React.FC = () => {
       );
       if (!medication) return;
 
-      // Send refill request email
-      await fetch("http://localhost:5050/api/medorders/refill-request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          medicationName: medication.medicationName,
-          patientName: `${medication.patientID.name}`,
-          patientEmail: medication.patientID.email,
-          quantity: medication.quantity,
-          pharmacy: "Willow CRM Pharmacy",
-          lastRefillDate: medication.lastRefillDate,
-        }),
+      const patientId =
+        typeof medication.patientID === "object"
+          ? medication.patientID._id
+          : medication.patientID;
+
+      // First get the patient to get the user ID
+      const patient = await patientService.getByPatientId(patientId);
+
+      if (!patient) {
+        toast.error("Could not find patient information");
+        return;
+      }
+      const user = patient.user;
+
+      await medorderService.sendRefillRequest({
+        medicationName: medication.medicationName,
+        patientName: `${user.firstName} ${user.lastName}`,
+        patientEmail: user.email,
+        quantity: medication.quantity ?? "N/A",
+        pharmacy: "Willow CRM Pharmacy",
+        lastRefillDate: medication.lastRefillDate
+          ? new Date(medication.lastRefillDate)
+          : new Date(),
       });
 
       toast.success("Refill request sent successfully!");
@@ -264,6 +279,7 @@ const Dashboard: React.FC = () => {
       toast.error("Failed to request refill. Please try again.");
     }
   };
+
   // Updated handleBookAppointment function in Dashboard.tsx
   const handleBookAppointment = (doctorId: string, slot: TimeSlot) => {
     const doctorData = searchResults.find(
@@ -530,7 +546,7 @@ const Dashboard: React.FC = () => {
     if (!trimmed || isBotTyping) return;
 
     await handleAskQuestion(trimmed);
-    setChatInput(""); 
+    setChatInput("");
   };
 
   const formatDate = (dateStr: string) => {

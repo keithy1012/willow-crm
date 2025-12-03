@@ -7,6 +7,7 @@ import {
   UpdateMedorderResponse,
   ProcessRefillResponse,
   DeleteMedorderResponse,
+  RefillRequestData
 } from "../types/medorder.types";
 
 export const medorderService = {
@@ -68,5 +69,10 @@ export const medorderService = {
     return await apiClient.delete<DeleteMedorderResponse>(
       `/medorders/${orderID}`
     );
+  },
+
+  // Sends a refill request
+  sendRefillRequest: async (data: RefillRequestData): Promise<void> => {
+    return await apiClient.post(`/medorders/refill-request`, data);
   },
 };

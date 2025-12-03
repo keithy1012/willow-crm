@@ -1,9 +1,12 @@
 import Medorder from "../../models/medications/MedOrder.js";
 import Patient from "../../models/patients/Patient.js";
 import Doctor from "../../models/doctors/Doctor.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
+import { sendEmail } from "../../utils/emailService.js";
 
 // Create a new medication order
 export const createMedorder = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const {
       patientID,
@@ -17,8 +20,21 @@ export const createMedorder = async (req, res) => {
       refillCount,
     } = req.body;
 
+    logEvent(
+      "Medorder",
+      `Create medication order initiated - Patient: ${patientID}, Doctor: ${doctorID}, Medication: ${medicationName}`,
+      req.user?._id,
+      ip
+    );
+
     // Validate required fields
     if (!patientID || !doctorID || !medicationName || !instruction) {
+      logEvent(
+        "Medorder",
+        `Create medication order failed - Missing required fields`,
+        req.user?._id,
+        ip
+      );
       return res.status(400).json({
         success: false,
         message: "Missing required fields",
@@ -28,6 +44,12 @@ export const createMedorder = async (req, res) => {
     // Verify patient exists
     const patient = await Patient.findById(patientID);
     if (!patient) {
+      logEvent(
+        "Medorder",
+        `Create medication order failed - Patient ${patientID} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({
         success: false,
         message: "Patient not found",
@@ -37,6 +59,12 @@ export const createMedorder = async (req, res) => {
     // Verify doctor exists
     const doctor = await Doctor.findById(doctorID);
     if (!doctor) {
+      logEvent(
+        "Medorder",
+        `Create medication order failed - Doctor ${doctorID} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({
         success: false,
         message: "Doctor not found",
@@ -63,13 +91,29 @@ export const createMedorder = async (req, res) => {
     await newMedorder.populate("patientID", "name email");
     await newMedorder.populate("doctorID", "name email specialty");
 
+    logEvent(
+      "Medorder",
+      `Medication order created successfully - Order ID: ${
+        newMedorder.orderID
+      }, Medication: ${medicationName}, Patient: ${patientID}, Doctor: ${doctorID}, Dosage: ${dosage}, Refills: ${
+        refillCount || 0
+      }`,
+      req.user?._id,
+      ip
+    );
+
     res.status(201).json({
       success: true,
       message: "Medication order created successfully",
       medorder: newMedorder,
     });
   } catch (error) {
-    console.error("Error creating medication order:", error);
+    logEvent(
+      "Medorder",
+      `Create medication order error - Patient: ${req.body?.patientID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -80,19 +124,38 @@ export const createMedorder = async (req, res) => {
 
 // Get all medication orders for a patient
 export const getMedordersByPatient = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { patientID } = req.params;
+
+    logEvent(
+      "Medorder",
+      `Get medication orders by patient initiated - Patient: ${patientID}`,
+      req.user?._id,
+      ip
+    );
 
     const medorders = await Medorder.find({ patientID })
       .populate("doctorID", "name email specialty")
       .sort({ prescribedOn: -1 });
+    logEvent(
+      "Medorder",
+      `Medication orders retrieved for patient - Patient: ${patientID}, Count: ${medorders.length}`,
+      req.user?._id,
+      ip
+    );
 
     res.status(200).json({
       success: true,
       medorders,
     });
   } catch (error) {
-    console.error("Error fetching patient medication orders:", error);
+    logEvent(
+      "Medorder",
+      `Get medication orders by patient error - Patient: ${req.params?.patientID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -103,19 +166,39 @@ export const getMedordersByPatient = async (req, res) => {
 
 // Get all medication orders prescribed by a doctor
 export const getMedordersByDoctor = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { doctorID } = req.params;
+
+    logEvent(
+      "Medorder",
+      `Get medication orders by doctor initiated - Doctor: ${doctorID}`,
+      req.user?._id,
+      ip
+    );
 
     const medorders = await Medorder.find({ doctorID })
       .populate("patientID", "name email dateOfBirth")
       .sort({ prescribedOn: -1 });
+
+    logEvent(
+      "Medorder",
+      `Medication orders retrieved for doctor - Doctor: ${doctorID}, Count: ${medorders.length}`,
+      req.user?._id,
+      ip
+    );
 
     res.status(200).json({
       success: true,
       medorders,
     });
   } catch (error) {
-    console.error("Error fetching doctor medication orders:", error);
+    logEvent(
+      "Medorder",
+      `Get medication orders by doctor error - Doctor: ${req.params?.doctorID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -126,26 +209,52 @@ export const getMedordersByDoctor = async (req, res) => {
 
 // Get a single medication order by ID
 export const getMedorderById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { orderID } = req.params;
+
+    logEvent(
+      "Medorder",
+      `Get medication order by ID initiated - Order: ${orderID}`,
+      req.user?._id,
+      ip
+    );
 
     const medorder = await Medorder.findOne({ orderID })
       .populate("patientID", "name email dateOfBirth")
       .populate("doctorID", "name email specialty");
 
     if (!medorder) {
+      logEvent(
+        "Medorder",
+        `Get medication order failed - Order ${orderID} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({
         success: false,
         message: "Medication order not found",
       });
     }
 
+    logEvent(
+      "Medorder",
+      `Medication order retrieved - Order: ${orderID}, Medication: ${medorder.medicationName}, Patient: ${medorder.patientID?._id}`,
+      req.user?._id,
+      ip
+    );
+
     res.status(200).json({
       success: true,
       medorder,
     });
   } catch (error) {
-    console.error("Error fetching medication order:", error);
+    logEvent(
+      "Medorder",
+      `Get medication order error - Order: ${req.params?.orderID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -156,9 +265,19 @@ export const getMedorderById = async (req, res) => {
 
 // Update a medication order (e.g., for refills)
 export const updateMedorder = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { orderID } = req.params;
     const updates = req.body;
+
+    logEvent(
+      "Medorder",
+      `Update medication order initiated - Order: ${orderID}, Updates: ${JSON.stringify(
+        updates
+      )}`,
+      req.user?._id,
+      ip
+    );
 
     const medorder = await Medorder.findOneAndUpdate(
       { orderID },
@@ -169,11 +288,24 @@ export const updateMedorder = async (req, res) => {
       .populate("doctorID", "name email specialty");
 
     if (!medorder) {
+      logEvent(
+        "Medorder",
+        `Update medication order failed - Order ${orderID} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({
         success: false,
         message: "Medication order not found",
       });
     }
+
+    logEvent(
+      "Medorder",
+      `Medication order updated successfully - Order: ${orderID}, Medication: ${medorder.medicationName}`,
+      req.user?._id,
+      ip
+    );
 
     res.status(200).json({
       success: true,
@@ -181,7 +313,12 @@ export const updateMedorder = async (req, res) => {
       medorder,
     });
   } catch (error) {
-    console.error("Error updating medication order:", error);
+    logEvent(
+      "Medorder",
+      `Update medication order error - Order: ${req.params?.orderID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -192,12 +329,26 @@ export const updateMedorder = async (req, res) => {
 
 // Process a refill
 export const processRefill = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { orderID } = req.params;
+
+    logEvent(
+      "Medorder",
+      `Process refill initiated - Order: ${orderID}`,
+      req.user?._id,
+      ip
+    );
 
     const medorder = await Medorder.findOne({ orderID });
 
     if (!medorder) {
+      logEvent(
+        "Medorder",
+        `Process refill failed - Order ${orderID} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({
         success: false,
         message: "Medication order not found",
@@ -205,12 +356,19 @@ export const processRefill = async (req, res) => {
     }
 
     if (medorder.refillCount <= 0) {
+      logEvent(
+        "Medorder",
+        `Process refill failed - Order ${orderID} has no refills remaining`,
+        req.user?._id,
+        ip
+      );
       return res.status(400).json({
         success: false,
         message: "No refills remaining",
       });
     }
 
+    const previousRefillCount = medorder.refillCount;
     medorder.refillCount -= 1;
     medorder.lastRefillDate = new Date();
     await medorder.save();
@@ -218,13 +376,25 @@ export const processRefill = async (req, res) => {
     await medorder.populate("patientID", "name email");
     await medorder.populate("doctorID", "name email specialty");
 
+    logEvent(
+      "Medorder",
+      `Refill processed successfully - Order: ${orderID}, Medication: ${medorder.medicationName}, Previous Refills: ${previousRefillCount}, Remaining Refills: ${medorder.refillCount}`,
+      req.user?._id,
+      ip
+    );
+
     res.status(200).json({
       success: true,
       message: "Refill processed successfully",
       medorder,
     });
   } catch (error) {
-    console.error("Error processing refill:", error);
+    logEvent(
+      "Medorder",
+      `Process refill error - Order: ${req.params?.orderID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -235,24 +405,50 @@ export const processRefill = async (req, res) => {
 
 // Delete a medication order
 export const deleteMedorder = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { orderID } = req.params;
+
+    logEvent(
+      "Medorder",
+      `Delete medication order initiated - Order: ${orderID}`,
+      req.user?._id,
+      ip
+    );
 
     const medorder = await Medorder.findOneAndDelete({ orderID });
 
     if (!medorder) {
+      logEvent(
+        "Medorder",
+        `Delete medication order failed - Order ${orderID} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({
         success: false,
         message: "Medication order not found",
       });
     }
 
+    logEvent(
+      "Medorder",
+      `Medication order deleted successfully - Order: ${orderID}, Medication: ${medorder.medicationName}, Patient: ${medorder.patientID}`,
+      req.user?._id,
+      ip
+    );
+
     res.status(200).json({
       success: true,
       message: "Medication order deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting medication order:", error);
+    logEvent(
+      "Medorder",
+      `Delete medication order error - Order: ${req.params?.orderID}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -261,20 +457,8 @@ export const deleteMedorder = async (req, res) => {
   }
 };
 
-// Add this to medorderController.js
-
-import nodemailer from "nodemailer";
-
-// Email configuration (add to your controller)
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
-
 export const sendRefillRequest = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const {
       medicationName,
@@ -284,13 +468,15 @@ export const sendRefillRequest = async (req, res) => {
       pharmacy,
       lastRefillDate,
     } = req.body;
+    logEvent(
+      "Medorder",
+      `Send refill request initiated - Patient: ${patientName}, Medication: ${medicationName}, Pharmacy: ${pharmacy}`,
+      req.user?._id,
+      ip
+    );
 
     // Email to Willow CRM
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: "willowcrm@example.com", // Replace with your admin email
-      subject: `Medication Refill Request - ${patientName}`,
-      html: `
+    let html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #5B7B9D;">Medication Refill Request</h2>
           
@@ -320,15 +506,21 @@ export const sendRefillRequest = async (req, res) => {
             </p>
           </div>
         </div>
-      `,
-    };
+      `;
+    await sendEmail({
+      to: "willowcrm@example.com",
+      subject: `Medication Refill Request - ${patientName}`,
+      html,
+    });
 
-    // Confirmation email to patient
-    const patientMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: patientEmail,
-      subject: `Refill Request Confirmation - ${medicationName}`,
-      html: `
+    logEvent(
+      "Medorder",
+      `Admin refill request email sent - Patient: ${patientName}, Medication: ${medicationName}`,
+      req.user?._id,
+      ip
+    );
+
+    html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #5B7B9D;">Refill Request Confirmed</h2>
           
@@ -357,19 +549,38 @@ export const sendRefillRequest = async (req, res) => {
             </p>
           </div>
         </div>
-      `,
-    };
+      `;
+    // Send patient email
+    await sendEmail({
+      to: patientEmail,
+      subject: `Refill Request Confirmation - ${medicationName}`,
+      html,
+    });
+    logEvent(
+      "Medorder",
+      `Patient refill confirmation email sent - Patient: ${patientName}, Email: ${patientEmail}, Medication: ${medicationName}`,
+      req.user?._id,
+      ip
+    );
 
-    // Send both emails
-    await transporter.sendMail(adminMailOptions);
-    await transporter.sendMail(patientMailOptions);
+    logEvent(
+      "Medorder",
+      `Refill request sent successfully - Patient: ${patientName}, Medication: ${medicationName}, Quantity: ${quantity}, Pharmacy: ${pharmacy}`,
+      req.user?._id,
+      ip
+    );
 
     res.status(200).json({
       success: true,
       message: "Refill request sent successfully",
     });
   } catch (error) {
-    console.error("Error sending refill request:", error);
+    logEvent(
+      "Medorder",
+      `Send refill request error - Patient: ${req.body?.patientName}, Medication: ${req.body?.medicationName}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Failed to send refill request",

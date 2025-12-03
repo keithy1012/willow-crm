@@ -1,12 +1,10 @@
-// controllers/finance/financeController.js
 import FinanceMember from "../../models/finance/FinanceMember.js";
 import User from "../../models/users/User.js";
 import { generateToken } from "../../middleware/authentication.js";
-
-// ===== Finance Member Management =====
-
+import { getClientIp, logEvent } from "../../utils/logger.js";
 // Create new Finance member
 export const createFinanceMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const {
       firstName,
@@ -18,7 +16,12 @@ export const createFinanceMember = async (req, res) => {
       phoneNumber,
       profilePic,
     } = req.body;
-
+    logEvent(
+      "Finance",
+      `Finance member creation initiated - Email: ${email}, Username: ${username}, Name: ${firstName} ${lastName}`,
+      req.user?._id,
+      ip
+    );
     // Create user directly
     const newUser = new User({
       firstName,
@@ -33,8 +36,19 @@ export const createFinanceMember = async (req, res) => {
     });
 
     await newUser.save();
-
+    logEvent(
+      "Finance",
+      `User created for finance member - User ID: ${newUser._id}, Email: ${email}`,
+      newUser._id,
+      ip
+    );
     const financeMember = await FinanceMember.create({ user: newUser._id });
+    logEvent(
+      "Finance",
+      `Finance member created successfully - Finance ID: ${financeMember._id}, User ID: ${newUser._id}`,
+      newUser._id,
+      ip
+    );
 
     // Generate JWT token for authentication
     const token = generateToken(newUser._id);
@@ -47,7 +61,12 @@ export const createFinanceMember = async (req, res) => {
       financeMember,
     });
   } catch (error) {
-    console.error("Error creating Finance member:", error.message);
+    logEvent(
+      "Finance",
+      `Finance member creation error - Email: ${req.body?.email}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res
       .status(500)
       .json({ error: "Internal server error", details: error.message });
@@ -56,74 +75,165 @@ export const createFinanceMember = async (req, res) => {
 
 // Get all Finance members
 export const getAllFinanceMembers = async (req, res) => {
+  const ip = getClientIp(req);
   try {
+    logEvent("Finance", "Get all finance members initiated", req.user?._id, ip);
+
     const financeMembers = await FinanceMember.find().populate(
       "user",
       "-password"
     );
+
+    logEvent(
+      "Finance",
+      `All finance members retrieved - Count: ${financeMembers.length}`,
+      req.user?._id,
+      ip
+    );
+
     res.status(200).json(financeMembers);
   } catch (error) {
-    console.error("Error fetching Finance members:", error);
+    logEvent(
+      "Finance",
+      `Get all finance members error - Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
+
     res.status(500).json({ message: "Server error", error });
   }
 };
 
 // Get Finance member by ID
 export const getFinanceMemberById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const financeMember = await FinanceMember.findById(req.params.id).populate(
       "user",
       "-password"
     );
+
     if (!financeMember) {
+      logEvent(
+        "Finance",
+        `Get finance member failed - Finance member ${id} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "Finance member not found" });
     }
 
+    logEvent(
+      "Finance",
+      `Finance member retrieved - Finance ID: ${id}, User ID: ${financeMember.user?._id}`,
+      financeMember.user?._id,
+      ip
+    );
+
     res.status(200).json(financeMember);
   } catch (error) {
-    console.error("Error fetching Finance member:", error);
+    logEvent(
+      "Finance",
+      `Get finance member error - Finance ID: ${req.params?.id}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error });
   }
 };
 
 // Update Finance member
 export const updateFinanceMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const financeMember = await FinanceMember.findById(req.params.id);
     if (!financeMember) {
+      logEvent(
+        "Finance",
+        `Update failed - Finance member ${id} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "Finance member not found" });
     }
 
     const user = await User.findById(financeMember.user);
     if (!user) {
+      logEvent(
+        "Finance",
+        `Update failed - Associated user not found for Finance member ${id}`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "Associated user not found" });
     }
 
+    const updatedFields = Object.keys(req.body).filter(
+      (key) => key !== "password"
+    );
     Object.assign(user, req.body);
     await user.save();
+    logEvent(
+      "Finance",
+      `Finance member updated successfully - Finance ID: ${id}, User ID: ${
+        user._id
+      }, Updated fields: ${updatedFields.join(", ")}`,
+      user._id,
+      ip
+    );
 
     res
       .status(200)
       .json({ message: "Finance member updated successfully", user });
   } catch (error) {
-    console.error("Error updating Finance member:", error);
+    logEvent(
+      "Finance",
+      `Update finance member error - Finance ID: ${req.params?.id}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error });
   }
 };
 
 // Delete Finance member
 export const deleteFinanceMember = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    const financeMember = await FinanceMember.findById(req.params.id);
+    const { id } = req.params;
+    logEvent(
+      "Finance",
+      `Delete finance member initiated - Finance ID: ${id}`,
+      req.user?._id,
+      ip
+    );
+    const financeMember = await FinanceMember.findById(id);
     if (!financeMember) {
+      logEvent(
+        "Finance",
+        `Delete failed - Finance member ${id} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "Finance member not found" });
     }
 
     await User.findByIdAndDelete(financeMember.user);
     await financeMember.deleteOne();
+    logEvent(
+      "Finance",
+      `Finance member deleted successfully - Finance ID: ${id}, User ID: ${userId}`,
+      req.user?._id,
+      ip
+    );
     res.status(200).json({ message: "Finance member deleted successfully" });
   } catch (error) {
-    console.error("Error deleting Finance member:", error);
+    logEvent(
+      "Finance",
+      `Delete finance member error - Finance ID: ${req.params?.id}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error });
   }
 };

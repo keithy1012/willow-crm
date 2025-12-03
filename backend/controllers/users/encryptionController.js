@@ -3,8 +3,8 @@ import crypto from "crypto";
 
 // Encryption key for encrypting private keys at rest
 const ENCRYPTION_KEY =
-  process.env.PRIVATE_KEY_ENCRYPTION_SECRET || "your-secret-key-change-this";
-
+  process.env.PRIVATE_KEY_ENCRYPTION_SECRET ||
+  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 /**
  * Encrypt private key before storing in database
  */

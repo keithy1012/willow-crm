@@ -1,4 +1,3 @@
-// controllers/finances/reportController.js
 import BillingReport from "../../models/finance/BillingReport.js";
 import Invoice from "../../models/finance/Invoice.js";
 import PDFDocument from "pdfkit";
@@ -6,82 +5,165 @@ import { createObjectCsvWriter } from "csv-writer";
 import XLSX from "xlsx";
 import fs from "fs";
 import path from "path";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Get recent reports
 export const getRecentReports = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    // Query using BillingReport model
+    logEvent(
+      "BillingReport",
+      "Get recent reports initiated",
+      req.user?._id,
+      ip
+    );
+
     const reports = await BillingReport.find()
       .sort({ generatedDate: -1 })
       .limit(20);
+    logEvent(
+      "BillingReport",
+      `Recent reports retrieved - Count: ${reports.length}`,
+      req.user?._id,
+      ip
+    );
     res.status(200).json(reports);
   } catch (error) {
-    console.error("Error fetching reports:", error);
+    logEvent(
+      "BillingReport",
+      `Get recent reports error - Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 // Get report by ID
 export const getReportById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
+    logEvent(
+      "BillingReport",
+      `Get report by ID - Report: ${id}`,
+      req.user?._id,
+      ip
+    );
 
-    // Find using BillingReport model
     const report = await BillingReport.findById(id);
 
     if (!report) {
+      logEvent(
+        "BillingReport",
+        `Get report failed - Report ${id} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "Report not found" });
     }
 
+    logEvent(
+      "BillingReport",
+      `Report retrieved - Report: ${id}, Report ID: ${report.reportId}, Type: ${report.reportType}`,
+      req.user?._id,
+      ip
+    );
     res.status(200).json(report);
   } catch (error) {
-    console.error("Error fetching report:", error);
+    logEvent(
+      "BillingReport",
+      `Get report error - Report: ${req.params?.id}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 // Export report
 export const exportReport = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { id } = req.params;
     const { format } = req.query;
-
+    logEvent(
+      "BillingReport",
+      `Export report initiated - Report: ${id}, Format: ${format}`,
+      req.user?._id,
+      ip
+    );
     const report = await BillingReport.findById(id);
     if (!report) {
+      logEvent(
+        "BillingReport",
+        `Export failed - Report ${id} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ message: "Report not found" });
     }
 
     const validFormats = ["pdf", "csv", "xlsx"];
     if (!validFormats.includes(format)) {
+      logEvent(
+        "BillingReport",
+        `Export failed - Invalid format "${format}" for Report ${id}`,
+        req.user?._id,
+        ip
+      );
       return res.status(400).json({ message: "Invalid format" });
     }
-
+    logEvent(
+      "BillingReport",
+      `Exporting report - Report: ${id}, Report ID: ${report.reportId}, Format: ${format}, Type: ${report.reportType}`,
+      req.user?._id,
+      ip
+    );
     switch (format) {
       case "pdf":
-        return exportAsPDF(report, res);
+        return exportAsPDF(report, res, req.user?._id, ip);
       case "csv":
-        return exportAsCSV(report, res);
+        return exportAsCSV(report, res, req.user?._id, ip);
       case "xlsx":
-        return exportAsXLSX(report, res);
+        return exportAsXLSX(report, res, req.user?._id, ip);
       default:
         return res.status(400).json({ message: "Invalid format" });
     }
   } catch (error) {
-    console.error("Error exporting report:", error);
+    logEvent(
+      "BillingReport",
+      `Export error - Report: ${req.params?.id}, Format: ${req.query?.format}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 // Generate new report
 export const generateReport = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { reportType, dateRange } = req.body;
+    logEvent(
+      "BillingReport",
+      `Report generation initiated - Type: ${reportType}, Range: ${dateRange?.start} to ${dateRange?.end}`,
+      req.user?._id,
+      ip
+    );
 
-    // Generate unique report ID
     const reportCount = await BillingReport.countDocuments();
     const reportId = `RPT-${new Date().getFullYear()}-${String(
       reportCount + 1
     ).padStart(4, "0")}`;
+
+    logEvent(
+      "BillingReport",
+      `Report ID generated - Report ID: ${reportId}, Type: ${reportType}`,
+      req.user?._id,
+      ip
+    );
 
     let reportData = {
       reportId,
@@ -91,57 +173,132 @@ export const generateReport = async (req, res) => {
       status: "completed",
     };
 
-    // Generate different metrics based on report type
     switch (reportType) {
       case "monthly-revenue":
       case "quarterly-summary":
-        reportData.totalRevenue = await calculateTotalRevenue(dateRange);
-        reportData.outstandingReceivables = await calculateOutstandingReceivables();
-        reportData.paymentCollectionRate = await calculatePaymentCollectionRate(dateRange);
-        reportData.summary = `${reportType} report for ${dateRange.start} to ${dateRange.end}. Total revenue: $${reportData.totalRevenue.toLocaleString()}`;
+        reportData.totalRevenue = await calculateTotalRevenue(
+          dateRange,
+          req.user?._id,
+          ip
+        );
+        reportData.outstandingReceivables =
+          await calculateOutstandingReceivables(req.user?._id, ip);
+        reportData.paymentCollectionRate = await calculatePaymentCollectionRate(
+          dateRange,
+          req.user?._id,
+          ip
+        );
+        reportData.summary = `${reportType} report for ${dateRange.start} to ${
+          dateRange.end
+        }. Total revenue: $${reportData.totalRevenue.toLocaleString()}`;
+        logEvent(
+          "BillingReport",
+          `Revenue metrics calculated - Report ID: ${reportId}, Revenue: $${reportData.totalRevenue}, Outstanding: $${reportData.outstandingReceivables}, Collection Rate: ${reportData.paymentCollectionRate}%`,
+          req.user?._id,
+          ip
+        );
         break;
 
       case "aging-report":
-        reportData.outstandingReceivables = await calculateOutstandingReceivables();
-        reportData.summary = `Aging analysis of unpaid invoices as of ${reportData.generatedDate}. Total outstanding: $${reportData.outstandingReceivables.toLocaleString()}`;
+        reportData.outstandingReceivables =
+          await calculateOutstandingReceivables(req.user?._id, ip);
+        reportData.summary = `Aging analysis of unpaid invoices as of ${
+          reportData.generatedDate
+        }. Total outstanding: $${reportData.outstandingReceivables.toLocaleString()}`;
+        logEvent(
+          "BillingReport",
+          `Aging metrics calculated - Report ID: ${reportId}, Outstanding: $${reportData.outstandingReceivables}`,
+          req.user?._id,
+          ip
+        );
         break;
 
       case "collection-rate":
-        reportData.paymentCollectionRate = await calculatePaymentCollectionRate(dateRange);
-        reportData.totalRevenue = await calculateTotalRevenue(dateRange);
+        reportData.paymentCollectionRate = await calculatePaymentCollectionRate(
+          dateRange,
+          req.user?._id,
+          ip
+        );
+        reportData.totalRevenue = await calculateTotalRevenue(
+          dateRange,
+          req.user?._id,
+          ip
+        );
         reportData.summary = `Payment collection efficiency for ${dateRange.start} to ${dateRange.end}. Collection rate: ${reportData.paymentCollectionRate}%`;
+        logEvent(
+          "BillingReport",
+          `Collection metrics calculated - Report ID: ${reportId}, Collection Rate: ${reportData.paymentCollectionRate}%, Revenue: $${reportData.totalRevenue}`,
+          req.user?._id,
+          ip
+        );
         break;
 
       case "outstanding-receivables":
-        reportData.outstandingReceivables = await calculateOutstandingReceivables();
-        reportData.summary = `Total outstanding receivables as of ${reportData.generatedDate}: $${reportData.outstandingReceivables.toLocaleString()}`;
+        reportData.outstandingReceivables =
+          await calculateOutstandingReceivables(req.user?._id, ip);
+        reportData.summary = `Total outstanding receivables as of ${
+          reportData.generatedDate
+        }: $${reportData.outstandingReceivables.toLocaleString()}`;
+        logEvent(
+          "BillingReport",
+          `Receivables metrics calculated - Report ID: ${reportId}, Outstanding: $${reportData.outstandingReceivables}`,
+          req.user?._id,
+          ip
+        );
         break;
 
       default:
-        reportData.totalRevenue = await calculateTotalRevenue(dateRange);
-        reportData.outstandingReceivables = await calculateOutstandingReceivables();
-        reportData.paymentCollectionRate = await calculatePaymentCollectionRate(dateRange);
+        reportData.totalRevenue = await calculateTotalRevenue(
+          dateRange,
+          req.user?._id,
+          ip
+        );
+        reportData.outstandingReceivables =
+          await calculateOutstandingReceivables(req.user?._id, ip);
+        reportData.paymentCollectionRate = await calculatePaymentCollectionRate(
+          dateRange,
+          req.user?._id,
+          ip
+        );
         reportData.summary = `Financial report for ${dateRange.start} to ${dateRange.end}`;
+        logEvent(
+          "BillingReport",
+          `General metrics calculated - Report ID: ${reportId}, Revenue: $${reportData.totalRevenue}, Outstanding: $${reportData.outstandingReceivables}, Collection Rate: ${reportData.paymentCollectionRate}%`,
+          req.user?._id,
+          ip
+        );
     }
 
     const report = new BillingReport(reportData);
     const savedReport = await report.save();
-
+    logEvent(
+      "BillingReport",
+      `Report generated successfully - Report ID: ${reportId}, MongoDB ID: ${
+        savedReport._id
+      }, Type: ${reportType}, Revenue: $${
+        reportData.totalRevenue || 0
+      }, Outstanding: $${reportData.outstandingReceivables || 0}`,
+      req.user?._id,
+      ip
+    );
     res.status(201).json({
       success: true,
       message: "Report generated successfully",
       report: savedReport,
     });
   } catch (error) {
-    console.error("Error generating report:", error);
+    logEvent(
+      "BillingReport",
+      `Report generation error - Type: ${req.body?.reportType}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ===== Helper Functions for Export =====
-
 // Helper: Export as PDF
-function exportAsPDF(report, res) {
+function exportAsPDF(report, res, userId, ip) {
   const doc = new PDFDocument();
   const filename = `report_${report.reportId}.pdf`;
 
@@ -150,10 +307,9 @@ function exportAsPDF(report, res) {
 
   doc.pipe(res);
 
-  // Add content to PDF
   doc.fontSize(24).text("Billing Report", { align: "center" });
   doc.moveDown();
-  
+
   doc.fontSize(14).text(`Report ID: ${report.reportId}`, { bold: true });
   doc.fontSize(12).text(`Report Type: ${report.reportType}`);
   doc.text(`Date Range: ${report.dateRange}`);
@@ -161,7 +317,6 @@ function exportAsPDF(report, res) {
   doc.text(`Status: ${report.status || "Completed"}`);
   doc.moveDown();
 
-  // Financial Metrics Section
   doc.fontSize(14).text("Financial Metrics", { underline: true });
   doc.moveDown(0.5);
   doc.fontSize(12);
@@ -186,14 +341,19 @@ function exportAsPDF(report, res) {
   }
 
   doc.end();
+  logEvent(
+    "BillingReport",
+    `Report exported as PDF - Report ID: ${report.reportId}, Filename: ${filename}`,
+    userId,
+    ip
+  );
 }
 
 // Helper: Export as CSV
-async function exportAsCSV(report, res) {
+async function exportAsCSV(report, res, userId, ip) {
   const filename = `report_${report.reportId}.csv`;
   const filepath = path.join(process.cwd(), "temp", filename);
 
-  // Ensure temp directory exists
   if (!fs.existsSync(path.join(process.cwd(), "temp"))) {
     fs.mkdirSync(path.join(process.cwd(), "temp"));
   }
@@ -244,12 +404,19 @@ async function exportAsCSV(report, res) {
   const fileStream = fs.createReadStream(filepath);
   fileStream.pipe(res);
   fileStream.on("end", () => {
-    fs.unlinkSync(filepath); // Clean up temp file
+    fs.unlinkSync(filepath);
   });
+
+  logEvent(
+    "BillingReport",
+    `Report exported as CSV - Report ID: ${report.reportId}, Filename: ${filename}`,
+    userId,
+    ip
+  );
 }
 
 // Helper: Export as XLSX
-function exportAsXLSX(report, res) {
+function exportAsXLSX(report, res, userId, ip) {
   const filename = `report_${report.reportId}.xlsx`;
 
   const data = [
@@ -278,12 +445,8 @@ function exportAsXLSX(report, res) {
   }
 
   const worksheet = XLSX.utils.aoa_to_sheet(data);
-  
-  // Set column widths
-  worksheet['!cols'] = [
-    { wch: 25 }, // Field column
-    { wch: 50 }  // Value column
-  ];
+
+  worksheet["!cols"] = [{ wch: 25 }, { wch: 50 }];
 
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
@@ -297,12 +460,17 @@ function exportAsXLSX(report, res) {
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
   res.send(buffer);
+
+  logEvent(
+    "BillingReport",
+    `Report exported as XLSX - Report ID: ${report.reportId}, Filename: ${filename}`,
+    userId,
+    ip
+  );
 }
 
-// ===== Helper Functions for Calculations =====
-
 // Helper function using Invoice model
-async function calculateTotalRevenue(dateRange) {
+async function calculateTotalRevenue(dateRange, userId = "N/A", ip = "N/A") {
   try {
     const invoices = await Invoice.find({
       appointmentDate: {
@@ -312,29 +480,67 @@ async function calculateTotalRevenue(dateRange) {
       status: "paid",
     });
 
-    return invoices.reduce((total, invoice) => total + invoice.amount, 0);
+    const total = invoices.reduce(
+      (total, invoice) => total + invoice.amount,
+      0
+    );
+
+    logEvent(
+      "BillingReport",
+      `Total revenue calculated - Range: ${dateRange.start} to ${dateRange.end}, Invoices: ${invoices.length}, Total: $${total}`,
+      userId,
+      ip
+    );
+
+    return total;
   } catch (error) {
-    console.error("Error calculating total revenue:", error);
+    logEvent(
+      "BillingReport",
+      `Total revenue calculation error - Range: ${dateRange?.start} to ${dateRange?.end}, Error: ${error.message}`,
+      userId,
+      ip
+    );
     return 0;
   }
 }
 
 // Helper function using Invoice model
-async function calculateOutstandingReceivables() {
+async function calculateOutstandingReceivables(userId = "N/A", ip = "N/A") {
   try {
     const invoices = await Invoice.find({
       status: { $in: ["pending", "sent", "overdue"] },
     });
 
-    return invoices.reduce((total, invoice) => total + invoice.amount, 0);
+    const total = invoices.reduce(
+      (total, invoice) => total + invoice.amount,
+      0
+    );
+
+    logEvent(
+      "BillingReport",
+      `Outstanding receivables calculated - Invoices: ${invoices.length}, Total: $${total}`,
+      userId,
+      ip
+    );
+
+    return total;
   } catch (error) {
-    console.error("Error calculating outstanding receivables:", error);
+    logEvent(
+      "BillingReport",
+      `Outstanding receivables calculation error - Error: ${error.message}`,
+      userId,
+      ip
+    );
     return 0;
   }
 }
 
 // Helper function using Invoice model
-async function calculatePaymentCollectionRate(dateRange) {
+async function calculatePaymentCollectionRate(
+  dateRange,
+  userId = "N/A",
+  ip = "N/A"
+) {
   try {
     const allInvoices = await Invoice.find({
       appointmentDate: {
@@ -347,11 +553,33 @@ async function calculatePaymentCollectionRate(dateRange) {
       (invoice) => invoice.status === "paid"
     );
 
-    if (allInvoices.length === 0) return 0;
+    if (allInvoices.length === 0) {
+      logEvent(
+        "BillingReport",
+        `Payment collection rate calculated - Range: ${dateRange.start} to ${dateRange.end}, No invoices found, Rate: 0%`,
+        userId,
+        ip
+      );
+      return 0;
+    }
 
-    return Math.round((paidInvoices.length / allInvoices.length) * 100);
+    const rate = Math.round((paidInvoices.length / allInvoices.length) * 100);
+
+    logEvent(
+      "BillingReport",
+      `Payment collection rate calculated - Range: ${dateRange.start} to ${dateRange.end}, Total: ${allInvoices.length}, Paid: ${paidInvoices.length}, Rate: ${rate}%`,
+      userId,
+      ip
+    );
+
+    return rate;
   } catch (error) {
-    console.error("Error calculating payment collection rate:", error);
+    logEvent(
+      "BillingReport",
+      `Payment collection rate calculation error - Range: ${dateRange?.start} to ${dateRange?.end}, Error: ${error.message}`,
+      userId,
+      ip
+    );
     return 0;
   }
 }

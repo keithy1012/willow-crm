@@ -56,7 +56,7 @@ const OpsDoctorDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchTickets();
-  }, [user]);
+  }, [user?._id]);
 
   const isDoctorTicket = (ticket: AnyDoctorTicket): ticket is DoctorTicket => {
     return "doctorName" in ticket;

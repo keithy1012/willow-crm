@@ -1,18 +1,21 @@
 // routes/itRoutes.js
-
 import express from "express";
+import { authenticate } from "../../middleware/authentication.js";
 import {
   createITMember,
   getAllITMembers,
   getITMemberById,
   deleteITMember,
-  updateITMember
+  updateITMember,
 } from "../../controllers/its/itController.js";
 
 const router = express.Router();
 
 // Creates an ITMember
 router.post("/", createITMember);
+
+// Apply authenticate middleware to all routes
+router.use(authenticate);
 
 // Get all IT members
 router.get("/", getAllITMembers);

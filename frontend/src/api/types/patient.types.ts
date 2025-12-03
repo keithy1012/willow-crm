@@ -11,7 +11,7 @@ export interface EmergencyContact {
 
 export interface Patient {
   _id: string;
-  user: string | User;
+  user: User | string;
   birthday: Date | string;
   address: string;
   bloodtype: BloodType;

@@ -6,7 +6,9 @@ import {
   getCurrentUser,
   searchUsers,
   searchUsersByRole,
+  getUserById,
 } from "../../controllers/users/userController.js";
+
 import { authenticate } from "../../middleware/authentication.js";
 
 const router = express.Router();
@@ -19,5 +21,5 @@ router.get("/email-check", checkEmail);
 router.get("/me", authenticate, getCurrentUser);
 router.get("/search", authenticate, searchUsers);
 router.get("/search/role", authenticate, searchUsersByRole);
-
+router.get("/:id", authenticate, getUserById);
 export default router;

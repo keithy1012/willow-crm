@@ -70,6 +70,9 @@ const SignUp1: React.FC = () => {
           value={signupData.firstName}
           onChange={handleChange("firstName")}
         />
+        {errors.firstName && (
+          <p className="text-red-500 text-sm">{errors.firstName}</p>
+        )}
 
         {/* Last Name */}
         <label className="text-gray-600 mb-2">Last Name</label>
@@ -78,6 +81,9 @@ const SignUp1: React.FC = () => {
           value={signupData.lastName}
           onChange={handleChange("lastName")}
         />
+        {errors.lastName && (
+          <p className="text-red-500 text-sm">{errors.lastName}</p>
+        )}
 
         {/* Email */}
         <label className="text-gray-600 mb-2">Email</label>
@@ -86,6 +92,7 @@ const SignUp1: React.FC = () => {
           value={signupData.email}
           onChange={handleChange("email")}
         />
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton

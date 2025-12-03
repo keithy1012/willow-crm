@@ -69,3 +69,12 @@ export interface DeleteMedorderResponse {
   success: boolean;
   message: string;
 }
+
+export interface RefillRequestData {
+  medicationName: string;
+  patientName: string;
+  patientEmail: string;
+  quantity: string;
+  pharmacy: string;
+  lastRefillDate: Date;
+}

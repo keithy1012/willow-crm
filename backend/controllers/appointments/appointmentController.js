@@ -8,7 +8,7 @@ import {
   sendDocumentNotification,
   sendEmail,
 } from "../../utils/emailService.js";
-
+import { logEvent, getClientIp } from "../../utils/logger.js";
 // Helper functions
 const formatDate = (date) => {
   return date.toLocaleDateString("en-US", {
@@ -29,6 +29,7 @@ const formatTime = (time) => {
 
 // Book an appointment
 export const bookAppointment = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const {
       doctorId,
@@ -45,8 +46,14 @@ export const bookAppointment = async (req, res) => {
       doctorEmail,
     } = req.body;
 
-    console.log("Booking appointment with data:", req.body);
-
+    logEvent(
+      "Appointment",
+      `Booking initiated - Patient: ${patientId}, Doctor: ${doctorId}, Date: ${date}, Time: ${startTime}-${endTime}, Emergency: ${
+        isEmergency ? "YES" : "NO"
+      }`,
+      patientId,
+      ip
+    );
     // Validate doctor and patient exist
     const [doctor, patient] = await Promise.all([
       Doctor.findById(doctorId).populate("user"),
@@ -54,9 +61,21 @@ export const bookAppointment = async (req, res) => {
     ]);
 
     if (!doctor) {
+      logEvent(
+        "Appointment",
+        `Booking failed - Doctor ${doctorId} not found`,
+        patientId,
+        ip
+      );
       return res.status(404).json({ error: "Doctor not found" });
     }
     if (!patient) {
+      logEvent(
+        "Appointment",
+        `Booking failed - Patient ${patientId} not found`,
+        patientId,
+        ip
+      );
       return res.status(404).json({ error: "Patient not found" });
     }
 
@@ -113,6 +132,12 @@ export const bookAppointment = async (req, res) => {
     }
 
     if (!availability) {
+      logEvent(
+        "Appointment",
+        `Booking failed - Doctor ${doctorId} not available on ${date}`,
+        patientId,
+        ip
+      );
       return res.status(400).json({
         error: "Doctor is not available on this date",
       });
@@ -148,6 +173,13 @@ export const bookAppointment = async (req, res) => {
     }
 
     if (!availableSlot) {
+      logEvent(
+        "Appointment",
+        `Booking failed - Time ${startTime}-${endTime} not available for Doctor ${doctorId}`,
+        patientId,
+        ip
+      );
+
       return res.status(400).json({
         error: "Time slot not available or already booked",
         requestedTime: `${startTime} - ${endTime}`,
@@ -178,7 +210,12 @@ export const bookAppointment = async (req, res) => {
     });
 
     await appointment.save();
-
+    logEvent(
+      "Appointment",
+      `Booking successful - Appointment ID: ${appointment._id}, Patient: ${patientId}, Doctor: ${doctorId}, Date: ${date}, Time: ${startTime}-${endTime}`,
+      patientId,
+      ip
+    );
     // Handle slot booking based on whether it's a large block or exact match
     if (
       availableSlot.startTime === startTime &&
@@ -279,8 +316,6 @@ export const bookAppointment = async (req, res) => {
       const finalPatientEmail = patientEmail || patient.user.email;
       const finalDoctorEmail = doctorEmail || doctor.user.email;
 
-      console.log("Sending confirmation email to:", finalPatientEmail);
-
       await sendAppointmentConfirmation({
         patientEmail: finalPatientEmail,
         patientName: `${patient.user.firstName} ${patient.user.lastName}`,
@@ -292,11 +327,19 @@ export const bookAppointment = async (req, res) => {
         notes: notes || "",
         symptoms: symptoms || [],
       });
-
-      console.log("Confirmation email sent successfully");
+      logEvent(
+        "Email",
+        `Confirmation email sent - Appointment ID: ${appointment._id}, Recipient: ${finalPatientEmail}`,
+        patientId,
+        ip
+      );
     } catch (emailError) {
-      console.error("Failed to send confirmation email:", emailError);
-      // Continue even if email fails - appointment is still booked
+      logEvent(
+        "Email",
+        `Confirmation email failed - Appointment ID: ${appointment._id}, Error: ${emailError.message}`,
+        patientId,
+        ip
+      );
     }
 
     // Populate for response
@@ -317,18 +360,30 @@ export const bookAppointment = async (req, res) => {
       emailSent: true, // Indicate email was attempted
     });
   } catch (err) {
-    console.error("Booking error:", err);
+    logEvent(
+      "Appointment",
+      `Booking error - Patient: ${req.body?.patientId}, Error: ${err.message}`,
+      req.body?.patientId,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Cancel an appointment
 export const cancelAppointment = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
-
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Cancellation failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
+
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -379,17 +434,31 @@ export const cancelAppointment = async (req, res) => {
     appointment.status = "Cancelled";
     await appointment.save();
 
+    logEvent(
+      "Appointment",
+      `Cancellation successful - Appointment ID: ${appointment._id}, Patient: ${appointment.patientID?._id}, Doctor: ${appointment.doctorID?._id}, Time: ${appointment.startTime} to ${appointment.endTime}`,
+      req.user?._id,
+      ip
+    );
     return res.json({
       message: "Appointment cancelled successfully",
       appointment,
     });
   } catch (err) {
+    logEvent(
+      "Appointment",
+      `Cancellation error - Appointment ${req.params.appointmentId}, Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
+
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Get appointments for a doctor
 export const getDoctorAppointments = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { date, status } = req.query;
@@ -408,6 +477,14 @@ export const getDoctorAppointments = async (req, res) => {
     if (status) {
       query.status = status;
     }
+    logEvent(
+      "Appointment",
+      `Fetching appointments - Doctor: ${doctorId}${
+        date ? `, Date: ${date}` : ""
+      }${status ? `, Status: ${status}` : ""}`,
+      doctorId,
+      ip
+    );
 
     const appointments = await Appointment.find(query)
       .populate({
@@ -419,14 +496,30 @@ export const getDoctorAppointments = async (req, res) => {
       })
       .sort({ startTime: 1 });
 
+    logEvent(
+      "Appointment",
+      `Appointments fetched - Doctor: ${doctorId}, Count: ${
+        appointments.length
+      }${date ? `, Date: ${date}` : ""}${status ? `, Status: ${status}` : ""}`,
+      doctorId,
+      ip
+    );
     return res.json(appointments);
   } catch (err) {
+    logEvent(
+      "Appointment",
+      `Fetch appointments error - Doctor: ${req.params.doctorId}, Error: ${err.message}`,
+      req.params.doctorId,
+      ip
+    );
+
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Get appointments for a patient
 export const getPatientAppointments = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { patientId } = req.params;
     const { upcoming } = req.query;
@@ -437,6 +530,14 @@ export const getPatientAppointments = async (req, res) => {
       query.startTime = { $gte: new Date() };
       query.status = { $in: ["Scheduled", "In-Progress"] };
     }
+    logEvent(
+      "Appointment",
+      `Fetching appointments - Patient: ${patientId}${
+        upcoming === "true" ? " (upcoming only)" : ""
+      }`,
+      patientId,
+      ip
+    );
 
     const appointments = await Appointment.find(query)
       .populate({
@@ -444,15 +545,30 @@ export const getPatientAppointments = async (req, res) => {
         populate: { path: "user", select: "firstName lastName email" },
       })
       .sort({ startTime: 1 });
+    logEvent(
+      "Appointment",
+      `Appointments fetched - Patient: ${patientId}, Count: ${
+        appointments.length
+      }${upcoming === "true" ? " (upcoming only)" : ""}`,
+      patientId,
+      ip
+    );
 
     return res.json(appointments);
   } catch (err) {
+    logEvent(
+      "Appointment",
+      `Fetch appointments error - Patient: ${req.params.patientId}, Error: ${err.message}`,
+      req.params.patientId,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Update appointment status
 export const updateAppointmentStatus = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { status } = req.body;
@@ -465,10 +581,23 @@ export const updateAppointmentStatus = async (req, res) => {
       "In-Progress",
     ];
     if (!validStatuses.includes(status)) {
+      logEvent(
+        "Appointment",
+        `Status update failed - Invalid status "${status}" for Appointment ${appointmentId}`,
+        req.user?._id,
+        ip
+      );
+
       return res.status(400).json({
         error: "Invalid status. Must be one of: " + validStatuses.join(", "),
       });
     }
+    logEvent(
+      "Appointment",
+      `Status update initiated - Appointment: ${appointmentId}, New status: ${status}`,
+      req.user?._id,
+      ip
+    );
 
     const appointment = await Appointment.findByIdAndUpdate(
       appointmentId,
@@ -486,14 +615,32 @@ export const updateAppointmentStatus = async (req, res) => {
     ]);
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Status update failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ error: "Appointment not found" });
     }
+    logEvent(
+      "Appointment",
+      `Status update successful - Appointment: ${appointmentId}, Status: ${status}`,
+      req.user?._id,
+      ip
+    );
 
     return res.json({
       message: "Appointment status updated",
       appointment,
     });
   } catch (err) {
+    logEvent(
+      "Appointment",
+      `Status update error - Appointment: ${req.params.appointmentId}, Error: ${err.message}`,
+      "N/A",
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
@@ -501,6 +648,7 @@ export const updateAppointmentStatus = async (req, res) => {
 // Get appointment by ID
 // Updated getAppointmentById to include document info but not the full base64 data by default
 export const getAppointmentById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { includeDocuments } = req.query; // Optional query param to include full documents
@@ -549,6 +697,12 @@ export const getAppointmentById = async (req, res) => {
     }
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Get appointment failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -560,6 +714,12 @@ export const getAppointmentById = async (req, res) => {
 
     return res.json(appointmentData);
   } catch (err) {
+    logEvent(
+      "Appointment",
+      `Get appointment error - Appointment: ${req.params.appointmentId}, Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
@@ -587,6 +747,12 @@ export const notifyPatientOfDocument = async (req, res) => {
       });
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Document notification failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -608,18 +774,30 @@ export const notifyPatientOfDocument = async (req, res) => {
       appointmentId: appointmentId,
       documentType: documentType,
     });
+    logEvent(
+      "Email",
+      `Document notification sent - Appointment: ${appointmentId}, Recipient: ${finalPatientEmail}, Type: ${documentType}`,
+      appointment.patientID._id,
+      ip
+    );
     return res.json({
       message: "Notification sent successfully",
       sentTo: finalPatientEmail,
     });
   } catch (err) {
-    console.error("Error sending notification:", err);
+    logEvent(
+      "Email",
+      `Document notification failed - Appointment: ${appointmentId}, Recipient: ${req.body.patientEmail}, Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Fixed updateAppointmentDocuments function for your appointmentController.js
 export const updateAppointmentDocuments = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const {
@@ -637,6 +815,13 @@ export const updateAppointmentDocuments = async (req, res) => {
     );
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Document update failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
+
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -674,16 +859,28 @@ export const updateAppointmentDocuments = async (req, res) => {
           appointment.notesAndInstructionsUploadDate,
       },
     };
+    logEvent(
+      "Appointment",
+      `Documents uploaded successfully - Appointment: ${appointmentId}`,
+      req.user?._id,
+      ip
+    );
 
     return res.json(response);
   } catch (err) {
-    console.error("Error updating documents:", err);
+    logEvent(
+      "Appointment",
+      `Document update error - Appointment: ${req.params.appointmentId}, Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Also fix getAppointmentDocuments to properly select the fields
 export const getAppointmentDocuments = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { includeData } = req.query; // Optional query param to include base64 data
@@ -703,6 +900,12 @@ export const getAppointmentDocuments = async (req, res) => {
     }
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Get documents failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -723,16 +926,27 @@ export const getAppointmentDocuments = async (req, res) => {
     if (includeData === "true" && appointment.notesAndInstructions) {
       response.notesAndInstructions = appointment.notesAndInstructions;
     }
-
+    logEvent(
+      "Appointment",
+      `Documents retrieved successfully - Appointment: ${appointmentId}`,
+      req.user?._id,
+      ip
+    );
     return res.json(response);
   } catch (err) {
-    console.error("Error getting documents:", err);
+    logEvent(
+      "Appointment",
+      `Get documents error - Appointment: ${appointmentId}, Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
     return res.status(500).json({ error: err.message });
   }
 };
 
 // Fix downloadDocument to properly select the document field
 export const downloadDocument = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId, documentType } = req.params;
 
@@ -746,24 +960,44 @@ export const downloadDocument = async (req, res) => {
     );
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Download document failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
+
       return res.status(404).json({ error: "Appointment not found" });
     }
 
     if (!appointment[documentType]) {
       return res.status(404).json({ error: "Document not found" });
     }
+    logEvent(
+      "Appointment",
+      `Document downloaded successfully - Appointment: ${appointmentId}, Type: ${documentType}`,
+      req.user?._id,
+      ip
+    );
 
     return res.json({
       document: appointment[documentType],
       filename: appointment[`${documentType}Name`] || `${documentType}.pdf`,
     });
   } catch (err) {
+    logEvent(
+      "Appointment",
+      `Download document error - Appointment: ${appointmentId}, Error: ${err.message}`,
+      req.user?._id,
+      ip
+    );
     console.error("Error downloading document:", err);
     return res.status(500).json({ error: err.message });
   }
 };
 
 export const cancelAppointmentWithReason = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { reason, cancelledBy } = req.body;
@@ -779,6 +1013,13 @@ export const cancelAppointmentWithReason = async (req, res) => {
       });
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Cancellation with reason failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
+
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -866,6 +1107,13 @@ export const cancelAppointmentWithReason = async (req, res) => {
       subject: `Appointment Cancelled - ${appointmentDate}`,
       html,
     });
+    logEvent(
+      "Appointment",
+      `Cancellation with reason successful - Appointment: ${appointmentId}, Cancelled by: ${cancelledBy}, Reason: ${reason}, Email sent to: ${recipientEmail}`,
+      cancelledBy === "patient" ? patient._id : doctor._id,
+      req.user?._id,
+      ip
+    );
 
     res.status(200).json({
       success: true,
@@ -873,7 +1121,12 @@ export const cancelAppointmentWithReason = async (req, res) => {
       appointment,
     });
   } catch (error) {
-    console.error("Error cancelling appointment:", error);
+    logEvent(
+      "Appointment",
+      `Cancellation with reason error - Appointment: ${req.params.appointmentId}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Failed to cancel appointment",
@@ -884,6 +1137,7 @@ export const cancelAppointmentWithReason = async (req, res) => {
 
 // Mark appointment as no-show with reason and email notification
 export const markNoShowWithReason = async (req, res) => {
+  const ip = getClientIp(req);
   try {
     const { appointmentId } = req.params;
     const { reason } = req.body;
@@ -899,6 +1153,13 @@ export const markNoShowWithReason = async (req, res) => {
       });
 
     if (!appointment) {
+      logEvent(
+        "Appointment",
+        `Mark no-show failed - Appointment ${appointmentId} not found`,
+        req.user?._id,
+        ip
+      );
+
       return res.status(404).json({ error: "Appointment not found" });
     }
 
@@ -975,6 +1236,12 @@ export const markNoShowWithReason = async (req, res) => {
       subject: `Missed Appointment - ${appointmentDate}`,
       html,
     });
+    logEvent(
+      "Appointment",
+      `Marked as no-show - Appointment: ${appointmentId}, Patient: ${patient._id}, Reason: ${reason}, Email sent to: ${patientUser.email}`,
+      patient._id,
+      ip
+    );
 
     // Return a response (this was missing!)
     res.status(200).json({
@@ -983,7 +1250,12 @@ export const markNoShowWithReason = async (req, res) => {
       appointment,
     });
   } catch (error) {
-    console.error("Error marking no-show:", error);
+    logEvent(
+      "Appointment",
+      `Mark no-show error - Appointment: ${appointmentId}, Error: ${error.message}`,
+      req.user?._id,
+      ip
+    );
     res.status(500).json({
       success: false,
       message: "Failed to mark as no-show",

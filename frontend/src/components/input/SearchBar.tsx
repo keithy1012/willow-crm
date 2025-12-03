@@ -82,7 +82,6 @@ const DoctorSearchBar: React.FC<DoctorSearchBarProps> = ({
 
       // Call the availability search API
       const response = await availabilityService.searchByDateTime(searchParams);
-
       if (response.doctors && response.doctors.length > 0) {
         toast.success(
           `Found ${response.doctors.length} available doctor${
