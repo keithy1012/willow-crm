@@ -12,6 +12,10 @@ const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
 export const chatBot = {
   async ask(messages) {
     try {
+      if (!process.env.GEMINI_API_KEY) {
+        console.error("GEMINI_API_KEY is not set!");
+        throw new Error("API key not configured");
+      }
       // Prepend the system instruction as the first user message
       const systemInstruction = `You are a medical assistant chatbot. Provide safe, helpful guidance but do NOT diagnose. Keep each response brief (less than 100 words) and ask clarifying questions until you are confident. Return everything as plain text, no markdown or HTML.`;
 
