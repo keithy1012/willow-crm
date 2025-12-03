@@ -68,3 +68,45 @@ Cypress.Commands.add('createPatientAccount', (patient) => {
 		failOnStatusCode: false,
 	});
 });
+
+// Get appointment by ID (optionally include auth token)
+Cypress.Commands.add('apiGetAppointment', (appointmentId, token) => {
+	const options = {
+		method: 'GET',
+		url: `${API_BASE}/appointments/${appointmentId}`,
+		failOnStatusCode: false,
+	};
+	if (token) options.headers = { Authorization: `Bearer ${token}` };
+	return cy.request(options);
+});
+
+// Cancel an appointment (doctor or patient) via API
+Cypress.Commands.add('apiCancelAppointment', (appointmentId, token) => {
+	return cy.request({
+		method: 'PUT',
+		url: `${API_BASE}/appointments/${appointmentId}/cancel`,
+		headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+		failOnStatusCode: false,
+	});
+});
+
+// Approve a doctor creation ticket (Ops action)
+Cypress.Commands.add('apiApproveTicket', (ticketId, opsToken) => {
+	return cy.request({
+		method: 'PATCH',
+		url: `${API_BASE}/tickets/doctorCreate/${ticketId}/approve`,
+		headers: { Authorization: `Bearer ${opsToken}` },
+		failOnStatusCode: false,
+	});
+});
+
+// Remove availability for a specific date (doctor)
+Cypress.Commands.add('apiRemoveAvailabilityForDate', (doctorId, date, token) => {
+	return cy.request({
+		method: 'POST',
+		url: `${API_BASE}/availability/doctor/${doctorId}/remove-date`,
+		headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+		body: { date },
+		failOnStatusCode: false,
+	});
+});

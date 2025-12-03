@@ -10,10 +10,10 @@ export const requireRole = (roles) => {
 
       // Check if user has required role
       if (!roles.includes(req.user.role)) {
-        return res.status(403).json({ 
+        return res.status(403).json({
           error: "Forbidden: insufficient permissions",
           required: roles,
-          current: req.user.role
+          current: req.user.role,
         });
       }
 
@@ -23,3 +23,5 @@ export const requireRole = (roles) => {
     }
   };
 };
+
+export default requireRole;

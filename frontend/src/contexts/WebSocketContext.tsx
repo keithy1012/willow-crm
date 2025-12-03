@@ -94,7 +94,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   useEffect(() => {
     const initEncryption = async () => {
       try {
-        await encryptionService.initializeKeys();
+        // Pass userId to initialize keys from database
+        await encryptionService.initializeKeys(user._id);
         console.log("🔐 Encryption initialized");
       } catch (error) {
         console.error("Failed to initialize encryption:", error);
@@ -102,7 +103,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     };
 
     initEncryption();
-  }, []);
+  }, [user._id]);
 
   // Load conversations (fallback when WS is down)
   const refreshConversations = useCallback(async () => {
