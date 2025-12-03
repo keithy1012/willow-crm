@@ -523,10 +523,13 @@ const Dashboard: React.FC = () => {
     setIsBotTyping(true);
 
     try {
-      const res = await fetch("/api/chat", {
+      const BACKEND_URL =
+        process.env.REACT_APP_BACKEND_URL || "https://willow-crm.onrender.com";
+
+      const res = await fetch(`${BACKEND_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updatedMessages }), // send full context
+        body: JSON.stringify({ messages: updatedMessages }),
       });
 
       const data = await res.json();
