@@ -48,6 +48,9 @@ const SignUp2: React.FC = () => {
           value={signupData.phone}
           onChange={handleChange("phone")}
         />
+        {errors.phone && (
+          <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+        )}
         <Dropdown
           label="Sex"
           value={signupData.sex}
@@ -55,6 +58,9 @@ const SignUp2: React.FC = () => {
           options={["Male", "Female", "Other"]}
           placeholder="Select your sex"
         />
+        {errors.sex && (
+          <p className="text-red-500 text-sm mt-1">{errors.sex}</p>
+        )}
         <div className="mt-6 w-full flex justify-center">
           <PrimaryButton
             text="Next"

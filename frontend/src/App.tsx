@@ -8,7 +8,6 @@ import MedicalRecords from "./pages/Patients/MedicalRecords";
 import Medications from "./pages/Patients/Medications";
 import Insurance from "./pages/Patients/Insurance";
 import BugReportPage from "./pages/General/BugReport";
-import HelpSupportPage from "./pages/General/HelpSupport";
 import FinanceSidebar from "./components/sidebar/FinanceSidebar";
 import Invoices from "./pages/Finance/Invoices";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
@@ -299,8 +298,6 @@ const AppRoutes: React.FC = () => {
             <Route path="/medical-records" element={<MedicalRecords />} />
             <Route path="/medications" element={<Medications />} />
             <Route path="/insurance" element={<Insurance />} />
-            <Route path="/bug-report" element={<BugReportPage />} />
-            <Route path="/help-support" element={<HelpSupportPage />} />
             <Route path="/patient-profile" element={<PatientProfile />} />
             <Route
               path="/patient-profile-edit"
@@ -344,8 +341,6 @@ const AppRoutes: React.FC = () => {
               path="/patient/:patientId"
               element={<DoctorPatientProfile />}
             />
-            <Route path="/doctor-bug-report" element={<BugReportPage />} />
-            <Route path="/doctor-help-support" element={<HelpSupportPage />} />
             <Route path="/doctor-profile" element={<DoctorProfile />} />
           </Route>
           {/* IT Routes */}
@@ -370,15 +365,6 @@ const AppRoutes: React.FC = () => {
               </RoleLayoutWrapper>
             }
           />
-          <Route
-            path="/help-support"
-            element={
-              <RoleLayoutWrapper>
-                <HelpSupportPage />
-              </RoleLayoutWrapper>
-            }
-          />
-
           <Route path="/error" element={<Error />} />
         </Routes>
       </SignupProvider>

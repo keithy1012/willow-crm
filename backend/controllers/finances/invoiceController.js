@@ -165,7 +165,7 @@ export const sendInvoiceToExternal = async (req, res) => {
 
     logEvent(
       "Invoice",
-      `Invoice sent to external billing - Invoice: ${id}, Invoice ID: ${invoice.invoiceId}, Status changed: ${previousStatus} -> sent, Patient: ${invoice.patient}, Amount: ${invoice.amount}`,
+      `Invoice sent to external billing - Invoice: ${id}, Invoice ID: ${invoice.invoiceId}, Status changed: Sent, Patient: ${invoice.patient}, Amount: ${invoice.amount}`,
       req.user?._id,
       ip
     );

@@ -10,12 +10,10 @@ import {
 } from "../../controllers/ops/opsMemberController.js";
 
 const router = express.Router();
-
-// Apply authenticate middleware to all routes
-router.use(authenticate);
-
 // Creates an OpsMember
 router.post("/", createOpsMember);
+// Apply authenticate middleware to all routes
+router.use(authenticate);
 
 // Get all ops members
 router.get("/", getAllOpsMembers);

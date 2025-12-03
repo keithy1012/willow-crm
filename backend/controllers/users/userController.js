@@ -1,6 +1,6 @@
-import User from "../models/users/User.js";
-import { generateToken } from "../middleware/authentication.js";
-import { logEvent, getClientIp } from "../utils/logger.js";
+import User from "../../models/users/User.js";
+import { generateToken } from "../../middleware/authentication.js";
+import { logEvent, getClientIp } from "../../utils/logger.js";
 
 // Register a new user
 export const register = async (req, res) => {

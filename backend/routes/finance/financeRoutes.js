@@ -29,9 +29,9 @@ import {
 
 const router = express.Router();
 
+router.post("/", createFinanceMember);
 // Apply authenticate middleware to all routes
 router.use(authenticate);
-
 // Invoice Routes (must be before /:id)
 router.get("/invoices", getAllInvoices);
 router.post("/invoices/create", createInvoice);
@@ -46,7 +46,6 @@ router.get("/reports/:id/export", exportReport);
 router.post("/reports/generate", generateReport);
 
 // Finance Member Routes (parameterized routes go last)
-router.post("/", createFinanceMember);
 router.get("/", getAllFinanceMembers);
 router.get("/:id", getFinanceMemberById);
 router.put("/:id", updateFinanceMember);

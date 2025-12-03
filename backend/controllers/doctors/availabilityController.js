@@ -100,7 +100,7 @@ export const setDateAvailability = async (req, res) => {
       req.user?._id,
       ip
     );
-    r;
+
     return res.status(201).json({
       message:
         processedTimeSlots.length > 0
@@ -122,7 +122,7 @@ export const setDateAvailability = async (req, res) => {
 
 // Updated createRecurringAvailability to handle 1-hour slots
 export const createRecurringAvailability = async (req, res) => {
-  ip = getClientIp(ip);
+  const ip = getClientIp(req);
   try {
     const { doctorId } = req.params;
     const { weeklySchedule } = req.body;

@@ -384,7 +384,6 @@ export const searchPatientsByName = async (req, res) => {
   const ip = getClientIp(req);
   try {
     const { name } = req.query;
-
     logEvent(
       "Patient",
       `Search patients by name initiated - Search term: ${name}`,
@@ -406,9 +405,9 @@ export const searchPatientsByName = async (req, res) => {
     const patients = await Patient.find()
       .populate("user", "firstName lastName email phoneNumber profilePic")
       .lean();
-
     // Filter by name
     const filteredPatients = patients.filter((patient) => {
+      if (!patient.user) return false;
       const fullName =
         `${patient.user.firstName} ${patient.user.lastName}`.toLowerCase();
       const firstName = patient.user.firstName.toLowerCase();
@@ -421,7 +420,6 @@ export const searchPatientsByName = async (req, res) => {
         lastName.includes(searchTerm)
       );
     });
-
     logEvent(
       "Patient",
       `Search patients completed - Search term: ${name}, Results: ${filteredPatients.length}`,

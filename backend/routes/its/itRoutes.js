@@ -11,11 +11,11 @@ import {
 
 const router = express.Router();
 
-// Apply authenticate middleware to all routes
-router.use(authenticate);
-
 // Creates an ITMember
 router.post("/", createITMember);
+
+// Apply authenticate middleware to all routes
+router.use(authenticate);
 
 // Get all IT members
 router.get("/", getAllITMembers);

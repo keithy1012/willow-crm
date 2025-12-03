@@ -73,11 +73,7 @@ const StaffOnboarding: React.FC = () => {
           variant="primary"
           size="medium"
           onClick={() =>
-            handleStaffCreation(
-              "finance",
-              financeService.create,
-              "/financedashboard"
-            )
+            handleStaffCreation("finance", financeService.create, "/invoices")
           }
         />
 
@@ -99,7 +95,11 @@ const StaffOnboarding: React.FC = () => {
           variant="primary"
           size="medium"
           onClick={() =>
-            handleStaffCreation("ops", opsService.create, "/opsdashboard")
+            handleStaffCreation(
+              "ops",
+              opsService.create,
+              "/opsdashboard/doctors"
+            )
           }
         />
       </div>

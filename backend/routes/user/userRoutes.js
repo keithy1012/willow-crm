@@ -7,8 +7,9 @@ import {
   searchUsers,
   searchUsersByRole,
   getUserById,
-} from "../controllers/userController.js";
-import { authenticate } from "../middleware/authentication.js";
+} from "../../controllers/users/userController.js";
+
+import { authenticate } from "../../middleware/authentication.js";
 
 const router = express.Router();
 
