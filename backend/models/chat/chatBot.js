@@ -42,3 +42,5 @@ export const chatBot = {
     }
   },
 };
+
+export default chatBot;

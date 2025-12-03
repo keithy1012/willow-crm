@@ -17,22 +17,83 @@ class EncryptionService {
   private readonly STORAGE_KEY = 'encryption_keypair';
   
   /**
-   * Initialize or retrieve the user's key pair
+   * Initialize keys - either from database or generate new ones
    */
-  async initializeKeys(): Promise<KeyPair> {
-    const stored = localStorage.getItem(this.STORAGE_KEY);
-    
-    if (stored) {
+  async initializeKeys(userId?: string): Promise<KeyPair> {
+    // OPTION 1: Try to load from memory/session first (fast)
+    if (this.keyPair) {
+      console.log('✅ Using keys from memory');
+      return this.keyPair;
+    }
+
+    // OPTION 2: Try sessionStorage (survives page refresh, not cross-device)
+    const sessionKeys = sessionStorage.getItem(this.STORAGE_KEY);
+    if (sessionKeys) {
       try {
-        this.keyPair = JSON.parse(stored);
-        console.log('✅ Loaded existing encryption keys');
+        this.keyPair = JSON.parse(sessionKeys);
+        console.log('✅ Loaded keys from session');
         return this.keyPair!;
       } catch (error) {
-        console.error('Failed to parse stored keys, generating new ones');
+        console.error('Failed to parse session keys');
       }
     }
-    
-    // Generate new key pair using NaCl
+
+    // OPTION 3: Fetch from database (works across devices!)
+    if (userId) {
+      try {
+        const keysFromDB = await this.fetchKeysFromDatabase(userId);
+        if (keysFromDB) {
+          this.keyPair = keysFromDB;
+          sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.keyPair));
+          console.log('✅ Loaded keys from database');
+          return this.keyPair;
+        }
+      } catch (error) {
+        console.error('Failed to fetch keys from database:', error);
+      }
+    }
+
+    // OPTION 4: Generate new keys (first time setup)
+    return this.generateAndStoreNewKeys(userId);
+  }
+
+  /**
+   * Fetch encryption keys from the database
+   */
+  private async fetchKeysFromDatabase(userId: string): Promise<KeyPair | null> {
+    try {
+      const response = await fetch(`/api/users/${userId}/encryption-keys`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const data = await response.json();
+      
+      if (data.publicKey && data.encryptedPrivateKey) {
+        // Decrypt the private key using user's session
+        // (The backend should return the already-decrypted private key over HTTPS)
+        return {
+          publicKey: data.publicKey,
+          privateKey: data.privateKey, // Backend decrypts this for us
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error fetching keys from database:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Generate new keys and store in database
+   */
+  private async generateAndStoreNewKeys(userId?: string): Promise<KeyPair> {
     const keypair = nacl.box.keyPair();
     
     this.keyPair = {
@@ -40,10 +101,44 @@ class EncryptionService {
       privateKey: naclUtil.encodeBase64(keypair.secretKey),
     };
     
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.keyPair));
-    console.log('✅ Generated new encryption keys');
+    // Store in session (temporary, current session only)
+    sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.keyPair));
+    
+    // Store in database (permanent, synced across devices)
+    if (userId) {
+      try {
+        await this.saveKeysToDatabase(userId, this.keyPair);
+        console.log('✅ Generated and saved new encryption keys to database');
+      } catch (error) {
+        console.error('Failed to save keys to database:', error);
+        console.log('⚠️ Keys generated but not synced to database');
+      }
+    } else {
+      console.log('⚠️ Generated keys without userId - cannot sync to database');
+    }
     
     return this.keyPair;
+  }
+
+  /**
+   * Save encryption keys to database
+   */
+  private async saveKeysToDatabase(userId: string, keys: KeyPair): Promise<void> {
+    const response = await fetch(`/api/users/${userId}/encryption-keys`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({
+        publicKey: keys.publicKey,
+        privateKey: keys.privateKey, // Backend will encrypt this before storing
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save encryption keys');
+    }
   }
   
   /**
@@ -68,16 +163,9 @@ class EncryptionService {
     }
     
     try {
-      // Generate ephemeral key pair for forward secrecy
       const ephemeralKeyPair = nacl.box.keyPair();
-      
-      // Convert recipient's public key from base64
       const recipientPubKey = naclUtil.decodeBase64(recipientPublicKey);
-      
-      // Generate random nonce
       const nonce = nacl.randomBytes(nacl.box.nonceLength);
-      
-      // Encrypt message
       const messageUint8 = naclUtil.decodeUTF8(message);
       const encrypted = nacl.box(
         messageUint8,
@@ -102,21 +190,17 @@ class EncryptionService {
   /**
    * Decrypt a message using the ephemeral public key
    */
-  async decryptMessage(
-    encryptedMessage: EncryptedMessage
-  ): Promise<string> {
+  async decryptMessage(encryptedMessage: EncryptedMessage): Promise<string> {
     if (!this.keyPair) {
       throw new Error('Keys not initialized');
     }
     
     try {
-      // Convert from base64
       const ciphertext = naclUtil.decodeBase64(encryptedMessage.ciphertext);
       const ephemeralPubKey = naclUtil.decodeBase64(encryptedMessage.ephemeralPublicKey);
       const nonce = naclUtil.decodeBase64(encryptedMessage.nonce);
       const privateKey = naclUtil.decodeBase64(this.keyPair.privateKey);
       
-      // Decrypt message
       const decrypted = nacl.box.open(
         ciphertext,
         nonce,
@@ -142,19 +226,11 @@ class EncryptionService {
    */
   clearKeys(): void {
     this.keyPair = null;
+    sessionStorage.removeItem(this.STORAGE_KEY);
     localStorage.removeItem(this.STORAGE_KEY);
     console.log('🗑️ Encryption keys cleared');
   }
   
-  /**
-   * Rotate keys (should be done periodically for security)
-   */
-  async rotateKeys(): Promise<KeyPair> {
-    console.log('🔄 Rotating encryption keys');
-    this.clearKeys();
-    return this.initializeKeys();
-  }
-
   /**
    * Check if keys are initialized
    */

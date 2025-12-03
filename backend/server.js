@@ -22,7 +22,7 @@ import connectDB from "./config/db.js";
 import socketServer from "./websocket/socketServer.js";
 
 // Import routes
-import userRoutes from "./routes/userRoutes.js";
+import userRoutes from "./routes/user/userRoutes.js";
 import patientRoutes from "./routes/patients/patientRoutes.js";
 import doctorRoutes from "./routes/doctors/doctorRoutes.js";
 import opsMemberRoutes from "./routes/ops/opsMemberRoutes.js";
@@ -35,7 +35,7 @@ import bugTicketRoutes from "./routes/tickets/bugTicketRoutes.js";
 import availabilityRoutes from "./routes/doctors/availabilityRoutes.js";
 import appointmentRoutes from "./routes/appointments/appointmentRoutes.js";
 import medOrderRoutes from "./routes/medications/medOrderRoutes.js";
-
+import encryptionRoutes from "./routes/user/encryptionRoutes.js";
 import authRoutes from "./routes/auth/authRoutes.js";
 import chatRoutes from "./routes/chat/chatRoutes.js";
 // Setup Express
@@ -62,6 +62,7 @@ app.use("/api/availability", availabilityRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/medorders", medOrderRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/users", encryptionRoutes);
 
 // Start server
 const server = http.createServer(app);
