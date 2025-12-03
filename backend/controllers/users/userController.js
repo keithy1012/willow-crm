@@ -1,5 +1,5 @@
-import User from "../models/users/User.js";
-import { generateToken } from "../middleware/authentication.js";
+import User from "../../models/users/User.js";
+import { generateToken } from "../../middleware/authentication.js";
 
 // POST /api/users/register - Register a new user
 export const register = async (req, res) => {

@@ -22,6 +22,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    encryptedPrivateKey: {
+      type: String,
+      default: null,
+      select: false, // Don't return in normal queries (security)
+    },
+    privateKeyIv: {
+      type: String,
+      default: null,
+      select: false, // Initialization vector for AES-GCM
+    },
+    privateKeyAuthTag: {
+      type: String,
+      default: null,
+      select: false, // Authentication tag for AES-GCM
+    },
+
+    keyRotatedAt: {
+      type: Date,
+      default: Date.now,
+    },
 
     keyRotatedAt: {
       type: Date,
