@@ -18,7 +18,7 @@ export const chatBot = {
       const contents = [
         { role: "user", parts: [{ text: systemInstruction }] },
         ...messages.map((msg) => ({
-          role: msg.sender === "user" ? "user" : "assistant",
+          role: msg.sender === "user" ? "user" : "model",
           parts: [{ text: msg.text }],
         })),
       ];

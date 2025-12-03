@@ -16867,3 +16867,43 @@ timestamp,event_type,message,user_id,ip_address
 2025-12-03T08:59:17.527Z,Medorder,Admin refill request email sent - Patient: PatientBoy BoyBoy; Medication: Tylenol,692ff16f2fb1475c3f99ec1b,127.0.0.1
 2025-12-03T08:59:18.562Z,Medorder,Patient refill confirmation email sent - Patient: PatientBoy BoyBoy; Email: yao.kei@northeastern.edu; Medication: Tylenol,692ff16f2fb1475c3f99ec1b,127.0.0.1
 2025-12-03T08:59:18.563Z,Medorder,Refill request sent successfully - Patient: PatientBoy BoyBoy; Medication: Tylenol; Quantity: 100; Pharmacy: Willow CRM Pharmacy,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:27:44.288Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T19:28:05.312Z,User,Login attempt initiated - Email: yao.kei@northeastern.edu,N/A,127.0.0.1
+2025-12-03T19:28:05.496Z,User,Login successful - User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu; Role: Patient,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:05.614Z,Patient,Get patient by user ID initiated - User ID: 692ff16f2fb1475c3f99ec1b,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:05.979Z,Patient,Patient retrieved - Patient ID: 692ff16f2fb1475c3f99ec1f; User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:06.085Z,Patient,Get patient by user ID initiated - User ID: 692ff16f2fb1475c3f99ec1b,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:06.089Z,Appointment,Fetching appointments - Patient: 692ff16f2fb1475c3f99ec1f,692ff16f2fb1475c3f99ec1f,127.0.0.1
+2025-12-03T19:28:06.092Z,Medorder,Get medication orders by patient initiated - Patient: 692ff16f2fb1475c3f99ec1f,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:06.278Z,Medorder,Medication orders retrieved for patient - Patient: 692ff16f2fb1475c3f99ec1f; Count: 1,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:06.361Z,Patient,Patient retrieved - Patient ID: 692ff16f2fb1475c3f99ec1f; User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:28:06.366Z,Appointment,Appointments fetched - Patient: 692ff16f2fb1475c3f99ec1f; Count: 7,692ff16f2fb1475c3f99ec1f,127.0.0.1
+2025-12-03T19:28:11.928Z,Chat,Chat request error - User: Unknown; Error: userId is not defined,N/A,127.0.0.1
+2025-12-03T19:28:18.496Z,Chat,Chat request error - User: Unknown; Error: userId is not defined,N/A,127.0.0.1
+2025-12-03T19:29:53.943Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T19:30:04.263Z,Patient,Get patient by user ID initiated - User ID: 692ff16f2fb1475c3f99ec1b,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:04.539Z,Patient,Patient retrieved - Patient ID: 692ff16f2fb1475c3f99ec1f; User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:04.639Z,Patient,Get patient by user ID initiated - User ID: 692ff16f2fb1475c3f99ec1b,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:04.642Z,Appointment,Fetching appointments - Patient: 692ff16f2fb1475c3f99ec1f,692ff16f2fb1475c3f99ec1f,127.0.0.1
+2025-12-03T19:30:04.646Z,Medorder,Get medication orders by patient initiated - Patient: 692ff16f2fb1475c3f99ec1f,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:04.826Z,Medorder,Medication orders retrieved for patient - Patient: 692ff16f2fb1475c3f99ec1f; Count: 1,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:04.917Z,Appointment,Appointments fetched - Patient: 692ff16f2fb1475c3f99ec1f; Count: 7,692ff16f2fb1475c3f99ec1f,127.0.0.1
+2025-12-03T19:30:05.011Z,Patient,Patient retrieved - Patient ID: 692ff16f2fb1475c3f99ec1f; User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:10.284Z,Chat,Chat request error - User: Unknown; Error: userId is not defined,N/A,127.0.0.1
+2025-12-03T19:30:19.047Z,Chat,Chat request error - User: Unknown; Error: userId is not defined,N/A,127.0.0.1
+2025-12-03T19:30:41.685Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T19:30:44.560Z,Patient,Get patient by user ID initiated - User ID: 692ff16f2fb1475c3f99ec1b,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:44.922Z,Patient,Patient retrieved - Patient ID: 692ff16f2fb1475c3f99ec1f; User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:45.017Z,Patient,Get patient by user ID initiated - User ID: 692ff16f2fb1475c3f99ec1b,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:45.020Z,Appointment,Fetching appointments - Patient: 692ff16f2fb1475c3f99ec1f,692ff16f2fb1475c3f99ec1f,127.0.0.1
+2025-12-03T19:30:45.023Z,Medorder,Get medication orders by patient initiated - Patient: 692ff16f2fb1475c3f99ec1f,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:45.202Z,Medorder,Medication orders retrieved for patient - Patient: 692ff16f2fb1475c3f99ec1f; Count: 1,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:45.289Z,Appointment,Appointments fetched - Patient: 692ff16f2fb1475c3f99ec1f; Count: 7,692ff16f2fb1475c3f99ec1f,127.0.0.1
+2025-12-03T19:30:45.371Z,Patient,Patient retrieved - Patient ID: 692ff16f2fb1475c3f99ec1f; User ID: 692ff16f2fb1475c3f99ec1b; Email: yao.kei@northeastern.edu,692ff16f2fb1475c3f99ec1b,127.0.0.1
+2025-12-03T19:30:48.519Z,Chat,Chat response generated - User: Unknown; Response length: 57; Preview: "Okay; I'm ready to assist you. How can I help you ...",N/A,127.0.0.1
+2025-12-03T19:30:56.269Z,Chat,Chat response generated - User: Unknown; Response length: 157; Preview: "I am a medical assistant chatbot. I can provide in...",N/A,127.0.0.1
+2025-12-03T19:31:00.439Z,Chat,Chat response generated - User: Unknown; Response length: 176; Preview: "I am sorry to hear that. Can you tell me what kind...",N/A,127.0.0.1
+2025-12-03T19:31:07.323Z,Chat,Chat response generated - User: Unknown; Response length: 147; Preview: "Thank you. Are you currently experiencing any spec...",N/A,127.0.0.1
+2025-12-03T19:31:12.427Z,Chat,Chat response generated - User: Unknown; Response length: 188; Preview: "I understand you are dealing with lung cancer. Can...",N/A,127.0.0.1
+2025-12-03T19:31:20.328Z,Chat,Chat response generated - User: Unknown; Response length: 198; Preview: "I understand. I'm sorry to hear that your family m...",N/A,127.0.0.1
+2025-12-03T19:31:27.291Z,Chat,Chat response generated - User: Unknown; Response length: 169; Preview: "Okay; so it's your grandmother who has lung cancer...",N/A,127.0.0.1

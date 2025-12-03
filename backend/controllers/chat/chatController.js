@@ -1,8 +1,11 @@
 import { chatBot } from "../../models/chat/chatBot.js";
 import { logEvent, getClientIp } from "../../utils/logger.js";
+
 export const chatController = {
   async sendMessage(req, res) {
     const ip = getClientIp(req);
+    const userId = req.user?._id; // Move this to the top
+
     try {
       const { messages } = req.body;
 
@@ -34,7 +37,6 @@ export const chatController = {
 
       res.json({ answer });
     } catch (err) {
-      const userId = req.user?._id;
       logEvent(
         "Chat",
         `Chat request error - User: ${userId || "Unknown"}, Error: ${
