@@ -732,7 +732,7 @@ export const searchDoctorsByDateTime = async (req, res) => {
         });
         logEvent(
           "Availability",
-          `Name filter applied - Before: ${beforeFilter}, After: ${availableDoctors.length}, Name: ${name}`,
+          `Name filter applied - Number of Doctors: ${availableDoctors.length}`,
           req.user?._id,
           ip
         );

@@ -193,13 +193,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <ProfileHeaderCard
             name={doctorName}
             username={doctorUsername}
-            userId={doctorId} 
+            userId={doctorId}
             message={actualStatus === "Scheduled" && onMessage ? true : false}
             profilePic={profilePic}
             onMessage={onMessage}
             onViewProfile={
               onViewProfile ? () => onViewProfile(doctorId) : undefined
-            } 
+            }
           />
         </div>
 
@@ -243,7 +243,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="flex gap-2 pt-3 border-t border-gray-100">
             {onCancel && (
               <button
-                onClick={onCancel}
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent parent card click
+                  onCancel();
+                }}
                 className="flex-1 text-xs py-2 px-3 bg-red-50 border border-error text-error rounded-lg hover:bg-red-100 transition-colors font-medium"
               >
                 Cancel Appointment

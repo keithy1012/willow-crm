@@ -380,8 +380,8 @@ export const searchUsers = async (req, res) => {
 };
 
 export const searchUsersByRole = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    const ip = getClientIp(req);
     const { role, query } = req.query;
     const currentUserId = req.user?._id || req.userId;
     logEvent(
@@ -468,8 +468,8 @@ export const searchUsersByRole = async (req, res) => {
 
 // GET /api/users/:id - Get a specific user by ID
 export const getUserById = async (req, res) => {
+  const ip = getClientIp(req);
   try {
-    const ip = getClientIp(req);
     const { id } = req.params;
     logEvent(
       "User",

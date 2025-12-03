@@ -1,8 +1,16 @@
 import { apiClient } from '../client';
 
+interface User {
+  _id: string,
+  email : string,
+  firstName: string,
+  lastName: string,
+  role: string, 
+  username: string
+}
 interface Patient {
   _id: string;
-  user: string;
+  user: User;
   birthday: Date;
   address: string;
   bloodtype: string;
@@ -28,10 +36,9 @@ export const patientService = {
   getById: (id: string) => 
     apiClient.get<Patient>(`/patients/${id}`),
   
-  // NEW: Get by Patient ID
   getByPatientId: (patientId: string) => 
     apiClient.get<Patient>(`/patients/patient/${patientId}`),
-  
+
   update: (id: string, data: Partial<Patient>) => 
     apiClient.put<Patient>(`/patients/${id}`, data),
   

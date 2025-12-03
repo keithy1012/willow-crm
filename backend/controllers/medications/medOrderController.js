@@ -1,16 +1,8 @@
 import Medorder from "../../models/medications/MedOrder.js";
 import Patient from "../../models/patients/Patient.js";
 import Doctor from "../../models/doctors/Doctor.js";
-import nodemailer from "nodemailer";
 import { logEvent, getClientIp } from "../../utils/logger.js";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+import { sendEmail } from "../../utils/emailService.js";
 
 // Create a new medication order
 export const createMedorder = async (req, res) => {
@@ -476,7 +468,6 @@ export const sendRefillRequest = async (req, res) => {
       pharmacy,
       lastRefillDate,
     } = req.body;
-
     logEvent(
       "Medorder",
       `Send refill request initiated - Patient: ${patientName}, Medication: ${medicationName}, Pharmacy: ${pharmacy}`,
@@ -485,11 +476,7 @@ export const sendRefillRequest = async (req, res) => {
     );
 
     // Email to Willow CRM
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: "willowcrm@example.com",
-      subject: `Medication Refill Request - ${patientName}`,
-      html: `
+    let html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #5B7B9D;">Medication Refill Request</h2>
           
@@ -519,15 +506,21 @@ export const sendRefillRequest = async (req, res) => {
             </p>
           </div>
         </div>
-      `,
-    };
+      `;
+    await sendEmail({
+      to: "willowcrm@example.com",
+      subject: `Medication Refill Request - ${patientName}`,
+      html,
+    });
 
-    // Confirmation email to patient
-    const patientMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: patientEmail,
-      subject: `Refill Request Confirmation - ${medicationName}`,
-      html: `
+    logEvent(
+      "Medorder",
+      `Admin refill request email sent - Patient: ${patientName}, Medication: ${medicationName}`,
+      req.user?._id,
+      ip
+    );
+
+    html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #5B7B9D;">Refill Request Confirmed</h2>
           
@@ -556,19 +549,13 @@ export const sendRefillRequest = async (req, res) => {
             </p>
           </div>
         </div>
-      `,
-    };
-
-    // Send both emails
-    await transporter.sendMail(adminMailOptions);
-    logEvent(
-      "Medorder",
-      `Admin refill request email sent - Patient: ${patientName}, Medication: ${medicationName}`,
-      req.user?._id,
-      ip
-    );
-
-    await transporter.sendMail(patientMailOptions);
+      `;
+    // Send patient email
+    await sendEmail({
+      to: patientEmail,
+      subject: `Refill Request Confirmation - ${medicationName}`,
+      html,
+    });
     logEvent(
       "Medorder",
       `Patient refill confirmation email sent - Patient: ${patientName}, Email: ${patientEmail}, Medication: ${medicationName}`,

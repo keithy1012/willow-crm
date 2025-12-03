@@ -1,0 +1,1273 @@
+timestamp,event_type,message,user_id,ip_address
+2025-12-03T02:13:45.210Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:13:57.014Z,User,Login attempt initiated - Email: lokyeyoung@gmail.com,N/A,127.0.0.1
+2025-12-03T02:13:57.174Z,User,Login successful - User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com; Role: Patient,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.271Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.424Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.504Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.513Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:13:57.518Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.651Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.668Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:13:57.738Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:14:37.937Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T02:14:37.938Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T02:14:38.160Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T02:14:38.384Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T02:14:38.385Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T02:14:38.385Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T02:14:38.393Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T02:14:38.393Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T02:14:38.632Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T02:14:38.854Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T02:14:38.855Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T02:14:38.855Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T02:17:48.148Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:17:51.424Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:17:51.572Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:17:51.661Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:17:51.667Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:17:51.828Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:17:51.906Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:17:51.923Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:17:52.119Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.174Z,User,Login attempt initiated - Email: lokyeyoung@gmail.com,N/A,127.0.0.1
+2025-12-03T02:19:21.347Z,User,Login successful - User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com; Role: Patient,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.448Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.594Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.677Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.680Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.683Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:19:21.821Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.826Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:19:21.902Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:24:15.298Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:15.299Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:15.299Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:24:15.444Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:15.461Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:15.537Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:24:19.874Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:24:22.906Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:23.056Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:23.141Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:23.145Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:24:23.153Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:23.288Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:23.311Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:23.453Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:24:40.295Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:40.296Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:40.297Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:24:40.436Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:40.436Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:24:40.515Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:26:47.288Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:26:47.290Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:26:47.291Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:26:47.431Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:26:47.440Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:26:47.518Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:27:19.294Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:19.295Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:19.296Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:27:19.452Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:19.453Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:19.552Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:27:40.296Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:40.298Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:40.299Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:27:40.446Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:40.447Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:27:40.538Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:28:54.322Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:28:54.324Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:28:54.325Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:28:54.485Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:28:54.487Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:28:54.626Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:30:06.289Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:06.290Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:06.291Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:30:06.430Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:06.438Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:06.509Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:30:24.285Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:24.286Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:24.286Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:30:24.430Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:24.431Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:24.510Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:30:43.296Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:43.297Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:30:43.297Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:43.443Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:43.445Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:30:43.514Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:31:57.291Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:31:57.292Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:31:57.292Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:31:57.447Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:31:57.455Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:31:57.559Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:32:01.286Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:01.439Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:01.522Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:01.524Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:32:01.525Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:01.679Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:01.680Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:01.825Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:32:03.493Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:32:09.601Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: Missing credentials for "PLAIN",69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:38.112Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:38.391Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:38.481Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:38.483Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:34:38.486Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:38.686Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:39.084Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:39.339Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:34:40.736Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:34:40.883Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: Missing credentials for "PLAIN",69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:29.909Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:40:33.369Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:33.527Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:33.610Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:33.612Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:33.613Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:40:33.756Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:33.758Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:33.838Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:40:35.931Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:37.104Z,Medorder,Admin refill request email sent - Patient: undefined; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:40:37.397Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: No recipients defined,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:38.072Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:41:41.434Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:41.581Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:41.658Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:41.660Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:41:41.669Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:41.813Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:41.815Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:41.883Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:41:43.492Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:44.471Z,Medorder,Admin refill request email sent - Patient: undefined; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:41:44.892Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: No recipients defined,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:38.334Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:38.336Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:38.337Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:43:38.479Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:38.482Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:38.563Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:43:45.378Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:43:48.854Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:49.002Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:49.077Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:49.080Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:43:49.082Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:49.224Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:49.233Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:49.309Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:43:51.403Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:53.198Z,Medorder,Admin refill request email sent - Patient: undefined; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:43:53.662Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: No recipients defined,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:11.037Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:44:14.319Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:14.466Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:14.541Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:14.543Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:44:14.544Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:14.693Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:14.691Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:14.770Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:44:16.403Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:17.474Z,Medorder,Admin refill request email sent - Patient: undefined; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:44:17.758Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: No recipients defined,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:35.354Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:35.355Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:35.356Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:45:35.496Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:35.498Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:35.574Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:45:52.337Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:45:52.338Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:52.485Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:52.555Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:45:52.625Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:45:52.779Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:38.338Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:38.341Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:38.343Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:46:38.485Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:38.486Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:38.571Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:46:41.443Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:46:44.801Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:44.943Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:45.022Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:45.041Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:45.037Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:46:45.194Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:45.206Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:45.269Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:46:47.009Z,Medorder,Send refill request initiated - Patient: undefined; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:48.041Z,Medorder,Admin refill request email sent - Patient: undefined; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:46:48.308Z,Medorder,Send refill request error - Patient: undefined; Medication: ibuprofen; Error: No recipients defined,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:47:04.336Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:47:04.337Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:47:04.338Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:47:04.482Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:47:04.482Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:47:04.558Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:50:33.341Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:33.342Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:33.344Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:50:33.486Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:33.488Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:33.560Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:50:43.344Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:43.347Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:50:43.351Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:43.488Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:43.494Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:43.564Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:50:46.324Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:50:49.620Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:49.793Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:49.870Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:50:49.876Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:49.873Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:50.027Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:50.029Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:50:50.096Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:51:30.335Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:30.338Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:30.339Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:51:30.480Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:30.481Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:30.557Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:51:33.638Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T02:51:36.774Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:36.921Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:36.998Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:37.000Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:51:37.001Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:37.140Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:37.147Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:51:37.216Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:52:13.339Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:52:13.341Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:13.342Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:13.489Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:13.563Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:52:13.759Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:25.334Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:52:25.335Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:25.336Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:25.490Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:25.491Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:25.620Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:52:42.637Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:42.781Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:42.852Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:42.855Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:52:42.879Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:43.013Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:43.017Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:52:43.086Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:53:21.338Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:21.339Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:53:21.356Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:21.478Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:21.495Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:21.561Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:53:26.330Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:26.331Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:26.332Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:53:26.484Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:26.485Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:26.625Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:53:38.346Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:53:38.348Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:38.350Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:38.491Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:38.494Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:53:38.640Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:54:09.333Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:54:09.334Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:09.336Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:09.474Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:09.480Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:09.552Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:54:12.735Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:12.885Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:12.958Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:12.961Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:54:12.962Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:13.104Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:13.111Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:13.180Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:54:40.336Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:40.337Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:54:40.337Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:40.477Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:40.478Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:54:40.552Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:56:39.346Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:39.346Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:39.347Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:56:39.490Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:39.504Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:39.571Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:56:47.372Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:47.373Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:47.373Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:56:47.539Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:47.540Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:56:47.653Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:57:17.341Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:57:17.343Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:57:17.344Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:57:17.498Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:57:17.499Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:57:17.581Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:58:24.355Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:58:24.355Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:58:24.356Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:58:24.513Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:58:24.514Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:58:24.591Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:59:43.341Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:43.344Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:59:43.344Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:43.482Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:43.485Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:43.557Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:59:52.464Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:52.608Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:52.718Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:52.720Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T02:59:52.721Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:52.879Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:52.880Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T02:59:52.948Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:10.346Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:10.347Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:10.347Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:10.493Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:10.496Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:12.540Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:00:15.947Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:16.096Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:16.180Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:16.184Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:16.186Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:16.346Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:16.349Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:16.432Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:40.341Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:40.342Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:40.343Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:40.486Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:40.487Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:40.561Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:41.339Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:41.343Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:41.341Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:41.482Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:41.484Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:41.566Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:53.337Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:53.338Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:53.338Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:00:53.477Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:53.480Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:00:53.557Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:01:03.349Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:01:03.350Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:01:03.351Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:01:03.503Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:01:03.508Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:01:03.594Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:10.767Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:03:14.089Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:14.236Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:14.315Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:14.319Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:14.322Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:14.478Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:14.481Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:14.554Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:16.100Z,User,Get user by ID initiated - Target User ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:16.174Z,User,Get user by ID failed - User ID 69071290ed3dad65fcb4bbec not found,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:20.177Z,User,Get user by ID initiated - Target User ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:20.255Z,User,Get user by ID failed - User ID 69071290ed3dad65fcb4bbec not found,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:54.340Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:54.341Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:54.342Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:54.485Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:54.488Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:54.562Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:56.309Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:56.461Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:56.543Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:56.559Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:56.560Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:56.689Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:56.701Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:56.781Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:03:58.677Z,User,Get user by ID initiated - Target User ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:03:58.749Z,User,Get user by ID failed - User ID 69071290ed3dad65fcb4bbec not found,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:05:01.336Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:05:01.339Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:05:01.340Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:05:01.500Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:05:01.500Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:05:01.559Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:07:02.350Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:07:02.351Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:02.351Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:02.497Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:02.498Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:02.573Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:07:06.341Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:07:06.343Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:06.342Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:06.488Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:06.491Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:06.562Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:07:15.346Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:15.347Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:07:15.348Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:15.487Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:15.498Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:07:15.568Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:08:01.350Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:01.353Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:01.354Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:08:01.494Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:01.495Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:01.572Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:08:27.347Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:08:27.348Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:27.349Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:27.506Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:27.507Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:27.576Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:08:32.990Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:33.139Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:08:33.224Z,User,Get user by ID initiated - Target User ID: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:08.837Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:09:12.391Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:12.534Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:12.608Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:12.619Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:09:12.621Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:12.757Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:12.768Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:12.839Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:09:14.431Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:09:14.580Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:04.495Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:10:07.927Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:08.074Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:08.154Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:10:08.156Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:08.158Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:08.320Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:08.322Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:08.390Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:10:10.660Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:10.808Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:10.891Z,User,Get user by ID initiated - Target User ID: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:10:10.894Z,User,Get user by ID error - User ID: [object Object]; Error: Cast to ObjectId failed for value "[object Object]" (type string) at path "_id" for model "User",69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:18.354Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:18.357Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:18.358Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:11:18.503Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:18.505Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:18.586Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:11:20.600Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:20.747Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:20.833Z,User,Get user by ID error - User ID: [object Object]; Error: Cast to ObjectId failed for value "[object Object]" (type string) at path "_id" for model "User",69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:11:20.832Z,User,Get user by ID initiated - Target User ID: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.311Z,User,Login attempt initiated - Email: lokyeyoung@gmail.com,N/A,127.0.0.1
+2025-12-03T03:12:04.458Z,User,Login successful - User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com; Role: Patient,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.563Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.705Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.781Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.802Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:12:04.810Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.932Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:04.957Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:05.029Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:12:07.601Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:07.744Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:07.825Z,User,Get user by ID initiated - Target User ID: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:12:07.826Z,User,Get user by ID error - User ID: [object Object]; Error: Cast to ObjectId failed for value "[object Object]" (type string) at path "_id" for model "User",69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:13.348Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:13.349Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:13.350Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:13:13.499Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:13.500Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:13.576Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:13:18.351Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:18.358Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:13:18.360Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:18.496Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:18.519Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:18.647Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:13:22.211Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:22.368Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:22.453Z,User,Get user by ID initiated - Target User ID: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:13:22.454Z,User,Get user by ID error - User ID: [object Object]; Error: Cast to ObjectId failed for value "[object Object]" (type string) at path "_id" for model "User",69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:33.349Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:33.351Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:33.351Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:14:33.493Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:33.501Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:33.574Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:14:37.732Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:37.878Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:37.950Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:37.992Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:14:37.996Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:38.100Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:38.168Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:38.233Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:14:39.959Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:40.111Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:59.356Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:14:59.359Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:14:59.363Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:01.414Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:15:04.711Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:04.858Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:04.936Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:04.938Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:15:04.940Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:05.084Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:05.096Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:05.167Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:15:06.812Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:06.963Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:33.355Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:33.358Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:33.360Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:15:33.506Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:33.510Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:15:33.589Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:20:12.502Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:12.652Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:12.740Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:12.743Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:20:12.744Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:12.902Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:12.904Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:12.970Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:20:14.960Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:20:15.113Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:22:34.376Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:22:34.380Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:22:34.380Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:22:34.519Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:22:34.526Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:22:34.604Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:23:24.342Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:23:24.343Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:23:24.343Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:23:24.483Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:23:24.486Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:23:24.565Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:28:44.358Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:28:44.360Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:28:44.360Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:28:44.505Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:28:44.506Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:28:44.581Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:30:29.343Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:30:29.344Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:30:29.344Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:30:29.483Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:30:29.490Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:30:29.572Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:32:12.348Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:12.349Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:32:12.350Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:12.489Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:12.495Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:12.571Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:32:51.345Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:51.346Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:51.348Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:32:51.484Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:51.485Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:32:51.565Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:33:06.345Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:06.346Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:33:06.347Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:06.484Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:06.490Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:06.560Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:33:10.635Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:10.776Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:10.847Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:10.851Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:33:10.854Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:10.995Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:10.999Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:11.067Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:33:12.326Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:12.475Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:34.349Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:34.350Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:33:34.350Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:34.489Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:34.490Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:33:34.563Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:34:53.474Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:34:53.475Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:34:53.475Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:34:53.934Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:34:53.935Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:34:54.005Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:35:09.346Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:09.350Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:09.351Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:35:09.536Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:09.548Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:09.641Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:35:16.374Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:16.522Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:16.629Z,Medorder,Send refill request initiated - Patient: Lok Ye Young; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:17.862Z,Medorder,Admin refill request email sent - Patient: Lok Ye Young; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:18.524Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:18.768Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:18.904Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:18.906Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:35:18.907Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:18.911Z,Medorder,Patient refill confirmation email sent - Patient: Lok Ye Young; Email: lokyeyoung@gmail.com; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:18.911Z,Medorder,Refill request sent successfully - Patient: Lok Ye Young; Medication: ibuprofen; Quantity: 1 million ; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:19.053Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:19.054Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:19.129Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:35:22.294Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:22.446Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:22.570Z,Medorder,Send refill request initiated - Patient: Lok Ye Young; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:23.617Z,Medorder,Admin refill request email sent - Patient: Lok Ye Young; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:24.665Z,Medorder,Refill request sent successfully - Patient: Lok Ye Young; Medication: ibuprofen; Quantity: 1 million ; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:35:24.665Z,Medorder,Patient refill confirmation email sent - Patient: Lok Ye Young; Email: lokyeyoung@gmail.com; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:39.101Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:37:42.574Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:42.762Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:42.868Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:42.871Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:42.873Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:37:43.060Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:43.061Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:43.152Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:37:43.774Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:44.139Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:44.317Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:44.319Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:44.616Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:44.622Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:54.329Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:37:54.472Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:38:11.136Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:38:11.409Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:09.099Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:09.105Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:09.241Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:09.245Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:12.547Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:12.688Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:12.759Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:12.783Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:12.904Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:12.924Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:14.504Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:14.691Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:14.773Z,Medorder,Send refill request initiated - Patient: Lok Ye Young; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:20.790Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:20.930Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:21.007Z,Medorder,Send refill request initiated - Patient: Lok Ye Young; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:22.003Z,Medorder,Admin refill request email sent - Patient: Lok Ye Young; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:22.190Z,Medorder,Admin refill request email sent - Patient: Lok Ye Young; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:23.155Z,Medorder,Refill request sent successfully - Patient: Lok Ye Young; Medication: ibuprofen; Quantity: 1 million ; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:23.154Z,Medorder,Patient refill confirmation email sent - Patient: Lok Ye Young; Email: lokyeyoung@gmail.com; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:23.485Z,Medorder,Patient refill confirmation email sent - Patient: Lok Ye Young; Email: lokyeyoung@gmail.com; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:23.485Z,Medorder,Refill request sent successfully - Patient: Lok Ye Young; Medication: ibuprofen; Quantity: 1 million ; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:42.867Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:43.021Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:43.095Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:43.098Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:39:43.101Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:43.242Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:43.251Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:43.321Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:39:44.854Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:45.000Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:45.082Z,Medorder,Send refill request initiated - Patient: Lok Ye Young; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:46.396Z,Medorder,Admin refill request email sent - Patient: Lok Ye Young; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:47.634Z,Medorder,Patient refill confirmation email sent - Patient: Lok Ye Young; Email: lokyeyoung@gmail.com; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:39:47.634Z,Medorder,Refill request sent successfully - Patient: Lok Ye Young; Medication: ibuprofen; Quantity: 1 million ; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:45:35.899Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:45:36.059Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:45:36.143Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:45:36.295Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:50.123Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:51.266Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:51.358Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:46:51.579Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:46:51.652Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:51.693Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:51.797Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:51.843Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:54.723Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:54.883Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:54.973Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:54.983Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:55.122Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:46:55.132Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:01.789Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:01.935Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:02.012Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:02.017Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:02.021Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:47:02.165Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:02.165Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:47:02.407Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:48:56.376Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:48:59.641Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:48:59.782Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:48:59.856Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:48:59.859Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:48:59.860Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:49:00.004Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:49:00.005Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:49:00.079Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:49:06.793Z,Chat,Chat request error - User: Unknown; Error: userId is not defined,N/A,127.0.0.1
+2025-12-03T03:51:28.391Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:51:31.998Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:32.151Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:32.229Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:32.231Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:32.373Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:32.993Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:39.364Z,Patient,Get patient by patient ID initiated - Patient ID: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:39.509Z,Patient,Patient retrieved by patient ID - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:39.684Z,Medorder,Send refill request initiated - Patient: Lok Ye Young; Medication: ibuprofen; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:42.842Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:42.990Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:43.073Z,Invoice,Get patient invoices - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:51:43.146Z,Invoice,Patient invoices retrieved - Patient: 69071290ed3dad65fcb4bbec; Count: 0,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:51:43.351Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:43.495Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:46.073Z,Patient,Get insurance cards initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:46.147Z,Patient,Insurance cards retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Has Front: false; Has Back: false,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:46.230Z,Patient,Get insurance cards initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:46.309Z,Patient,Insurance cards retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Has Front: false; Has Back: false,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:46.700Z,Medorder,Admin refill request email sent - Patient: Lok Ye Young; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:47.816Z,Medorder,Patient refill confirmation email sent - Patient: Lok Ye Young; Email: lokyeyoung@gmail.com; Medication: ibuprofen,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:47.816Z,Medorder,Refill request sent successfully - Patient: Lok Ye Young; Medication: ibuprofen; Quantity: 1 million ; Pharmacy: Willow CRM Pharmacy,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:49.287Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:49.428Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:49.502Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:49.507Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:49.650Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:49.661Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:51.218Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:51.363Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:51.446Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:51.447Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:51:51.589Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:51.664Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:51:53.986Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:54.130Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T03:51:54.209Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:54.356Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T03:51:59.423Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:59.610Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:59.696Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:51:59.696Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:59.873Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:51:59.988Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T03:52:44.444Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:57:14.778Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:57:43.200Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T03:58:16.937Z,User,User search initiated - Query: lok; Requested By: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:16.937Z,User,User search initiated - Criteria: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:17.017Z,User,User search  - Found: 8 users,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:17.018Z,User,User search completed - Query: lok; Results: 8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:28.950Z,User,User search initiated - Query: lo; Requested By: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:28.952Z,User,User search initiated - Criteria: [object Object],69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:29.034Z,User,User search  - Found: 13 users,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:58:29.035Z,User,User search completed - Query: lo; Results: 13,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:59:31.052Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:59:31.198Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T03:59:31.271Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T03:59:31.417Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:00:06.724Z,User,Login attempt initiated - Email: test@gmail.com,N/A,127.0.0.1
+2025-12-03T04:00:06.872Z,User,Login successful - User ID: 690fef142edfbde4a204d7f6; Email: test@gmail.com; Role: Ops,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:06.970Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:06.973Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:06.975Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.045Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.046Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.121Z,DoctorTicket,Pending doctor tickets retrieved - Count: 38,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.123Z,DoctorRequestTicket,Get pending change tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.123Z,DoctorRequestTicket,Get in-progress tickets by Ops ID initiated - Ops Member: 690fef142edfbde4a204d7f6,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.193Z,DoctorRequestTicket,Pending change tickets retrieved - Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.194Z,DoctorRequestTicket,In-progress tickets retrieved - Ops Member: 690fef142edfbde4a204d7f6; Count: 0,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.195Z,DoctorTicket,Get pending doctor tickets initiated,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:07.270Z,DoctorTicket,Pending doctor tickets retrieved - Count: 38,690fef142edfbde4a204d7f6,127.0.0.1
+2025-12-03T04:00:22.523Z,User,Login attempt initiated - Email: mimi@gmail.com,N/A,127.0.0.1
+2025-12-03T04:00:22.937Z,User,Login successful - User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com; Role: Patient,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:23.032Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:23.789Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:23.933Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:23.949Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:00:23.951Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:24.020Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:00:24.022Z,Medorder,Medication orders retrieved for patient - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:27.298Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:33.162Z,User,User search initiated - Query: lok; Requested By: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:33.163Z,User,User search initiated - Criteria: [object Object],6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:33.241Z,User,User search  - Found: 8 users,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:33.241Z,User,User search completed - Query: lok; Results: 8,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:52.299Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:52.955Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:53.087Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:00:54.897Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:23.420Z,User,Login attempt initiated - Email: mimi@gmail.com,N/A,127.0.0.1
+2025-12-03T04:01:23.588Z,User,Login successful - User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com; Role: Patient,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:23.695Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:24.369Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:24.497Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:24.534Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:01:24.535Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:24.607Z,Medorder,Medication orders retrieved for patient - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:01:24.610Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:01:25.149Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:02.436Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:07.528Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:07.641Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:10.141Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:35.476Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:37.195Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:37.324Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:37.357Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:37.358Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:02:37.428Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:02:37.429Z,Medorder,Medication orders retrieved for patient - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:38.648Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:42.299Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:43.813Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:43.942Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:43.966Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:02:43.968Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:44.039Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:02:44.041Z,Medorder,Medication orders retrieved for patient - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:44.373Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:02:44.373Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:02:44.598Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:02:44.840Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:02:44.840Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:02:44.840Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:02:44.848Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:02:44.848Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:02:45.065Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:02:45.282Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:02:45.282Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:02:45.282Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:02:47.586Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:02:59.034Z,Appointment,Booking initiated - Patient: 6910456b20ff4f26dc0eb713; Doctor: 69224b6d9c6b4ad1ec7a9423; Date: 2025-12-03; Time: 12:00-13:00; Emergency: NO,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:01.333Z,Appointment,Booking successful - Appointment ID: 692fb67515f4d49bb6ab44e5; Patient: 6910456b20ff4f26dc0eb713; Doctor: 69224b6d9c6b4ad1ec7a9423; Date: 2025-12-03; Time: 12:00-13:00,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:01.572Z,Appointment,Booking initiated - Patient: 6910456b20ff4f26dc0eb713; Doctor: 69224b6d9c6b4ad1ec7a9423; Date: 2025-12-03; Time: 12:00-13:00; Emergency: NO,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:02.297Z,Appointment,Booking failed - Time 12:00-13:00 not available for Doctor 69224b6d9c6b4ad1ec7a9423,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:02.516Z,Email,Confirmation email sent - Appointment ID: 692fb67515f4d49bb6ab44e5; Recipient: mimi@gmail.com,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:03.356Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:03.571Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:12.068Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:13.089Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:13.213Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:13.246Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:13.248Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:13.321Z,Medorder,Medication orders retrieved for patient - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:13.467Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:14.799Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:32.396Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:03:32.396Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:03:32.621Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:03:33.117Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:03:33.117Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:03:33.117Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:03:33.137Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:03:33.137Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:03:33.366Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:03:33.598Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:03:33.598Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:03:33.598Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:03:42.446Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:42.591Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:03:42.665Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:42.808Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:03:44.088Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:49.258Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:49.376Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:49.400Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:49.402Z,Medorder,Get medication orders by patient initiated - Patient: 6910456b20ff4f26dc0eb713,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:49.471Z,Medorder,Medication orders retrieved for patient - Patient: 6910456b20ff4f26dc0eb713; Count: 0,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:49.611Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:03:51.355Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:54.588Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:56.442Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:56.581Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:03:58.142Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:04:15.587Z,User,Login attempt initiated - Email: lokyeyoung@gmail.com,N/A,127.0.0.1
+2025-12-03T04:04:15.751Z,User,Login successful - User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com; Role: Patient,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:15.857Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:16.003Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:16.138Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:16.141Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:04:16.141Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:16.291Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:16.305Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:16.378Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:04:16.863Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:17.292Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:17.372Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:17.374Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:04:17.515Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:17.597Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:04:44.616Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:44.767Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:44.846Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:44.849Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:04:44.999Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:04:45.071Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:06:08.447Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:06:09.992Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:06:10.112Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:06:10.142Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:06:10.377Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:06:11.487Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:06:28.873Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:29.027Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:29.105Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:29.112Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:06:29.255Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:29.338Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:06:33.075Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:33.223Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:33.300Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:33.449Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:35.117Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:35.314Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:35.398Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:06:35.424Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:35.571Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:06:35.616Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:06:57.163Z,User,Login attempt initiated - Email: lokyedoctor@gmail.com,N/A,127.0.0.1
+2025-12-03T04:06:57.341Z,User,Login successful - User ID: 69224b6c9c6b4ad1ec7a941c; Email: lokyedoctor@gmail.com; Role: Doctor,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:57.458Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:57.633Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:57.722Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:57.730Z,Appointment,Fetching appointments - Doctor: 69224b6d9c6b4ad1ec7a9423,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:06:57.825Z,Availability,All availabilities retrieved - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 13,N/A,127.0.0.1
+2025-12-03T04:06:57.894Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:59.421Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:59.582Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:59.664Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:06:59.813Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:07:03.747Z,Appointment,Appointments fetched - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 36,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:07:03.882Z,Appointment,Fetching appointments - Doctor: 69224b6d9c6b4ad1ec7a9423,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:07:07.193Z,Appointment,Appointments fetched - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 36,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:10:27.367Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:10:27.512Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:10:27.587Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:10:27.596Z,Appointment,Fetching appointments - Doctor: 69224b6d9c6b4ad1ec7a9423,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:10:27.736Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:10:31.084Z,Appointment,Appointments fetched - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 36,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:10:42.310Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:44.094Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:44.217Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:44.241Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:10:44.456Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:10:49.995Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:52.664Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:53.895Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:54.021Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:10:54.046Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:10:54.259Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:10:55.189Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:11:13.429Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:11:17.362Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:11:17.490Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:11:17.519Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:11:17.738Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:11:20.188Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:14:16.249Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:14:18.326Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:14:18.456Z,Patient,Get patient by user ID initiated - User ID: 6910456a20ff4f26dc0eb70f,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:14:18.476Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:14:18.697Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:14:21.869Z,Patient,Patient retrieved - Patient ID: 6910456b20ff4f26dc0eb713; User ID: 6910456a20ff4f26dc0eb70f; Email: mimi@gmail.com,6910456a20ff4f26dc0eb70f,127.0.0.1
+2025-12-03T04:14:29.971Z,Appointment,Cancellation with reason successful - Appointment: 692fb67515f4d49bb6ab44e5; Cancelled by: patient; Reason: Weather or transportation issues; Email sent to: lokyedoctor@gmail.com,6910456b20ff4f26dc0eb713,N/A
+2025-12-03T04:14:30.133Z,Appointment,Fetching appointments - Patient: 6910456b20ff4f26dc0eb713,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:14:30.355Z,Appointment,Appointments fetched - Patient: 6910456b20ff4f26dc0eb713; Count: 1,6910456b20ff4f26dc0eb713,127.0.0.1
+2025-12-03T04:14:33.940Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:14:34.086Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:14:34.169Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:14:34.173Z,Appointment,Fetching appointments - Doctor: 69224b6d9c6b4ad1ec7a9423,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:14:34.314Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:14:36.061Z,Appointment,Appointments fetched - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 36,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:15:26.109Z,User,Login attempt initiated - Email: lokyeyoung@gmail.com,N/A,127.0.0.1
+2025-12-03T04:15:26.270Z,User,Login successful - User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com; Role: Patient,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:26.367Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:26.515Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:26.612Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:26.618Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:15:26.766Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:26.845Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:15:26.849Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:26.995Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:28.902Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:29.062Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:29.145Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:15:29.368Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:15:29.385Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:29.531Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:30.972Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:31.120Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:31.202Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:15:31.203Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:31.204Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:31.357Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:31.360Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:15:31.431Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:15:36.474Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:15:36.474Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:15:36.693Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:15:36.913Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:15:36.914Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:15:44.875Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:15:44.875Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:15:45.106Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:15:45.575Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:15:45.576Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:15:47.280Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:15:47.280Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:15:47.497Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:15:47.730Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:15:47.730Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:16:04.595Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:16:04.595Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:16:04.820Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:16:05.043Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:16:05.044Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:16:17.044Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:16:17.044Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: lok,N/A,127.0.0.1
+2025-12-03T04:16:17.271Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:16:17.580Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:16:17.580Z,Availability,Search doctors error - Date: 2025-12-03; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:16:20.639Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: lok,N/A,127.0.0.1
+2025-12-03T04:16:20.639Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:16:20.856Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:16:21.079Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:16:21.079Z,Availability,Search doctors error - Date: 2025-12-03; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:19:58.748Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:19:58.893Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:19:58.977Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:19:58.978Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:19:58.979Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:19:59.123Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:19:59.126Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:19:59.199Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:20:12.956Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:20:12.957Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:20:13.178Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:13.391Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:13.391Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:13.391Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:13.398Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:20:13.399Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:20:13.617Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:13.833Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:13.833Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:13.834Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:29.683Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:20:29.682Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: lok,N/A,127.0.0.1
+2025-12-03T04:20:29.902Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:30.234Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:30.235Z,Availability,Search doctors error - Date: 2025-12-03; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:20:38.927Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:39.080Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:39.155Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:39.159Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:20:39.161Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:39.303Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:39.304Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:39.394Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:20:41.802Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:20:41.802Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:20:42.261Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:42.478Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:42.478Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:42.478Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:42.486Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:20:42.486Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:20:42.702Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:42.924Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:42.924Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:42.924Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:20:49.742Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:20:49.742Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: lok,N/A,127.0.0.1
+2025-12-03T04:20:49.961Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:50.182Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:50.183Z,Availability,Search doctors error - Date: 2025-12-03; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:20:52.372Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:52.521Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:52.594Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:52.594Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:20:52.597Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:52.748Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:52.751Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:52.816Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:20:54.587Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:20:54.587Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:20:54.809Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:55.028Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:55.029Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:20:57.121Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:20:57.121Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:20:57.341Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:20:57.561Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:20:57.561Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:20:58.617Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:20:59.933Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:21:00.012Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:21:00.021Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:21:00.024Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:21:00.160Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:21:00.172Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:21:00.251Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:21:01.868Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:21:01.869Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:21:02.093Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:21:02.315Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:21:02.315Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:22:32.087Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:22:32.533Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:22:32.612Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:22:32.632Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:22:32.633Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:22:32.793Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:22:33.012Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:22:33.269Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:22:34.769Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:22:34.769Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:22:35.003Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:22:35.233Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:22:35.234Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:26:15.400Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T04:26:18.832Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:26:18.901Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:26:18.975Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:26:19.048Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:26:19.050Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:26:19.085Z,Appointment,Fetching appointments - Doctor: 69224b6d9c6b4ad1ec7a9423,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:26:19.137Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:26:19.140Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:26:19.142Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:26:19.203Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:26:19.282Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:26:19.284Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:26:19.378Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:26:19.776Z,Appointment,Appointments fetched - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 36,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:26:21.136Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:26:21.136Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:26:21.361Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:26:21.579Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:26:21.580Z,Availability,Search doctors error - Date: 2025-12-02; Name: lok; Error: beforeFilter is not defined,N/A,127.0.0.1
+2025-12-03T04:27:38.996Z,MongoDB Connection,Server successfully connected to MongoDB,SERVER,SERVER
+2025-12-03T04:27:42.125Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:27:42.230Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:42.297Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:27:42.372Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:42.375Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:27:42.379Z,Appointment,Fetching appointments - Doctor: 69224b6d9c6b4ad1ec7a9423,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:27:42.445Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:42.453Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:27:42.455Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:42.516Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:27:42.590Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:42.607Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:42.678Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:27:44.084Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:27:44.085Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:27:44.308Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:27:44.526Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:27:44.527Z,Availability,Name filter applied - Number of Doctors: 1,N/A,127.0.0.1
+2025-12-03T04:27:44.527Z,Availability,Search by date completed - Date: 2025-12-02; Day: Tuesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:27:44.527Z,Availability,Search completed - Date: 2025-12-02; Name: lok; Results: 1,N/A,127.0.0.1
+2025-12-03T04:27:44.534Z,Availability,Search doctors initiated - Date: 2025-12-02; Name: lok,N/A,127.0.0.1
+2025-12-03T04:27:44.534Z,Availability,Search doctors - Searching date range: Mon Dec 01 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Tuesday,N/A,127.0.0.1
+2025-12-03T04:27:44.752Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:27:44.968Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:27:44.968Z,Availability,Name filter applied - Number of Doctors: 1,N/A,127.0.0.1
+2025-12-03T04:27:44.968Z,Availability,Search completed - Date: 2025-12-02; Name: lok; Results: 1,N/A,127.0.0.1
+2025-12-03T04:27:44.968Z,Availability,Search by date completed - Date: 2025-12-02; Day: Tuesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:27:46.636Z,Appointment,Appointments fetched - Doctor: 69224b6d9c6b4ad1ec7a9423; Count: 36,69224b6d9c6b4ad1ec7a9423,127.0.0.1
+2025-12-03T04:27:48.617Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:48.761Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:27:48.840Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:27:48.989Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:28:47.495Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:28:47.640Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:28:47.714Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:28:47.725Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:28:47.728Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:28:47.863Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:28:47.879Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:28:47.959Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:28:51.837Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:28:51.838Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:28:52.063Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:28:52.286Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:28:52.286Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:28:52.286Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:28:52.293Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: none,N/A,127.0.0.1
+2025-12-03T04:28:52.293Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:28:52.530Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:28:52.753Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:28:52.754Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:28:52.754Z,Availability,Search completed - Date: 2025-12-03; Name: none; Results: 1,N/A,127.0.0.1
+2025-12-03T04:29:02.982Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: lok,N/A,127.0.0.1
+2025-12-03T04:29:02.982Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:29:03.203Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:29:03.432Z,Availability,Name filter applied - Number of Doctors: 1,N/A,127.0.0.1
+2025-12-03T04:29:03.431Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:29:03.432Z,Availability,Search completed - Date: 2025-12-03; Name: lok; Results: 1,N/A,127.0.0.1
+2025-12-03T04:29:03.432Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:29:03.438Z,Availability,Search doctors initiated - Date: 2025-12-03; Name: lok,N/A,127.0.0.1
+2025-12-03T04:29:03.439Z,Availability,Search doctors - Searching date range: Tue Dec 02 2025 16:00:00 GMT-0800 (Pacific Standard Time) to Wed Dec 03 2025 16:00:00 GMT-0800 (Pacific Standard Time). Day of week: Wednesday,N/A,127.0.0.1
+2025-12-03T04:29:03.662Z,Availability,Search doctor availability - Found 1 single date availabilities,N/A,127.0.0.1
+2025-12-03T04:29:03.890Z,Availability,Search doctor availability - Found 1 recurring availabilities,N/A,127.0.0.1
+2025-12-03T04:29:03.891Z,Availability,Name filter applied - Number of Doctors: 1,N/A,127.0.0.1
+2025-12-03T04:29:03.891Z,Availability,Search by date completed - Date: 2025-12-03; Day: Wednesday; Single: 1; Recurring: 1; Results: 1,N/A,127.0.0.1
+2025-12-03T04:29:03.891Z,Availability,Search completed - Date: 2025-12-03; Name: lok; Results: 1,N/A,127.0.0.1
+2025-12-03T04:29:10.397Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:10.544Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:29:10.618Z,Doctor,Get doctor by user ID - User ID: 69224b6c9c6b4ad1ec7a941c,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:11.063Z,Doctor,Doctor profile found - Doctor ID: 69224b6d9c6b4ad1ec7a9423; User ID: 69224b6c9c6b4ad1ec7a941c; Speciality: Peepee,69224b6c9c6b4ad1ec7a941c,127.0.0.1
+2025-12-03T04:29:20.830Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:20.977Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:21.052Z,Patient,Get patient by user ID initiated - User ID: 69071290ed3dad65fcb4bbe8,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:21.058Z,Appointment,Fetching appointments - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbec,127.0.0.1
+2025-12-03T04:29:21.061Z,Medorder,Get medication orders by patient initiated - Patient: 69071290ed3dad65fcb4bbec,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:21.200Z,Patient,Patient retrieved - Patient ID: 69071290ed3dad65fcb4bbec; User ID: 69071290ed3dad65fcb4bbe8; Email: lokyeyoung@gmail.com,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:21.210Z,Medorder,Medication orders retrieved for patient - Patient: 69071290ed3dad65fcb4bbec; Count: 1,69071290ed3dad65fcb4bbe8,127.0.0.1
+2025-12-03T04:29:21.352Z,Appointment,Appointments fetched - Patient: 69071290ed3dad65fcb4bbec; Count: 35,69071290ed3dad65fcb4bbec,127.0.0.1
