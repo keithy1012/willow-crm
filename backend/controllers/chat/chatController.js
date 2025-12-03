@@ -4,8 +4,8 @@ import { logEvent, getClientIp } from "../../utils/logger.js";
 export const chatController = {
   async sendMessage(req, res) {
     const ip = getClientIp(req);
-    const userId = req.user?._id; // Move this to the top
-
+    const userId = req.user?._id;
+    console.log(userId);
     try {
       const { messages } = req.body;
 
